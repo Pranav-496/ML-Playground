@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* ===== Design System: ML Playground — Claymorphism ===== */
+
+@theme {
+  /* Warm Brand Colors */
+  --color-primary: #e8553a;
+  --color-primary-light: #f06b4e;
+  --color-primary-dark: #c9412a;
+  --color-primary-50: #fef3f0;
+  --color-primary-100: #fde2db;
+
+  /* Accent — Sunny Yellow */
+  --color-accent: #f5a623;
+  --color-accent-light: #ffc04d;
+  --color-accent-dark: #d18e1a;
+
+  /* Success — Leafy Green */
+  --color-green: #4caf7d;
+  --color-green-light: #6bcf97;
+  --color-green-dark: #388f60;
+
+  /* Info — Warm Teal */
+  --color-teal: #2eaaaa;
+  --color-teal-light: #4fcfcf;
+  --color-teal-dark: #1f8888;
+
+  /* Surface colors — Warm & Creamy */
+  --color-surface: #fdf6ee;
+  --color-surface-card: #ffffff;
+  --color-surface-elevated: #fff9f3;
+  --color-surface-hover: #fef0e3;
+  --color-surface-border: #f0dcc8;
+  --color-surface-warm: #fbeee0;
+
+  /* Text — Warm Darks */
+  --color-text-primary: #3d2c1e;
+  --color-text-secondary: #7a6555;
+  --color-text-muted: #a89585;
+
+  /* Status */
+  --color-success: #4caf7d;
+  --color-warning: #f5a623;
+  --color-error: #e8553a;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-3xl: 2rem;
+  --radius-pill: 100px;
+}
+
+/* ===== Base Styles ===== */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Nunito", system-ui, -apple-system, sans-serif;
+    background-color: #fdf6ee;
+    color: #3d2c1e;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(232, 85, 58, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 20%, rgba(245, 166, 35, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(76, 175, 125, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #fdf6ee;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #f0dcc8;
+    border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a89585;
+  }
+}
+
+/* ===== Clay Component Styles =====
+   These are placed OUTSIDE @layer so Tailwind v4 doesn't tree-shake them */
+
+.clay {
+  background: #ffffff;
+  box-shadow:
+    8px 8px 16px rgba(166, 140, 116, 0.2),
+    -6px -6px 12px rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.clay-sm {
+  background: #ffffff;
+  box-shadow:
+    4px 4px 8px rgba(166, 140, 116, 0.18),
+    -3px -3px 6px rgba(255, 255, 255, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.clay-lg {
+  background: #ffffff;
+  box-shadow:
+    12px 12px 24px rgba(166, 140, 116, 0.22),
+    -8px -8px 16px rgba(255, 255, 255, 0.85),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+  border-radius: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.clay-pressed {
+  background: #fbeee0;
+  box-shadow:
+    inset 4px 4px 8px rgba(166, 140, 116, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(240, 220, 200, 0.3);
+}
+
+.clay-hover {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clay-hover:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow:
+    14px 14px 28px rgba(166, 140, 116, 0.25),
+    -10px -10px 20px rgba(255, 255, 255, 0.9),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+}
+
+.clay-hover:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow:
+    inset 4px 4px 8px rgba(166, 140, 116, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+}
+
+/* Gradient text — coral to orange to green */
+.gradient-text {
+  background: linear-gradient(135deg, #e8553a 0%, #f5a623 50%, #4caf7d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #e8553a 0%, #f5a623 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Clay buttons */
+.clay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  box-shadow:
+    6px 6px 12px rgba(166, 140, 116, 0.2),
+    -4px -4px 10px rgba(255, 255, 255, 0.7);
+}
+
+.clay-btn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    10px 10px 20px rgba(166, 140, 116, 0.25),
+    -6px -6px 14px rgba(255, 255, 255, 0.8);
+}
+
+.clay-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 4px 4px 8px rgba(166, 140, 116, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+}
+
+.clay-btn-primary {
+  background: linear-gradient(135deg, #e8553a, #f06b4e);
+  color: white;
+}
+
+.clay-btn-primary:hover {
+  background: linear-gradient(135deg, #c9412a, #e8553a);
+}
+
+.clay-btn-secondary {
+  background: #ffffff;
+  color: #3d2c1e;
+  border: 2px solid #f0dcc8;
+}
+
+.clay-btn-secondary:hover {
+  border-color: #e8553a;
+  color: #e8553a;
+}
+
+/* Blob decorative shapes */
+.blob {
+  border-radius: 42% 56% 72% 28% / 42% 42% 56% 48%;
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Pill badges */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow:
+    3px 3px 6px rgba(166, 140, 116, 0.12),
+    -2px -2px 4px rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Animations ===== */
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
