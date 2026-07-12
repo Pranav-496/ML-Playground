@@ -19,7 +19,12 @@ export default function TheorySection({ title, sections }: TheorySectionProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between"
       >
-        <h3 className="text-lg font-extrabold text-text-primary">{title}</h3>
+        <h3
+          className="text-lg font-bold text-text-primary"
+          style={{ fontFamily: '"Cinzel", serif' }}
+        >
+          {title}
+        </h3>
         {isOpen ? (
           <ChevronUp className="h-5 w-5 text-text-muted" />
         ) : (
@@ -31,7 +36,7 @@ export default function TheorySection({ title, sections }: TheorySectionProps) {
         <div className="mt-5 space-y-5 animate-fade-in">
           {sections.map((section, i) => (
             <div key={i}>
-              <h4 className="text-sm font-extrabold text-primary mb-2 flex items-center gap-2">
+              <h4 className="text-sm font-bold text-primary mb-2 flex items-center gap-2">
                 {section.emoji && <span>{section.emoji}</span>}
                 {section.heading}
               </h4>

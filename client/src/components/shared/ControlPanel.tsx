@@ -23,8 +23,11 @@ export default function ControlPanel({
   return (
     <div className="clay p-6 space-y-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-extrabold text-text-primary">
-          ⚙️ Hyperparameters
+        <h3
+          className="text-lg font-bold text-text-primary"
+          style={{ fontFamily: '"Cinzel", serif' }}
+        >
+          Parameters
         </h3>
       </div>
 
@@ -34,23 +37,20 @@ export default function ControlPanel({
             {/* Label row */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <label className="text-sm font-bold text-text-primary">
+                <label className="text-sm font-semibold text-text-primary">
                   {param.label}
                 </label>
                 <button
                   onClick={() =>
                     setShowInfo(showInfo === param.key ? null : param.key)
                   }
-                  className="p-0.5 rounded-full hover:bg-surface-warm transition-colors"
+                  className="p-0.5 rounded-full hover:bg-surface-hover transition-colors"
                 >
                   <Info className="h-3.5 w-3.5 text-text-muted" />
                 </button>
               </div>
               {param.type === "slider" && (
-                <span
-                  className="text-sm font-extrabold px-3 py-1 rounded-full clay-sm"
-                  style={{ color: "#e8553a" }}
-                >
+                <span className="text-sm font-bold px-3 py-1 rounded-full clay-sm text-primary">
                   {values[param.key]}
                 </span>
               )}
@@ -74,25 +74,13 @@ export default function ControlPanel({
                 onChange={(e) =>
                   onChange(param.key, parseFloat(e.target.value))
                 }
-                className={cn(
-                  "w-full h-2 rounded-full appearance-none cursor-pointer",
-                  "bg-surface-border",
-                  "[&::-webkit-slider-thumb]:appearance-none",
-                  "[&::-webkit-slider-thumb]:w-5",
-                  "[&::-webkit-slider-thumb]:h-5",
-                  "[&::-webkit-slider-thumb]:rounded-full",
-                  "[&::-webkit-slider-thumb]:bg-primary",
-                  "[&::-webkit-slider-thumb]:shadow-[2px_2px_4px_rgba(166,140,116,0.3),-1px_-1px_3px_rgba(255,255,255,0.8)]",
-                  "[&::-webkit-slider-thumb]:cursor-pointer",
-                  "[&::-webkit-slider-thumb]:transition-all",
-                  "[&::-webkit-slider-thumb]:hover:scale-110"
-                )}
+                className="w-full"
               />
             ) : (
               <select
                 value={values[param.key] as string}
                 onChange={(e) => onChange(param.key, e.target.value)}
-                className="w-full p-2.5 rounded-xl clay-sm text-sm font-bold text-text-primary bg-surface-card border-none outline-none cursor-pointer"
+                className="w-full p-2.5 rounded-xl clay-sm text-sm font-semibold text-text-primary bg-surface-card border-none outline-none cursor-pointer"
               >
                 {param.options.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -120,7 +108,7 @@ export default function ControlPanel({
             Training...
           </>
         ) : (
-          <>🚀 Train Model</>
+          <>⚔ Train Model</>
         )}
       </button>
     </div>

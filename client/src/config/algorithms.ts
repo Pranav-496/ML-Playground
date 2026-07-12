@@ -9,7 +9,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Find the best-fit straight line through data points using ordinary least squares.",
     icon: "TrendingUp",
-    color: "#e8553a",
+    color: "#DC2626",
     endpoint: "/regression/linear",
   },
   {
@@ -20,7 +20,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Fit a polynomial curve to data for modeling non-linear relationships.",
     icon: "Spline",
-    color: "#d94e7a",
+    color: "#E04040",
     endpoint: "/regression/polynomial",
   },
   {
@@ -31,7 +31,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Linear regression with L2 regularization to prevent overfitting.",
     icon: "Shield",
-    color: "#c94430",
+    color: "#B91C1C",
     endpoint: "/regression/ridge",
   },
   {
@@ -42,7 +42,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Linear regression with L1 regularization for feature selection.",
     icon: "Target",
-    color: "#b83c2b",
+    color: "#991B1B",
     endpoint: "/regression/lasso",
   },
   {
@@ -53,7 +53,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Combines L1 and L2 regularization for the best of both worlds.",
     icon: "Network",
-    color: "#e06040",
+    color: "#CC3333",
     endpoint: "/regression/elastic-net",
   },
   {
@@ -64,7 +64,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Classify data into categories using the sigmoid function and log-odds.",
     icon: "GitBranch",
-    color: "#f5a623",
+    color: "#FF5A1F",
     endpoint: "/classification/logistic",
   },
   {
@@ -75,7 +75,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Classify data points based on the majority class of their nearest neighbors.",
     icon: "Users",
-    color: "#e8962e",
+    color: "#FF7A45",
     endpoint: "/classification/knn",
   },
   {
@@ -86,7 +86,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Build a tree of decisions to classify or predict outcomes.",
     icon: "GitFork",
-    color: "#d18e1a",
+    color: "#E06020",
     endpoint: "/classification/decision-tree",
   },
   {
@@ -97,7 +97,7 @@ export const algorithms: AlgorithmConfig[] = [
     description:
       "Partition data into k clusters by minimizing within-cluster variance.",
     icon: "Layers",
-    color: "#4caf7d",
+    color: "#F59E0B",
     endpoint: "/clustering/kmeans",
   },
 ];
@@ -109,13 +109,13 @@ export const categoryLabels: Record<string, string> = {
 };
 
 export const categoryColors: Record<string, string> = {
-  regression: "text-[#e8553a]",
-  classification: "text-[#f5a623]",
-  clustering: "text-[#4caf7d]",
+  regression: "text-[#DC2626]",
+  classification: "text-[#FF5A1F]",
+  clustering: "text-[#F59E0B]",
 };
 
 export const categoryBgColors: Record<string, string> = {
-  regression: "bg-[#e8553a]/10 border-[#e8553a]/20",
-  classification: "bg-[#f5a623]/10 border-[#f5a623]/20",
-  clustering: "bg-[#4caf7d]/10 border-[#4caf7d]/20",
+  regression: "bg-[#DC2626]/10 border-[#DC2626]/20",
+  classification: "bg-[#FF5A1F]/10 border-[#FF5A1F]/20",
+  clustering: "bg-[#F59E0B]/10 border-[#F59E0B]/20",
 };

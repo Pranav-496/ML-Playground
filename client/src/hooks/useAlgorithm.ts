@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import api from "@/lib/api";
 
-interface UseAlgorithmOptions<TRequest, TResponse> {
+interface UseAlgorithmOptions<TRequest> {
   endpoint: string;
   defaultParams: TRequest;
 }
@@ -21,10 +21,7 @@ export function useAlgorithm<
 >({
   endpoint,
   defaultParams,
-}: UseAlgorithmOptions<TRequest, TResponse>): UseAlgorithmReturn<
-  TRequest,
-  TResponse
-> {
+}: UseAlgorithmOptions<TRequest>): UseAlgorithmReturn<TRequest, TResponse> {
   const [params, setParams] = useState<TRequest>(defaultParams);
   const [result, setResult] = useState<TResponse | null>(null);
   const [loading, setLoading] = useState(false);

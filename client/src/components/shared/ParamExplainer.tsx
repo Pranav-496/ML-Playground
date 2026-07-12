@@ -10,15 +10,18 @@ interface ParamExplainerProps {
 export default function ParamExplainer({ params }: ParamExplainerProps) {
   return (
     <div className="clay p-6">
-      <h3 className="text-lg font-extrabold text-text-primary mb-5">
-        🔍 What Each Parameter Does
+      <h3
+        className="text-lg font-bold text-text-primary mb-5"
+        style={{ fontFamily: '"Cinzel", serif' }}
+      >
+        Parameter Codex
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {params.map((param) => (
           <div key={param.name} className="clay-pressed p-4 space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-lg">{param.emoji}</span>
-              <h4 className="text-sm font-extrabold text-text-primary">
+              <h4 className="text-sm font-bold text-text-primary">
                 {param.name}
               </h4>
             </div>
@@ -26,7 +29,7 @@ export default function ParamExplainer({ params }: ParamExplainerProps) {
               {param.description}
             </p>
             <p className="text-xs font-bold text-accent">
-              💡 Impact: {param.impact}
+              ⚡ Impact: {param.impact}
             </p>
           </div>
         ))}

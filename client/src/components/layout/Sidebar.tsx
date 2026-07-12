@@ -33,8 +33,11 @@ export default function Sidebar() {
   return (
     <aside className="w-64 shrink-0 hidden lg:block">
       <div className="sticky top-20 space-y-3 pr-4">
-        <h3 className="text-xs font-extrabold uppercase tracking-widest text-text-muted mb-4 px-3">
-          Algorithms
+        <h3
+          className="text-xs font-bold uppercase tracking-[0.2em] text-text-muted mb-4 px-3"
+          style={{ fontFamily: '"Cinzel", serif' }}
+        >
+          Disciplines
         </h3>
 
         {categories.map((cat) => {
@@ -46,8 +49,8 @@ export default function Sidebar() {
               <button
                 onClick={() => toggleCategory(cat)}
                 className={cn(
-                  "w-full flex items-center justify-between px-2 py-1.5 rounded-xl text-sm font-bold transition-all",
-                  "hover:bg-surface-warm",
+                  "w-full flex items-center justify-between px-2 py-1.5 rounded-xl text-sm font-semibold transition-all",
+                  "hover:bg-surface-hover",
                   categoryColors[cat]
                 )}
               >
@@ -78,7 +81,7 @@ export default function Sidebar() {
                           "block px-3 py-1.5 rounded-xl text-sm transition-all duration-200",
                           isActive
                             ? "clay-pressed font-bold text-primary"
-                            : "text-text-secondary hover:text-text-primary hover:bg-surface-warm font-medium"
+                            : "text-text-secondary hover:text-text-primary hover:bg-surface-hover font-medium"
                         )}
                       >
                         {algo.name}

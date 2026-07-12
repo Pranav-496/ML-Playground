@@ -8,6 +8,7 @@ import {
   TheorySection,
   ParamExplainer,
 } from "@/components/shared";
+import GradientDescentSection from "./GradientDescentSection";
 import type { HyperParam } from "@/types";
 
 /* ----- Request / Response types ----- */
@@ -164,25 +165,27 @@ const paramExplainerData = [
 
 const plotLayout = {
   paper_bgcolor: "rgba(0,0,0,0)",
-  plot_bgcolor: "rgba(253,246,238,0.5)",
+  plot_bgcolor: "rgba(28,28,33,0.5)",
   font: {
-    family: "Nunito, sans-serif",
-    color: "#3d2c1e",
+    family: "Inter, sans-serif",
+    color: "#A1A1AA",
   },
   margin: { t: 40, r: 20, b: 50, l: 60 },
   xaxis: {
-    gridcolor: "rgba(240,220,200,0.5)",
-    title: { text: "X", font: { size: 13, color: "#7a6555" } },
+    gridcolor: "rgba(46,46,56,0.6)",
+    title: { text: "X", font: { size: 13, color: "#71717A" } },
+    zerolinecolor: "rgba(46,46,56,0.8)",
   },
   yaxis: {
-    gridcolor: "rgba(240,220,200,0.5)",
-    title: { text: "y", font: { size: 13, color: "#7a6555" } },
+    gridcolor: "rgba(46,46,56,0.6)",
+    title: { text: "y", font: { size: 13, color: "#71717A" } },
+    zerolinecolor: "rgba(46,46,56,0.8)",
   },
   legend: {
-    bgcolor: "rgba(255,255,255,0.8)",
-    bordercolor: "rgba(240,220,200,0.5)",
+    bgcolor: "rgba(28,28,33,0.9)",
+    bordercolor: "rgba(46,46,56,0.5)",
     borderwidth: 1,
-    font: { size: 12 },
+    font: { size: 12, color: "#A1A1AA" },
   },
 };
 
@@ -214,7 +217,7 @@ export default function LinearRegressionPage() {
       <TheorySection title="📚 Theory & Intuition" sections={theoryContent} />
 
       {/* Controls + Visualization side-by-side */}
-      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,1fr)_2fr] gap-8">
         {/* Controls */}
         <div className="space-y-4">
           <ControlPanel
@@ -259,10 +262,10 @@ export default function LinearRegressionPage() {
                       type: "scatter",
                       name: "Train Data",
                       marker: {
-                        color: "#e8553a",
+                        color: "#DC2626",
                         size: 8,
                         opacity: 0.7,
-                        line: { width: 1, color: "white" },
+                        line: { width: 1, color: "rgba(0,0,0,0.3)" },
                       },
                     },
                     {
@@ -272,11 +275,11 @@ export default function LinearRegressionPage() {
                       type: "scatter",
                       name: "Test Data",
                       marker: {
-                        color: "#f5a623",
+                        color: "#FF5A1F",
                         size: 9,
                         symbol: "diamond",
                         opacity: 0.8,
-                        line: { width: 1, color: "white" },
+                        line: { width: 1, color: "rgba(0,0,0,0.3)" },
                       },
                     },
                     {
@@ -286,7 +289,7 @@ export default function LinearRegressionPage() {
                       type: "scatter",
                       name: "Regression Line",
                       line: {
-                        color: "#4caf7d",
+                        color: "#F59E0B",
                         width: 3,
                         dash: undefined,
                       },
@@ -296,7 +299,7 @@ export default function LinearRegressionPage() {
                     ...plotLayout,
                     title: {
                       text: "Linear Regression Fit",
-                      font: { size: 16, color: "#3d2c1e", family: "Nunito, sans-serif" },
+                      font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
                     },
                     autosize: true,
                   }}
@@ -317,7 +320,7 @@ export default function LinearRegressionPage() {
                       type: "scatter",
                       name: "Train Residuals",
                       marker: {
-                        color: "#e8553a",
+                        color: "#DC2626",
                         size: 7,
                         opacity: 0.7,
                       },
@@ -329,7 +332,7 @@ export default function LinearRegressionPage() {
                       type: "scatter",
                       name: "Test Residuals",
                       marker: {
-                        color: "#f5a623",
+                        color: "#FF5A1F",
                         size: 8,
                         symbol: "diamond",
                         opacity: 0.8,
@@ -350,7 +353,7 @@ export default function LinearRegressionPage() {
                       mode: "lines",
                       type: "scatter",
                       name: "Zero Line",
-                      line: { color: "#a89585", width: 1.5, dash: "dash" },
+                      line: { color: "#71717A", width: 1.5, dash: "dash" },
                       showlegend: false,
                     },
                   ]}
@@ -358,13 +361,13 @@ export default function LinearRegressionPage() {
                     ...plotLayout,
                     title: {
                       text: "Residuals Plot",
-                      font: { size: 16, color: "#3d2c1e", family: "Nunito, sans-serif" },
+                      font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
                     },
                     yaxis: {
                       ...plotLayout.yaxis,
                       title: {
                         text: "Residual (y - ŷ)",
-                        font: { size: 13, color: "#7a6555" },
+                        font: { size: 13, color: "#71717A" },
                       },
                     },
                     autosize: true,
@@ -407,28 +410,28 @@ export default function LinearRegressionPage() {
               label="R² Score"
               value={result.metrics.r2_score}
               icon={<Percent className="h-5 w-5" />}
-              color="#4caf7d"
+              color="#F59E0B"
               description="How much variance is explained by the model (1.0 = perfect)"
             />
             <MetricCard
               label="MSE"
               value={result.metrics.mse}
               icon={<Target className="h-5 w-5" />}
-              color="#e8553a"
+              color="#DC2626"
               description="Mean Squared Error — average of squared differences"
             />
             <MetricCard
               label="RMSE"
               value={result.metrics.rmse}
               icon={<BarChart3 className="h-5 w-5" />}
-              color="#f5a623"
+              color="#FF5A1F"
               description="Root MSE — in the same units as y"
             />
             <MetricCard
               label="MAE"
               value={result.metrics.mae}
               icon={<TrendingUp className="h-5 w-5" />}
-              color="#2eaaaa"
+              color="#22C55E"
               description="Mean Absolute Error — average absolute difference"
             />
           </div>
@@ -437,6 +440,18 @@ export default function LinearRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* ===== Divider ===== */}
+      <div className="flex items-center gap-4 my-4">
+        <div className="h-px flex-1 bg-surface-border" />
+        <span className="text-text-muted font-extrabold text-sm px-4 py-2 clay-sm">
+          ⬇️ Part 2: Gradient Descent Approach
+        </span>
+        <div className="h-px flex-1 bg-surface-border" />
+      </div>
+
+      {/* ===== Gradient Descent Section ===== */}
+      <GradientDescentSection />
     </div>
   );
 }

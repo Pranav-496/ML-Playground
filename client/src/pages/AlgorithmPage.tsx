@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { Brain, Construction, ArrowLeft } from "lucide-react";
+import { Sword, Construction, ArrowLeft } from "lucide-react";
 import { algorithms } from "@/config/algorithms";
 import { cn } from "@/lib/utils";
 import { categoryBgColors, categoryColors, categoryLabels } from "@/config/algorithms";
@@ -20,16 +20,19 @@ export default function AlgorithmPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 animate-bounce-in">
         <div className="clay-lg p-10 text-center">
-          <span className="text-5xl mb-4 block">🔍</span>
-          <h2 className="text-2xl font-black text-text-primary mb-2">
-            Algorithm Not Found
+          <Sword className="h-12 w-12 text-primary mx-auto mb-4 opacity-50" />
+          <h2
+            className="text-2xl font-bold text-text-primary mb-2"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            Discipline Not Found
           </h2>
           <p className="text-text-secondary font-medium mb-6">
-            The algorithm you're looking for doesn't exist yet.
+            This discipline has not yet been forged.
           </p>
           <Link to="/algorithms" className="clay-btn clay-btn-primary">
             <ArrowLeft className="h-4 w-4" />
-            Browse Algorithms
+            Browse Disciplines
           </Link>
         </div>
       </div>
@@ -43,10 +46,10 @@ export default function AlgorithmPage() {
       {/* Breadcrumb */}
       <Link
         to="/algorithms"
-        className="inline-flex items-center gap-2 text-sm font-bold text-text-muted hover:text-primary transition-colors mb-6"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-text-muted hover:text-primary transition-colors mb-6"
       >
         <ArrowLeft className="h-4 w-4" />
-        All Algorithms
+        All Disciplines
       </Link>
 
       {/* Header */}
@@ -55,21 +58,23 @@ export default function AlgorithmPage() {
           <div
             className="p-4 rounded-2xl shrink-0"
             style={{
-              backgroundColor: `${algorithm.color}15`,
-              boxShadow:
-                "3px 3px 8px rgba(166,140,116,0.15), -2px -2px 6px rgba(255,255,255,0.6)",
+              backgroundColor: `${algorithm.color}12`,
+              boxShadow: `3px 3px 10px rgba(0,0,0,0.4), -2px -2px 6px rgba(50,50,60,0.1), 0 0 15px ${algorithm.color}15`,
             }}
           >
-            <Brain className="h-8 w-8" style={{ color: algorithm.color }} />
+            <Sword className="h-8 w-8" style={{ color: algorithm.color }} />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="text-3xl sm:text-4xl font-black text-text-primary">
+              <h1
+                className="text-3xl sm:text-4xl font-bold text-text-primary"
+                style={{ fontFamily: '"Cinzel", serif' }}
+              >
                 {algorithm.name}
               </h1>
               <span
                 className={cn(
-                  "pill border text-xs font-extrabold",
+                  "pill border text-xs font-bold",
                   categoryBgColors[algorithm.category],
                   categoryColors[algorithm.category]
                 )}
@@ -89,17 +94,19 @@ export default function AlgorithmPage() {
         <PageComponent />
       ) : (
         <div className="clay-lg p-14 text-center">
-          <div className="inline-block p-5 rounded-3xl bg-[#f5a623]/10 mb-6 animate-float">
+          <div className="inline-block p-5 rounded-3xl bg-accent/10 mb-6 animate-float">
             <Construction className="h-10 w-10 text-accent" />
           </div>
-          <h3 className="text-2xl font-black text-text-primary mb-3">
-            Building Something Cool{" "}
-            <span className="animate-wiggle inline-block">🔧</span>
+          <h3
+            className="text-2xl font-bold text-text-primary mb-3"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            Being Forged
           </h3>
           <p className="text-text-secondary text-center max-w-md mx-auto font-medium leading-relaxed">
             The interactive demo for <strong>{algorithm.name}</strong> is being
-            built. Soon you'll see live visualizations, tunable hyperparameters,
-            and deep educational content.
+            forged. Soon you'll wield live visualizations, tunable hyperparameters,
+            and deep knowledge.
           </p>
         </div>
       )}

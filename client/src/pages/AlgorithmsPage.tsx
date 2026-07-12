@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Brain } from "lucide-react";
+import { Sword } from "lucide-react";
 import {
   algorithms,
   categoryLabels,
@@ -8,12 +8,6 @@ import {
 } from "@/config/algorithms";
 import { cn } from "@/lib/utils";
 import type { AlgorithmCategory } from "@/types";
-
-const categoryEmojis: Record<AlgorithmCategory, string> = {
-  regression: "📈",
-  classification: "🔀",
-  clustering: "🧩",
-};
 
 export default function AlgorithmsPage() {
   const categories: AlgorithmCategory[] = [
@@ -25,13 +19,14 @@ export default function AlgorithmsPage() {
   return (
     <div className="max-w-5xl mx-auto animate-fade-in">
       <div className="mb-12">
-        <h1 className="text-4xl sm:text-5xl font-black mb-3">
-          <span className="gradient-text">All Algorithms</span>
-          <span className="inline-block ml-3 animate-wiggle">🧠</span>
+        <h1
+          className="text-4xl sm:text-5xl font-bold mb-3"
+          style={{ fontFamily: '"Cinzel", serif' }}
+        >
+          <span className="gradient-text">All Disciplines</span>
         </h1>
         <p className="text-text-secondary text-lg font-medium">
-          Pick an algorithm, tune its knobs, and watch it learn. Every one
-          includes theory, interactive controls, and live visualizations.
+          Choose your weapon. Tune its parameters. Master its power.
         </p>
       </div>
 
@@ -45,17 +40,16 @@ export default function AlgorithmsPage() {
             style={{ animationDelay: `${catIndex * 150}ms` }}
           >
             <div className="flex items-center gap-3 mb-7">
-              <span className="text-2xl">{categoryEmojis[cat]}</span>
               <span
                 className={cn(
-                  "pill border font-extrabold text-sm",
+                  "pill border font-bold text-sm",
                   categoryBgColors[cat],
                   categoryColors[cat]
                 )}
               >
                 {categoryLabels[cat]}
               </span>
-              <div className="h-px flex-1 bg-surface-border" />
+              <div className="h-px flex-1 bg-surface-border/50" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -68,14 +62,17 @@ export default function AlgorithmsPage() {
                 >
                   <div
                     className="p-3.5 rounded-2xl w-fit mb-5 transition-transform duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: `${algo.color}15` }}
+                    style={{ backgroundColor: `${algo.color}12` }}
                   >
-                    <Brain
+                    <Sword
                       className="h-6 w-6"
                       style={{ color: algo.color }}
                     />
                   </div>
-                  <h3 className="text-lg font-extrabold text-text-primary mb-2 group-hover:gradient-text-warm transition-all">
+                  <h3
+                    className="text-lg font-bold text-text-primary mb-2 group-hover:text-primary transition-colors"
+                    style={{ fontFamily: '"Cinzel", serif' }}
+                  >
                     {algo.name}
                   </h3>
                   <p className="text-sm text-text-secondary leading-relaxed font-medium">

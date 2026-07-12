@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import {
-  Brain,
+  Sword,
   Sparkles,
   TrendingUp,
   GitBranch,
@@ -9,35 +9,31 @@ import {
   Zap,
   BarChart3,
   BookOpen,
-  Play,
+  ChevronRight,
 } from "lucide-react";
 import { algorithms } from "@/config/algorithms";
-import { cn } from "@/lib/utils";
 
 const features = [
   {
     icon: <Zap className="h-6 w-6" />,
-    title: "Tweak & Learn",
+    title: "Forge & Refine",
     description:
       "Drag sliders, change hyperparameters, and watch models reshape in real time.",
-    color: "#e8553a",
-    bg: "bg-[#e8553a]/10",
+    color: "#DC2626",
   },
   {
     icon: <BarChart3 className="h-6 w-6" />,
-    title: "See It Click",
+    title: "Visualise Mastery",
     description:
       "Interactive Plotly charts that make decision boundaries and regressions tangible.",
-    color: "#f5a623",
-    bg: "bg-[#f5a623]/10",
+    color: "#FF5A1F",
   },
   {
     icon: <BookOpen className="h-6 w-6" />,
-    title: "Get the Why",
+    title: "Ancient Knowledge",
     description:
       "Every algorithm comes with theory, math, and intuition — not just code.",
-    color: "#4caf7d",
-    bg: "bg-[#4caf7d]/10",
+    color: "#F59E0B",
   },
 ];
 
@@ -46,22 +42,19 @@ const categoryStats = [
     icon: <TrendingUp className="h-6 w-6" />,
     label: "Regression",
     count: algorithms.filter((a) => a.category === "regression").length,
-    color: "#e8553a",
-    emoji: "📈",
+    color: "#DC2626",
   },
   {
     icon: <GitBranch className="h-6 w-6" />,
     label: "Classification",
     count: algorithms.filter((a) => a.category === "classification").length,
-    color: "#f5a623",
-    emoji: "🔀",
+    color: "#FF5A1F",
   },
   {
     icon: <Layers className="h-6 w-6" />,
     label: "Clustering",
     count: algorithms.filter((a) => a.category === "clustering").length,
-    color: "#4caf7d",
-    emoji: "🧩",
+    color: "#F59E0B",
   },
 ];
 
@@ -69,37 +62,39 @@ export default function HomePage() {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-16 sm:py-24">
-        {/* Decorative blobs */}
-        <div className="blob w-72 h-72 bg-primary/8 -top-20 -right-20 animate-float" />
+      <section className="relative overflow-hidden py-08 sm:py-14">
+        {/* Subtle ember particles */}
+        <div className="blob w-80 h-80 bg-primary/5 -top-24 -right-24 animate-ember-pulse" />
         <div
-          className="blob w-56 h-56 bg-accent/8 -bottom-10 -left-10 animate-float"
+          className="blob w-64 h-64 bg-accent/5 -bottom-16 -left-16 animate-ember-pulse"
           style={{ animationDelay: "2s" }}
         />
         <div
-          className="blob w-40 h-40 bg-green/8 top-1/2 right-1/4 animate-float"
+          className="blob w-48 h-48 bg-gold/4 top-1/2 right-1/4 animate-ember-pulse"
           style={{ animationDelay: "4s" }}
         />
 
         <div className="relative max-w-4xl mx-auto text-center px-4">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 pill bg-surface-card text-primary mb-8 animate-bounce-in">
-            <Sparkles className="h-4 w-4" />
-            <span>Interactive ML — Learn by Doing</span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-            <span className="text-text-primary">Machine Learning</span>
-            <br />
-            <span className="gradient-text">Made Playful</span>
-            <span className="inline-block ml-3 animate-wiggle">🧪</span>
+          {/* Logo */}
+          <h1
+            className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-[0.12em] mb-6 leading-[1.05]"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            <span className="gradient-text">VALORIS</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-            Stop reading about ML — start <em>playing</em> with it. Tune
-            hyperparameters, watch models learn, and build real intuition
-            through interactive visualizations.
+          {/* Tagline */}
+          <p
+            className="text-2xl sm:text-3xl font-semibold text-text-secondary mb-4 tracking-wide"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            Forge Intelligence.
+          </p>
+
+          <p className="text-base sm:text-lg text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
+            Master Machine Learning through interactive visual exploration.
+            Tune hyperparameters, watch models learn, and build real intuition
+            in an elite academy.
           </p>
 
           {/* CTA Buttons */}
@@ -108,15 +103,16 @@ export default function HomePage() {
               to="/algorithms"
               className="clay-btn clay-btn-primary text-base"
             >
-              <Play className="h-5 w-5" />
-              Start Exploring
+              <Sword className="h-5 w-5" />
+              Enter Valoris
               <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
-              to="/algorithms/linear-regression"
+              to="/algorithms"
               className="clay-btn clay-btn-secondary text-base"
             >
-              Try Linear Regression
+              Explore Algorithms
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -132,15 +128,20 @@ export default function HomePage() {
               style={{ animationDelay: `${i * 100}ms` }}
             >
               <div className="flex items-center gap-4">
-                <span className="text-3xl">{stat.emoji}</span>
+                <div
+                  className="p-3 rounded-2xl"
+                  style={{ backgroundColor: `${stat.color}15` }}
+                >
+                  <div style={{ color: stat.color }}>{stat.icon}</div>
+                </div>
                 <div>
                   <p
-                    className="text-3xl font-black"
-                    style={{ color: stat.color }}
+                    className="text-3xl font-bold"
+                    style={{ color: stat.color, fontFamily: '"Cinzel", serif' }}
                   >
                     {stat.count}
                   </p>
-                  <p className="text-sm text-text-muted font-bold">
+                  <p className="text-sm text-text-muted font-semibold">
                     {stat.label}
                   </p>
                 </div>
@@ -153,12 +154,14 @@ export default function HomePage() {
       {/* Features */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-text-primary mb-4">
-            Why You'll Love This <span className="gradient-text-warm">Playground</span>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            The Path to <span className="gradient-text-warm">Mastery</span>
           </h2>
-          <p className="text-text-secondary max-w-xl mx-auto font-medium">
-            The fastest way to build intuition for machine learning algorithms.
-            No textbooks needed.
+          <p className="text-text-muted max-w-xl mx-auto font-medium">
+            Every warrior needs weapons. Every master needs tools.
           </p>
         </div>
 
@@ -170,11 +173,15 @@ export default function HomePage() {
               style={{ animationDelay: `${i * 120}ms` }}
             >
               <div
-                className={cn("p-3.5 rounded-2xl w-fit mb-5", feature.bg)}
+                className="p-3.5 rounded-2xl w-fit mb-5"
+                style={{ backgroundColor: `${feature.color}12` }}
               >
                 <div style={{ color: feature.color }}>{feature.icon}</div>
               </div>
-              <h3 className="text-xl font-extrabold text-text-primary mb-2">
+              <h3
+                className="text-xl font-bold text-text-primary mb-2"
+                style={{ fontFamily: '"Cinzel", serif' }}
+              >
                 {feature.title}
               </h3>
               <p className="text-sm text-text-secondary leading-relaxed font-medium">
@@ -188,12 +195,14 @@ export default function HomePage() {
       {/* Algorithm Grid */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-text-primary mb-4">
-            {algorithms.length} Algorithms
-            <span className="inline-block ml-2 animate-wiggle">🎯</span>
+          <h2
+            className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
+            style={{ fontFamily: '"Cinzel", serif' }}
+          >
+            {algorithms.length} <span className="gradient-text-gold">Disciplines</span>
           </h2>
-          <p className="text-text-secondary max-w-xl mx-auto font-medium">
-            From linear regression to clustering — every foundation you need.
+          <p className="text-text-muted max-w-xl mx-auto font-medium">
+            From regression to clustering — every weapon in your arsenal.
           </p>
         </div>
 
@@ -208,15 +217,15 @@ export default function HomePage() {
               <div className="flex items-start gap-3">
                 <div
                   className="p-2.5 rounded-2xl shrink-0"
-                  style={{ backgroundColor: `${algo.color}18` }}
+                  style={{ backgroundColor: `${algo.color}12` }}
                 >
-                  <Brain
+                  <Sword
                     className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
                     style={{ color: algo.color }}
                   />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-text-primary group-hover:gradient-text-warm transition-all">
+                  <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors">
                     {algo.name}
                   </h3>
                   <p className="text-xs text-text-muted mt-1.5 line-clamp-2 font-medium leading-relaxed">
