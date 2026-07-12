@@ -178,6 +178,32 @@
     inset -4px -4px 10px rgba(50, 50, 60, 0.08);
 }
 
+/* Sword metallic shine effect for logo */
+.logo-shine {
+  background: linear-gradient(
+    -75deg, 
+    #7F1D1D 0%, 
+    #B91C1C 40%, 
+    #ffcaca 50%, 
+    #B91C1C 60%, 
+    #7F1D1D 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: sword-shine 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes sword-shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
 /* Gradient text — Darker, richer crimson */
 .gradient-text {
   background: linear-gradient(135deg, #7F1D1D 0%, #B91C1C 50%, #DC2626 100%);

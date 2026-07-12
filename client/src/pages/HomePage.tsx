@@ -63,24 +63,13 @@ export default function HomePage() {
     <div className="animate-fade-in">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-08 sm:py-14">
-        {/* Subtle ember particles */}
-        <div className="blob w-80 h-80 bg-primary/5 -top-24 -right-24 animate-ember-pulse" />
-        <div
-          className="blob w-64 h-64 bg-accent/5 -bottom-16 -left-16 animate-ember-pulse"
-          style={{ animationDelay: "2s" }}
-        />
-        <div
-          className="blob w-48 h-48 bg-gold/4 top-1/2 right-1/4 animate-ember-pulse"
-          style={{ animationDelay: "4s" }}
-        />
-
         <div className="relative max-w-4xl mx-auto text-center px-4">
           {/* Logo */}
           <h1
             className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-[0.12em] mb-6 leading-[1.05]"
             style={{ fontFamily: '"Cinzel", serif' }}
           >
-            <span className="gradient-text">VALORIS</span>
+            <span className="logo-shine">VALORIS</span>
           </h1>
 
           {/* Tagline */}
