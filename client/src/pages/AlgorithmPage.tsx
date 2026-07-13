@@ -6,10 +6,12 @@ import { categoryBgColors, categoryColors, categoryLabels } from "@/config/algor
 
 // Algorithm page components
 import LinearRegressionPage from "@/components/algorithms/LinearRegression/LinearRegressionPage";
+import PolynomialRegressionPage from "@/components/algorithms/PolynomialRegression/PolynomialRegressionPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
   "linear-regression": LinearRegressionPage,
+  "polynomial-regression": PolynomialRegressionPage,
 };
 
 export default function AlgorithmPage() {

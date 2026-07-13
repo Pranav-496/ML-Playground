@@ -5,7 +5,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
-from app.utils.data_generation import generate_regression_data
+from sklearn.preprocessing import PolynomialFeatures
+
+from app.utils.data_generation import generate_regression_data, generate_polynomial_data
 
 
 def _gradient_descent(
@@ -269,6 +271,115 @@ def train_linear_regression(
         "intercept": float(model.intercept_) if fit_intercept else 0.0,
         "model_params": {
             "fit_intercept": fit_intercept,
+            "n_samples": n_samples,
+            "noise": noise,
+            "test_size": test_size,
+        },
+    }
+
+
+def train_polynomial_regression(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    degree: int = 2,
+    fit_intercept: bool = True,
+) -> dict:
+    """Train a polynomial regression model on synthetic non-linear data.
+
+    Args:
+        n_samples: Number of data points.
+        noise: Noise level in the data.
+        test_size: Fraction of data for testing.
+        random_state: Random seed.
+        degree: Degree of the polynomial features.
+        fit_intercept: Whether to fit the intercept.
+
+    Returns:
+        Dictionary with metrics, plot data, equation, and model parameters.
+    """
+    # Generate non-linear data
+    X, y = generate_polynomial_data(
+        n_samples=n_samples,
+        noise=noise,
+        random_state=random_state,
+        x_range=(-5, 5),
+    )
+
+    # Transform features to polynomial features
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly.fit_transform(X)
+
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_poly, y, test_size=test_size, random_state=random_state
+    )
+
+    # Train
+    model = LinearRegression(fit_intercept=fit_intercept)
+    model.fit(X_train, y_train)
+
+    # Predict
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Regression line for plotting
+    x_line = np.linspace(X.min(), X.max(), 200).reshape(-1, 1)
+    x_line_poly = poly.transform(x_line)
+    y_line = model.predict(x_line_poly)
+
+    # Metrics
+    r2 = r2_score(y_test, y_test_pred)
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = float(np.sqrt(mse))
+    mae = mean_absolute_error(y_test, y_test_pred)
+
+    # Residuals
+    residuals_train = (y_train - y_train_pred).tolist()
+    residuals_test = (y_test - y_test_pred).tolist()
+
+    # Equation
+    coefs = model.coef_
+    intercept = model.intercept_ if fit_intercept else 0.0
+    
+    # Format polynomial equation
+    equation = f"y = {intercept:.2f}"
+    for i, coef in enumerate(coefs):
+        power = i + 1
+        sign = "+" if coef >= 0 else "-"
+        equation += f" {sign} {abs(coef):.2f}x^{power}"
+
+    # We need the original X for plotting, so we extract it from the first column of X_poly
+    # since include_bias=False, X_poly[:, 0] is exactly X.
+    X_train_orig = X_train[:, 0]
+    X_test_orig = X_test[:, 0]
+
+    return {
+        "metrics": {
+            "r2_score": round(r2, 6),
+            "mse": round(mse, 6),
+            "rmse": round(rmse, 6),
+            "mae": round(mae, 6),
+        },
+        "plot_data": {
+            "x_train": X_train_orig.tolist(),
+            "y_train": y_train.tolist(),
+            "x_test": X_test_orig.tolist(),
+            "y_test": y_test.tolist(),
+            "x_line": x_line.ravel().tolist(),
+            "y_line": y_line.tolist(),
+            "y_train_pred": y_train_pred.tolist(),
+            "y_test_pred": y_test_pred.tolist(),
+            "residuals_train": residuals_train,
+            "residuals_test": residuals_test,
+        },
+        "equation": equation,
+        "coefficients": coefs.tolist(),
+        "intercept": float(intercept),
+        "model_params": {
+            "fit_intercept": fit_intercept,
+            "degree": degree,
             "n_samples": n_samples,
             "noise": noise,
             "test_size": test_size,
