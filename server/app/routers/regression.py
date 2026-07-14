@@ -5,7 +5,8 @@ from typing import Optional
 from app.services.regression import (
     train_linear_regression, 
     train_linear_regression_gd,
-    train_polynomial_regression
+    train_polynomial_regression,
+    train_ridge_regression
 )
 
 router = APIRouter()
@@ -27,6 +28,17 @@ class PolynomialRegressionRequest(BaseModel):
     test_size: float = 0.2
     random_state: int = 42
     degree: int = 2
+    fit_intercept: bool = True
+
+
+class RidgeRegressionRequest(BaseModel):
+    """Request body for ridge regression training."""
+    n_samples: int = 100
+    noise: float = 10.0
+    test_size: float = 0.2
+    random_state: int = 42
+    degree: int = 15
+    alpha: float = 1.0
     fit_intercept: bool = True
 
 
@@ -78,6 +90,21 @@ async def polynomial_regression(request: PolynomialRegressionRequest):
         test_size=request.test_size,
         random_state=request.random_state,
         degree=request.degree,
+        fit_intercept=request.fit_intercept,
+    )
+    return result
+
+
+@router.post("/ridge")
+async def ridge_regression(request: RidgeRegressionRequest):
+    """Train a ridge regression model and return results."""
+    result = train_ridge_regression(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        degree=request.degree,
+        alpha=request.alpha,
         fit_intercept=request.fit_intercept,
     )
     return result
