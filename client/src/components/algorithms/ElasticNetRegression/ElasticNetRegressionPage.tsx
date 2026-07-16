@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import Plot from "react-plotly.js";
-import { TrendingUp, Target, BarChart3, Percent } from "lucide-react";
+import { TrendingUp, Target, BarChart3, Percent, Scissors } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
 import {
   ControlPanel,
   MetricCard,
   TheorySection,
   ParamExplainer,
+  RegularizationPath,
   BiasVarianceCurve,
   LearningCurve,
 } from "@/components/shared";
@@ -14,17 +15,19 @@ import type { HyperParam } from "@/types";
 
 /* ----- Request / Response types ----- */
 
-interface PolynomialRequest {
+interface ElasticNetRequest {
   n_samples: number;
   noise: number;
   test_size: number;
   random_state: number;
   fit_intercept: boolean;
   degree: number;
+  alpha: number;
+  l1_ratio: number;
   [key: string]: unknown;
 }
 
-interface PolynomialResponse {
+interface ElasticNetResponse {
   metrics: {
     r2_score: number;
     mse: number;
@@ -46,6 +49,9 @@ interface PolynomialResponse {
   equation: string;
   coefficients: number[];
   intercept: number;
+  n_zero_coefs: number;
+  n_nonzero_coefs: number;
+  total_coefs: number;
   model_params: Record<string, unknown>;
 }
 
@@ -54,13 +60,33 @@ interface PolynomialResponse {
 const hyperParams: HyperParam[] = [
   {
     type: "slider",
+    label: "Alpha (Penalty Strength)",
+    key: "alpha",
+    min: 0,
+    max: 100,
+    step: 0.1,
+    default: 1.0,
+    description: "Overall regularization strength. Higher values constrain the model more.",
+  },
+  {
+    type: "slider",
+    label: "L1 Ratio (Lasso vs Ridge)",
+    key: "l1_ratio",
+    min: 0,
+    max: 1,
+    step: 0.05,
+    default: 0.5,
+    description: "0 = Pure Ridge (L2). 1 = Pure Lasso (L1). In between = Elastic Net mix.",
+  },
+  {
+    type: "slider",
     label: "Degree",
     key: "degree",
     min: 1,
-    max: 50,
+    max: 25,
     step: 1,
-    default: 3,
-    description: "The degree of the polynomial. Higher degrees can fit more complex curves but might overfit.",
+    default: 15,
+    description: "The degree of the polynomial. Elastic Net will shrink or eliminate unnecessary terms.",
   },
   {
     type: "slider",
@@ -70,8 +96,7 @@ const hyperParams: HyperParam[] = [
     max: 500,
     step: 10,
     default: 100,
-    description:
-      "Number of data points to generate. More samples = more reliable fit but slower training.",
+    description: "Number of data points to generate.",
   },
   {
     type: "slider",
@@ -81,8 +106,7 @@ const hyperParams: HyperParam[] = [
     max: 50,
     step: 1,
     default: 10,
-    description:
-      "Standard deviation of Gaussian noise added to data. Higher noise = harder for the model to fit.",
+    description: "Standard deviation of Gaussian noise added to data.",
   },
   {
     type: "slider",
@@ -92,8 +116,7 @@ const hyperParams: HyperParam[] = [
     max: 0.5,
     step: 0.05,
     default: 0.2,
-    description:
-      "Fraction of data held out for testing (0.2 = 20%). Larger test set gives more reliable metric estimates.",
+    description: "Fraction of data held out for testing.",
   },
   {
     type: "slider",
@@ -103,8 +126,7 @@ const hyperParams: HyperParam[] = [
     max: 100,
     step: 1,
     default: 42,
-    description:
-      "Seed for data generation. Change this to see different random datasets.",
+    description: "Seed for data generation.",
   },
 ];
 
@@ -112,28 +134,22 @@ const hyperParams: HyperParam[] = [
 
 const theoryContent = [
   {
-    heading: "What is Polynomial Regression?",
-    emoji: "📈",
+    heading: "What is Elastic Net?",
+    emoji: "🕸️",
     content:
-      "Polynomial Regression is a form of regression analysis in which the relationship between the independent variable x and the dependent variable y is modeled as an nth degree polynomial. It allows us to fit non-linear data while still using linear models under the hood.",
+      "Elastic Net is a hybrid approach that combines both L1 (Lasso) and L2 (Ridge) penalties. It aims to overcome the limitations of each individual method. Lasso can randomly select one feature among a group of highly correlated features, while Ridge shrinks them together. Elastic Net gets the best of both worlds.",
   },
   {
-    heading: "The Math",
+    heading: "The Math (L1 + L2)",
     emoji: "🧮",
     content:
-      "The model assumes: y = β₀ + β₁x + β₂x² + ... + βₙxⁿ + ε\n\nEven though the curve is non-linear, the model is still considered 'linear' in terms of its parameters (the betas). We simply create new features from our original data: x₁, x₂, ..., xₙ = x, x², ..., xⁿ.",
+      "Elastic Net minimizes: SSR + α * l1_ratio * Σ|βᵢ| + 0.5 * α * (1 - l1_ratio) * Σ(βᵢ²)\n\nWhere:\n• α (alpha) controls the overall penalty strength\n• l1_ratio controls the mix (0 = Ridge, 1 = Lasso)",
   },
   {
-    heading: "When to Use It?",
-    emoji: "🎯",
+    heading: "Why use it?",
+    emoji: "⚔️",
     content:
-      "• When you observe a non-linear, curved relationship in your data\n• When a straight line model underfits the data\n• For capturing interactions (when applied to multiple features)",
-  },
-  {
-    heading: "The Danger: Overfitting",
-    emoji: "⚠️",
-    content:
-      "Choosing the right degree is crucial. If the degree is too low, the model underfits. If it's too high, the model fits the noise instead of the signal (overfitting), leading to poor performance on new data.",
+      "When you have many correlated features, Lasso might arbitrarily zero out some of them. Elastic Net tends to either keep or drop highly correlated features together. It's particularly useful when the number of features (p) is greater than the number of samples (n).",
   },
 ];
 
@@ -141,43 +157,22 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
+    name: "Alpha",
+    description: "The overall magnitude of the regularization penalty.",
+    impact: "Alpha = 0: No regularization. Large alpha: Severe underfitting, most coefficients near zero.",
+    emoji: "⚖️",
+  },
+  {
+    name: "L1 Ratio",
+    description: "The balance between L1 (Lasso) and L2 (Ridge) penalties.",
+    impact: "Ratio = 0: Pure Ridge (shrinks all). Ratio = 1: Pure Lasso (sparse, feature selection). Ratio = 0.5: Equal mix.",
+    emoji: "🎛️",
+  },
+  {
     name: "Degree",
-    description:
-      "The highest power of the variable used in the polynomial equation.",
-    impact:
-      "Degree 1 = Straight line. Degree 2 = Parabola. Higher degrees = More wiggles (high risk of overfitting!).",
+    description: "The highest power of the variable used in the polynomial equation.",
+    impact: "High degree allows complex curves. The penalties will automatically down-weight or remove unnecessary higher powers.",
     emoji: "📈",
-  },
-  {
-    name: "Samples (n_samples)",
-    description:
-      "The number of data points generated. More data helps the model generalize better but takes longer to process.",
-    impact:
-      "Low samples → overfitting risk. High samples → smoother, more stable fit.",
-    emoji: "📊",
-  },
-  {
-    name: "Noise",
-    description:
-      "Controls how much random noise is added to the data. Real-world data always has noise from measurement errors, missing variables, etc.",
-    impact:
-      "Low noise → near-perfect fit (R²≈1). High noise → model struggles, lower R².",
-    emoji: "🌊",
-  },
-  {
-    name: "Test Split",
-    description:
-      "What fraction of data is held out for evaluating model performance. The model never sees this data during training.",
-    impact:
-      "Too small → unreliable metrics. Too large → not enough training data.",
-    emoji: "✂️",
-  },
-  {
-    name: "Random Seed",
-    description:
-      "Controls the random number generator. Same seed = same data every time. Change it to see how the model performs on different data.",
-    impact: "Different seeds generate different datasets with different patterns.",
-    emoji: "🎲",
   },
 ];
 
@@ -211,19 +206,21 @@ const plotLayout = {
 
 /* ----- Component ----- */
 
-export default function PolynomialRegressionPage() {
+export default function ElasticNetRegressionPage() {
   const { params, setParam, result, loading, error, train } = useAlgorithm<
-    PolynomialRequest,
-    PolynomialResponse
+    ElasticNetRequest,
+    ElasticNetResponse
   >({
-    endpoint: "/regression/polynomial",
+    endpoint: "/regression/elastic-net",
     defaultParams: {
       n_samples: 100,
       noise: 10,
       test_size: 0.2,
       random_state: 42,
       fit_intercept: true,
-      degree: 3,
+      degree: 15,
+      alpha: 1.0,
+      l1_ratio: 0.5,
     },
   });
 
@@ -258,6 +255,47 @@ export default function PolynomialRegressionPage() {
               <p className="text-lg font-black text-primary tracking-tight">
                 {result.equation}
               </p>
+            </div>
+          )}
+
+          {/* Sparsity indicator */}
+          {result && (
+            <div className="clay-sm p-5 animate-bounce-in">
+              <h4 className="text-sm font-extrabold text-text-muted mb-3 flex items-center gap-2">
+                <Scissors className="h-4 w-4 text-accent" />
+                Feature Selection (Sparsity)
+              </h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Total Coefficients</span>
+                  <span className="text-sm font-bold text-text-primary">{result.total_coefs}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Zeroed Out (Eliminated)</span>
+                  <span className="text-sm font-bold text-error">{result.n_zero_coefs}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Surviving Features</span>
+                  <span className="text-sm font-bold text-success">{result.n_nonzero_coefs}</span>
+                </div>
+                {/* Visual bar */}
+                <div className="w-full h-3 bg-surface-hover rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700 ease-out"
+                    style={{
+                      width: `${(result.n_nonzero_coefs / result.total_coefs) * 100}%`,
+                      background: "linear-gradient(90deg, #22C55E, #4ADE80)",
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-text-muted">
+                  With L1 Ratio = {params.l1_ratio}, Elastic Net eliminated{" "}
+                  <span className="font-bold text-error">
+                    {Math.round((result.n_zero_coefs / result.total_coefs) * 100)}%
+                  </span>{" "}
+                  of terms.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -319,7 +357,7 @@ export default function PolynomialRegressionPage() {
                   layout={{
                     ...plotLayout,
                     title: {
-                      text: "Polynomial Regression Fit",
+                      text: "Elastic Net Fit",
                       font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
                     },
                     autosize: true,
@@ -327,6 +365,56 @@ export default function PolynomialRegressionPage() {
                   config={{ responsive: true, displayModeBar: false }}
                   useResizeHandler
                   style={{ width: "100%", height: "420px" }}
+                />
+              </div>
+
+              {/* Coefficient bar chart — shows which coefficients survived */}
+              <div className="clay p-4">
+                <Plot
+                  data={[
+                    {
+                      x: result.coefficients.map((_, i) => `x^${i + 1}`),
+                      y: result.coefficients,
+                      type: "bar",
+                      name: "Coefficient Value",
+                      marker: {
+                        color: result.coefficients.map((c) =>
+                          Math.abs(c) < 1e-10 ? "#3F3F46" : "#DC2626"
+                        ),
+                        line: {
+                          color: result.coefficients.map((c) =>
+                            Math.abs(c) < 1e-10 ? "#52525B" : "#F59E0B"
+                          ),
+                          width: 1,
+                        },
+                      },
+                    },
+                  ]}
+                  layout={{
+                    ...plotLayout,
+                    title: {
+                      text: "Coefficient Magnitudes (Zeroed = Gray)",
+                      font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
+                    },
+                    yaxis: {
+                      ...plotLayout.yaxis,
+                      title: {
+                        text: "Coefficient Value",
+                        font: { size: 13, color: "#71717A" },
+                      },
+                    },
+                    xaxis: {
+                      ...plotLayout.xaxis,
+                      title: {
+                        text: "Polynomial Term",
+                        font: { size: 13, color: "#71717A" },
+                      },
+                    },
+                    autosize: true,
+                  }}
+                  config={{ responsive: true, displayModeBar: false }}
+                  useResizeHandler
+                  style={{ width: "100%", height: "340px" }}
                 />
               </div>
 
@@ -471,16 +559,25 @@ export default function PolynomialRegressionPage() {
         <div className="h-px flex-1 bg-surface-border" />
       </div>
 
+      <RegularizationPath
+        modelType="elasticnet"
+        degree={params.degree as number}
+        noise={params.noise as number}
+        randomState={params.random_state as number}
+      />
+
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <BiasVarianceCurve
-          modelType="polynomial"
-          sweepParam="degree"
+          modelType="elasticnet"
+          sweepParam="alpha"
           noise={params.noise as number}
+          alpha={params.alpha as number}
           randomState={params.random_state as number}
         />
         <LearningCurve
-          modelType="polynomial"
+          modelType="elasticnet"
           degree={params.degree as number}
+          alpha={params.alpha as number}
           noise={params.noise as number}
           randomState={params.random_state as number}
         />

@@ -7,6 +7,9 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  RegularizationPath,
+  BiasVarianceCurve,
+  LearningCurve,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -479,6 +482,39 @@ export default function RidgeRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* ===== Interactive Analysis ===== */}
+      <div className="flex items-center gap-4 my-4">
+        <div className="h-px flex-1 bg-surface-border" />
+        <span className="text-text-muted font-extrabold text-sm px-4 py-2 clay-sm">
+          ⚡ Interactive Analysis
+        </span>
+        <div className="h-px flex-1 bg-surface-border" />
+      </div>
+
+      <RegularizationPath
+        modelType="ridge"
+        degree={params.degree as number}
+        noise={params.noise as number}
+        randomState={params.random_state as number}
+      />
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <BiasVarianceCurve
+          modelType="ridge"
+          sweepParam="alpha"
+          noise={params.noise as number}
+          alpha={params.alpha as number}
+          randomState={params.random_state as number}
+        />
+        <LearningCurve
+          modelType="ridge"
+          degree={params.degree as number}
+          alpha={params.alpha as number}
+          noise={params.noise as number}
+          randomState={params.random_state as number}
+        />
+      </div>
 
     </div>
   );

@@ -1,7 +1,7 @@
 """Regression algorithm services."""
 
 import numpy as np
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
@@ -497,4 +497,382 @@ def train_ridge_regression(
             "noise": noise,
             "test_size": test_size,
         },
+    }
+
+
+def train_lasso_regression(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    alpha: float = 1.0,
+    degree: int = 15,
+    fit_intercept: bool = True,
+) -> dict:
+    """Train a lasso regression model on synthetic non-linear data to show L1 regularization.
+
+    Lasso differs from Ridge by driving some coefficients exactly to zero,
+    effectively performing feature selection.
+    """
+    # Generate non-linear data
+    X, y = generate_polynomial_data(
+        n_samples=n_samples,
+        noise=noise,
+        random_state=random_state,
+        x_range=(-5, 5),
+    )
+
+    # Transform features to polynomial features
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly.fit_transform(X)
+
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_poly, y, test_size=test_size, random_state=random_state
+    )
+
+    # Train Lasso model (max_iter higher for convergence at high degree)
+    model = Lasso(alpha=alpha, fit_intercept=fit_intercept, max_iter=10000)
+    model.fit(X_train, y_train)
+
+    # Predict
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Regression line for plotting
+    x_line = np.linspace(X.min(), X.max(), 200).reshape(-1, 1)
+    x_line_poly = poly.transform(x_line)
+    y_line = model.predict(x_line_poly)
+
+    # Metrics
+    r2 = r2_score(y_test, y_test_pred)
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = float(np.sqrt(mse))
+    mae = mean_absolute_error(y_test, y_test_pred)
+
+    # Residuals
+    residuals_train = (y_train - y_train_pred).tolist()
+    residuals_test = (y_test - y_test_pred).tolist()
+
+    # Coefficient analysis — key difference from Ridge
+    coefs = model.coef_
+    intercept = model.intercept_ if fit_intercept else 0.0
+    n_zero_coefs = int(np.sum(np.abs(coefs) < 1e-10))
+    n_nonzero_coefs = len(coefs) - n_zero_coefs
+
+    # Format polynomial equation (show first 5 non-zero terms)
+    nonzero_terms = [(i, c) for i, c in enumerate(coefs) if abs(c) > 1e-10]
+    equation = f"y = {intercept:.2f}"
+    for idx, (i, coef) in enumerate(nonzero_terms[:5]):
+        power = i + 1
+        sign = "+" if coef >= 0 else "-"
+        equation += f" {sign} {abs(coef):.2f}x^{power}"
+    if len(nonzero_terms) > 5:
+        equation += " + ..."
+
+    # Original X for plotting
+    X_train_orig = X_train[:, 0]
+    X_test_orig = X_test[:, 0]
+
+    return {
+        "metrics": {
+            "r2_score": round(r2, 6),
+            "mse": round(mse, 6),
+            "rmse": round(rmse, 6),
+            "mae": round(mae, 6),
+        },
+        "plot_data": {
+            "x_train": X_train_orig.tolist(),
+            "y_train": y_train.tolist(),
+            "x_test": X_test_orig.tolist(),
+            "y_test": y_test.tolist(),
+            "x_line": x_line.ravel().tolist(),
+            "y_line": y_line.tolist(),
+            "y_train_pred": y_train_pred.tolist(),
+            "y_test_pred": y_test_pred.tolist(),
+            "residuals_train": residuals_train,
+            "residuals_test": residuals_test,
+        },
+        "equation": equation,
+        "coefficients": coefs.tolist(),
+        "intercept": float(intercept),
+        "n_zero_coefs": n_zero_coefs,
+        "n_nonzero_coefs": n_nonzero_coefs,
+        "total_coefs": len(coefs),
+        "model_params": {
+            "fit_intercept": fit_intercept,
+            "alpha": alpha,
+            "degree": degree,
+            "n_samples": n_samples,
+            "noise": noise,
+            "test_size": test_size,
+        },
+    }
+
+
+def train_elasticnet_regression(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    alpha: float = 1.0,
+    l1_ratio: float = 0.5,
+    degree: int = 15,
+    fit_intercept: bool = True,
+) -> dict:
+    """Train an ElasticNet regression model on synthetic non-linear data.
+
+    ElasticNet combines L1 (Lasso) and L2 (Ridge) penalties.
+    """
+    # Generate non-linear data
+    X, y = generate_polynomial_data(
+        n_samples=n_samples,
+        noise=noise,
+        random_state=random_state,
+        x_range=(-5, 5),
+    )
+
+    # Transform features to polynomial features
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly.fit_transform(X)
+
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_poly, y, test_size=test_size, random_state=random_state
+    )
+
+    # Train ElasticNet model
+    model = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, fit_intercept=fit_intercept, max_iter=10000)
+    model.fit(X_train, y_train)
+
+    # Predict
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Regression line for plotting
+    x_line = np.linspace(X.min(), X.max(), 200).reshape(-1, 1)
+    x_line_poly = poly.transform(x_line)
+    y_line = model.predict(x_line_poly)
+
+    # Metrics
+    r2 = r2_score(y_test, y_test_pred)
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = float(np.sqrt(mse))
+    mae = mean_absolute_error(y_test, y_test_pred)
+
+    # Residuals
+    residuals_train = (y_train - y_train_pred).tolist()
+    residuals_test = (y_test - y_test_pred).tolist()
+
+    # Coefficient analysis
+    coefs = model.coef_
+    intercept = model.intercept_ if fit_intercept else 0.0
+    n_zero_coefs = int(np.sum(np.abs(coefs) < 1e-10))
+    n_nonzero_coefs = len(coefs) - n_zero_coefs
+
+    # Format polynomial equation
+    nonzero_terms = [(i, c) for i, c in enumerate(coefs) if abs(c) > 1e-10]
+    equation = f"y = {intercept:.2f}"
+    for idx, (i, coef) in enumerate(nonzero_terms[:5]):
+        power = i + 1
+        sign = "+" if coef >= 0 else "-"
+        equation += f" {sign} {abs(coef):.2f}x^{power}"
+    if len(nonzero_terms) > 5:
+        equation += " + ..."
+
+    # Original X for plotting
+    X_train_orig = X_train[:, 0]
+    X_test_orig = X_test[:, 0]
+
+    return {
+        "metrics": {
+            "r2_score": round(r2, 6),
+            "mse": round(mse, 6),
+            "rmse": round(rmse, 6),
+            "mae": round(mae, 6),
+        },
+        "plot_data": {
+            "x_train": X_train_orig.tolist(),
+            "y_train": y_train.tolist(),
+            "x_test": X_test_orig.tolist(),
+            "y_test": y_test.tolist(),
+            "x_line": x_line.ravel().tolist(),
+            "y_line": y_line.tolist(),
+            "y_train_pred": y_train_pred.tolist(),
+            "y_test_pred": y_test_pred.tolist(),
+            "residuals_train": residuals_train,
+            "residuals_test": residuals_test,
+        },
+        "equation": equation,
+        "coefficients": coefs.tolist(),
+        "intercept": float(intercept),
+        "n_zero_coefs": n_zero_coefs,
+        "n_nonzero_coefs": n_nonzero_coefs,
+        "total_coefs": len(coefs),
+        "model_params": {
+            "fit_intercept": fit_intercept,
+            "alpha": alpha,
+            "l1_ratio": l1_ratio,
+            "degree": degree,
+            "n_samples": n_samples,
+            "noise": noise,
+            "test_size": test_size,
+        },
+    }
+
+
+def compute_regularization_path(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    random_state: int = 42,
+    degree: int = 10,
+    model_type: str = "ridge",
+    n_alphas: int = 50,
+    alpha_max: float = 100.0,
+) -> dict:
+    """Sweep alpha from ~0 to alpha_max and record coefficients at each step."""
+    X, y = generate_polynomial_data(
+        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(-5, 5)
+    )
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly.fit_transform(X)
+
+    alphas = np.logspace(-3, np.log10(alpha_max), n_alphas).tolist()
+    coef_paths: list[list[float]] = []  # list of coefficient vectors
+
+    ModelClass = Ridge if model_type == "ridge" else (Lasso if model_type == "lasso" else ElasticNet)
+
+    for a in alphas:
+        kwargs = {"alpha": a, "fit_intercept": True}
+        if model_type in ["lasso", "elasticnet"]:
+            kwargs["max_iter"] = 10000
+        if model_type == "elasticnet":
+            kwargs["l1_ratio"] = 0.5  # Just use 0.5 for the path if not provided
+            
+        m = ModelClass(**kwargs)
+        m.fit(X_poly, y)
+        coef_paths.append(m.coef_.tolist())
+
+    # Transpose so each series is one coefficient across all alphas
+    n_coefs = len(coef_paths[0])
+    series = []
+    for i in range(n_coefs):
+        series.append({
+            "name": f"x^{i+1}",
+            "values": [cp[i] for cp in coef_paths],
+        })
+
+    return {
+        "alphas": alphas,
+        "series": series,
+        "model_type": model_type,
+        "degree": degree,
+    }
+
+
+def compute_bias_variance_curve(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    random_state: int = 42,
+    test_size: float = 0.2,
+    sweep_param: str = "degree",
+    model_type: str = "polynomial",
+    alpha: float = 1.0,
+) -> dict:
+    """Sweep degree (or alpha) and compute train/test MSE at each step."""
+    X, y = generate_polynomial_data(
+        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(-5, 5)
+    )
+
+    if sweep_param == "degree":
+        sweep_values = list(range(1, 21))
+    else:  # sweep alpha
+        sweep_values = np.logspace(-3, 2, 30).tolist()
+
+    train_errors = []
+    test_errors = []
+
+    for val in sweep_values:
+        deg = int(val) if sweep_param == "degree" else 10
+        alph = val if sweep_param == "alpha" else alpha
+
+        poly = PolynomialFeatures(degree=deg, include_bias=False)
+        X_poly = poly.fit_transform(X)
+        X_tr, X_te, y_tr, y_te = train_test_split(
+            X_poly, y, test_size=test_size, random_state=random_state
+        )
+
+        if model_type == "polynomial":
+            m = LinearRegression()
+        elif model_type == "ridge":
+            m = Ridge(alpha=alph)
+        elif model_type == "lasso":
+            m = Lasso(alpha=alph, max_iter=10000)
+        else:
+            m = ElasticNet(alpha=alph, l1_ratio=0.5, max_iter=10000)
+
+        m.fit(X_tr, y_tr)
+        train_errors.append(float(mean_squared_error(y_tr, m.predict(X_tr))))
+        test_errors.append(float(mean_squared_error(y_te, m.predict(X_te))))
+
+    return {
+        "sweep_values": [float(v) for v in sweep_values],
+        "train_mse": train_errors,
+        "test_mse": test_errors,
+        "sweep_param": sweep_param,
+        "model_type": model_type,
+    }
+
+
+def compute_learning_curve(
+    noise: float = 10.0,
+    random_state: int = 42,
+    test_size: float = 0.2,
+    degree: int = 3,
+    alpha: float = 1.0,
+    model_type: str = "polynomial",
+    max_samples: int = 300,
+) -> dict:
+    """Vary the number of training samples and compute train/test MSE."""
+    # Generate a large pool of data
+    X, y = generate_polynomial_data(
+        n_samples=max_samples, noise=noise, random_state=random_state, x_range=(-5, 5)
+    )
+
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly.fit_transform(X)
+    X_tr, X_te, y_tr, y_te = train_test_split(
+        X_poly, y, test_size=test_size, random_state=random_state
+    )
+
+    sample_counts = list(range(degree + 2, len(X_tr), max(1, len(X_tr) // 25)))
+    if sample_counts[-1] != len(X_tr):
+        sample_counts.append(len(X_tr))
+
+    train_errors = []
+    test_errors = []
+
+    for n in sample_counts:
+        X_sub = X_tr[:n]
+        y_sub = y_tr[:n]
+
+        if model_type == "polynomial":
+            m = LinearRegression()
+        elif model_type == "ridge":
+            m = Ridge(alpha=alpha)
+        elif model_type == "lasso":
+            m = Lasso(alpha=alpha, max_iter=10000)
+        else:
+            m = ElasticNet(alpha=alpha, l1_ratio=0.5, max_iter=10000)
+
+        m.fit(X_sub, y_sub)
+        train_errors.append(float(mean_squared_error(y_sub, m.predict(X_sub))))
+        test_errors.append(float(mean_squared_error(y_te, m.predict(X_te))))
+
+    return {
+        "sample_counts": sample_counts,
+        "train_mse": train_errors,
+        "test_mse": test_errors,
+        "model_type": model_type,
+        "degree": degree,
     }

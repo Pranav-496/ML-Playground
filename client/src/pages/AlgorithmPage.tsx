@@ -8,12 +8,16 @@ import { categoryBgColors, categoryColors, categoryLabels } from "@/config/algor
 import LinearRegressionPage from "@/components/algorithms/LinearRegression/LinearRegressionPage";
 import PolynomialRegressionPage from "@/components/algorithms/PolynomialRegression/PolynomialRegressionPage";
 import RidgeRegressionPage from "@/components/algorithms/RidgeRegression/RidgeRegressionPage";
+import LassoRegressionPage from "@/components/algorithms/LassoRegression/LassoRegressionPage";
+import ElasticNetRegressionPage from "@/components/algorithms/ElasticNetRegression/ElasticNetRegressionPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
   "linear-regression": LinearRegressionPage,
   "polynomial-regression": PolynomialRegressionPage,
   "ridge-regression": RidgeRegressionPage,
+  "lasso-regression": LassoRegressionPage,
+  "elastic-net": ElasticNetRegressionPage,
 };
 
 export default function AlgorithmPage() {

@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import Plot from "react-plotly.js";
-import { TrendingUp, Target, BarChart3, Percent } from "lucide-react";
+import { TrendingUp, Target, BarChart3, Percent, Scissors } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
 import {
   ControlPanel,
   MetricCard,
   TheorySection,
   ParamExplainer,
+  RegularizationPath,
   BiasVarianceCurve,
   LearningCurve,
 } from "@/components/shared";
@@ -14,17 +15,18 @@ import type { HyperParam } from "@/types";
 
 /* ----- Request / Response types ----- */
 
-interface PolynomialRequest {
+interface LassoRequest {
   n_samples: number;
   noise: number;
   test_size: number;
   random_state: number;
   fit_intercept: boolean;
   degree: number;
+  alpha: number;
   [key: string]: unknown;
 }
 
-interface PolynomialResponse {
+interface LassoResponse {
   metrics: {
     r2_score: number;
     mse: number;
@@ -46,6 +48,9 @@ interface PolynomialResponse {
   equation: string;
   coefficients: number[];
   intercept: number;
+  n_zero_coefs: number;
+  n_nonzero_coefs: number;
+  total_coefs: number;
   model_params: Record<string, unknown>;
 }
 
@@ -54,13 +59,23 @@ interface PolynomialResponse {
 const hyperParams: HyperParam[] = [
   {
     type: "slider",
+    label: "Alpha (L1 Penalty)",
+    key: "alpha",
+    min: 0,
+    max: 100,
+    step: 0.1,
+    default: 1.0,
+    description: "Regularization strength. Higher values drive more coefficients to exactly zero (feature selection).",
+  },
+  {
+    type: "slider",
     label: "Degree",
     key: "degree",
     min: 1,
-    max: 50,
+    max: 25,
     step: 1,
-    default: 3,
-    description: "The degree of the polynomial. Higher degrees can fit more complex curves but might overfit.",
+    default: 15,
+    description: "The degree of the polynomial. Set it high to show how Lasso eliminates unnecessary terms.",
   },
   {
     type: "slider",
@@ -112,28 +127,28 @@ const hyperParams: HyperParam[] = [
 
 const theoryContent = [
   {
-    heading: "What is Polynomial Regression?",
-    emoji: "📈",
+    heading: "What is Lasso Regression?",
+    emoji: "✂️",
     content:
-      "Polynomial Regression is a form of regression analysis in which the relationship between the independent variable x and the dependent variable y is modeled as an nth degree polynomial. It allows us to fit non-linear data while still using linear models under the hood.",
+      "Lasso (Least Absolute Shrinkage and Selection Operator) is a linear regression variant that adds an L1 penalty to the loss function. Unlike Ridge (L2), Lasso can drive coefficients to exactly zero — effectively removing features from the model. This makes it a powerful tool for automatic feature selection.",
   },
   {
-    heading: "The Math",
+    heading: "The Math (L1 Penalty)",
     emoji: "🧮",
     content:
-      "The model assumes: y = β₀ + β₁x + β₂x² + ... + βₙxⁿ + ε\n\nEven though the curve is non-linear, the model is still considered 'linear' in terms of its parameters (the betas). We simply create new features from our original data: x₁, x₂, ..., xₙ = x, x², ..., xⁿ.",
+      "Lasso minimizes: SSR + α * Σ|βᵢ|\n\nWhere:\n• α (alpha) controls the penalty strength\n• Σ|βᵢ| is the sum of the absolute values of coefficients (L1 norm)\n\nThe key difference from Ridge: L1 creates a diamond-shaped constraint region that has corners on the axes, making it likely that some coefficients land exactly at zero.",
   },
   {
-    heading: "When to Use It?",
+    heading: "Ridge vs. Lasso",
+    emoji: "⚔️",
+    content:
+      "• Ridge (L2): Shrinks ALL coefficients towards zero but never eliminates them entirely.\n• Lasso (L1): Can set some coefficients to EXACTLY zero, performing automatic feature selection.\n• Ridge is better when all features are relevant. Lasso is better when only a few features truly matter.",
+  },
+  {
+    heading: "The Sparsity Advantage",
     emoji: "🎯",
     content:
-      "• When you observe a non-linear, curved relationship in your data\n• When a straight line model underfits the data\n• For capturing interactions (when applied to multiple features)",
-  },
-  {
-    heading: "The Danger: Overfitting",
-    emoji: "⚠️",
-    content:
-      "Choosing the right degree is crucial. If the degree is too low, the model underfits. If it's too high, the model fits the noise instead of the signal (overfitting), leading to poor performance on new data.",
+      "When α is large, Lasso produces a sparse model — one with very few non-zero coefficients. This is invaluable in high-dimensional settings where you have many features but suspect only a few are truly important. Watch the coefficient counter as you increase Alpha!",
   },
 ];
 
@@ -141,11 +156,19 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
+    name: "Alpha (L1 Penalty)",
+    description:
+      "The regularization strength. Unlike Ridge's L2 penalty, L1 drives coefficients to exactly zero.",
+    impact:
+      "Alpha = 0: No regularization (overfitting). Small alpha: A few coefficients zeroed. Large alpha: Most coefficients zeroed (sparse model).",
+    emoji: "✂️",
+  },
+  {
     name: "Degree",
     description:
       "The highest power of the variable used in the polynomial equation.",
     impact:
-      "Degree 1 = Straight line. Degree 2 = Parabola. Higher degrees = More wiggles (high risk of overfitting!).",
+      "High degree with low alpha → overfitting. High degree with high alpha → Lasso removes unnecessary terms automatically.",
     emoji: "📈",
   },
   {
@@ -211,19 +234,20 @@ const plotLayout = {
 
 /* ----- Component ----- */
 
-export default function PolynomialRegressionPage() {
+export default function LassoRegressionPage() {
   const { params, setParam, result, loading, error, train } = useAlgorithm<
-    PolynomialRequest,
-    PolynomialResponse
+    LassoRequest,
+    LassoResponse
   >({
-    endpoint: "/regression/polynomial",
+    endpoint: "/regression/lasso",
     defaultParams: {
       n_samples: 100,
       noise: 10,
       test_size: 0.2,
       random_state: 42,
       fit_intercept: true,
-      degree: 3,
+      degree: 15,
+      alpha: 1.0,
     },
   });
 
@@ -258,6 +282,47 @@ export default function PolynomialRegressionPage() {
               <p className="text-lg font-black text-primary tracking-tight">
                 {result.equation}
               </p>
+            </div>
+          )}
+
+          {/* Sparsity indicator — unique to Lasso */}
+          {result && (
+            <div className="clay-sm p-5 animate-bounce-in">
+              <h4 className="text-sm font-extrabold text-text-muted mb-3 flex items-center gap-2">
+                <Scissors className="h-4 w-4 text-accent" />
+                Feature Selection (Sparsity)
+              </h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Total Coefficients</span>
+                  <span className="text-sm font-bold text-text-primary">{result.total_coefs}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Zeroed Out (Eliminated)</span>
+                  <span className="text-sm font-bold text-error">{result.n_zero_coefs}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Surviving Features</span>
+                  <span className="text-sm font-bold text-success">{result.n_nonzero_coefs}</span>
+                </div>
+                {/* Visual bar */}
+                <div className="w-full h-3 bg-surface-hover rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700 ease-out"
+                    style={{
+                      width: `${(result.n_nonzero_coefs / result.total_coefs) * 100}%`,
+                      background: "linear-gradient(90deg, #22C55E, #4ADE80)",
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-text-muted">
+                  Lasso eliminated{" "}
+                  <span className="font-bold text-error">
+                    {Math.round((result.n_zero_coefs / result.total_coefs) * 100)}%
+                  </span>{" "}
+                  of all polynomial terms.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -319,7 +384,7 @@ export default function PolynomialRegressionPage() {
                   layout={{
                     ...plotLayout,
                     title: {
-                      text: "Polynomial Regression Fit",
+                      text: "Lasso Regression Fit",
                       font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
                     },
                     autosize: true,
@@ -327,6 +392,56 @@ export default function PolynomialRegressionPage() {
                   config={{ responsive: true, displayModeBar: false }}
                   useResizeHandler
                   style={{ width: "100%", height: "420px" }}
+                />
+              </div>
+
+              {/* Coefficient bar chart — shows which coefficients survived */}
+              <div className="clay p-4">
+                <Plot
+                  data={[
+                    {
+                      x: result.coefficients.map((_, i) => `x^${i + 1}`),
+                      y: result.coefficients,
+                      type: "bar",
+                      name: "Coefficient Value",
+                      marker: {
+                        color: result.coefficients.map((c) =>
+                          Math.abs(c) < 1e-10 ? "#3F3F46" : "#DC2626"
+                        ),
+                        line: {
+                          color: result.coefficients.map((c) =>
+                            Math.abs(c) < 1e-10 ? "#52525B" : "#F59E0B"
+                          ),
+                          width: 1,
+                        },
+                      },
+                    },
+                  ]}
+                  layout={{
+                    ...plotLayout,
+                    title: {
+                      text: "Coefficient Magnitudes (Zeroed = Gray)",
+                      font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
+                    },
+                    yaxis: {
+                      ...plotLayout.yaxis,
+                      title: {
+                        text: "Coefficient Value",
+                        font: { size: 13, color: "#71717A" },
+                      },
+                    },
+                    xaxis: {
+                      ...plotLayout.xaxis,
+                      title: {
+                        text: "Polynomial Term",
+                        font: { size: 13, color: "#71717A" },
+                      },
+                    },
+                    autosize: true,
+                  }}
+                  config={{ responsive: true, displayModeBar: false }}
+                  useResizeHandler
+                  style={{ width: "100%", height: "340px" }}
                 />
               </div>
 
@@ -471,16 +586,25 @@ export default function PolynomialRegressionPage() {
         <div className="h-px flex-1 bg-surface-border" />
       </div>
 
+      <RegularizationPath
+        modelType="lasso"
+        degree={params.degree as number}
+        noise={params.noise as number}
+        randomState={params.random_state as number}
+      />
+
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <BiasVarianceCurve
-          modelType="polynomial"
-          sweepParam="degree"
+          modelType="lasso"
+          sweepParam="alpha"
           noise={params.noise as number}
+          alpha={params.alpha as number}
           randomState={params.random_state as number}
         />
         <LearningCurve
-          modelType="polynomial"
+          modelType="lasso"
           degree={params.degree as number}
+          alpha={params.alpha as number}
           noise={params.noise as number}
           randomState={params.random_state as number}
         />
