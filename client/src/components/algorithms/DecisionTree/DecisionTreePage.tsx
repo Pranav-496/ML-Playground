@@ -9,21 +9,28 @@ import {
   ParamExplainer,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
+import DecisionTreeGraph, { type TreeNode } from "./DecisionTreeGraph";
 
 /* ----- Request / Response types ----- */
 
-interface KnnRequest {
+interface DecisionTreeRequest {
   n_samples: number;
   noise: number;
   test_size: number;
   random_state: number;
-  n_neighbors: number;
-  weights: string;
-  p: number;
+  dataset_type: string;
+  criterion: string;
+  splitter: string;
+  max_depth: number;
+  min_samples_split: number;
+  min_samples_leaf: number;
+  max_features: string;
+  max_leaf_nodes: number;
+  min_impurity_decrease: number;
   [key: string]: unknown;
 }
 
-interface KnnResponse {
+interface DecisionTreeResponse {
   metrics: {
     accuracy: number;
     precision: number;
@@ -43,12 +50,24 @@ interface KnnResponse {
     yy: number[][];
     z: number[][];
   };
+  tree_structure: TreeNode;
   model_params: Record<string, unknown>;
 }
 
 /* ----- Hyperparameter config ----- */
 
 const hyperParams: HyperParam[] = [
+  {
+    type: "select",
+    label: "Dataset",
+    key: "dataset_type",
+    options: [
+      { value: "moons", label: "Moons (Non-linear)" },
+      { value: "blobs", label: "Blobs (Clusters)" },
+    ],
+    default: "moons",
+    description: "Shape of the generated data.",
+  },
   {
     type: "slider",
     label: "Samples",
@@ -61,55 +80,98 @@ const hyperParams: HyperParam[] = [
   },
   {
     type: "slider",
-    label: "Noise (Cluster STD)",
+    label: "Noise",
     key: "noise",
     min: 0.1,
     max: 5.0,
     step: 0.1,
     default: 1.5,
-    description: "Standard deviation of clusters. Higher noise = classes overlap more.",
+    description: "How noisy the data generation is.",
+  },
+  {
+    type: "select",
+    label: "Criterion",
+    key: "criterion",
+    options: [
+      { value: "gini", label: "Gini Impurity" },
+      { value: "entropy", label: "Entropy / Info Gain" },
+      { value: "log_loss", label: "Log Loss" },
+    ],
+    default: "gini",
+    description: "Function to measure the quality of a split.",
+  },
+  {
+    type: "select",
+    label: "Splitter",
+    key: "splitter",
+    options: [
+      { value: "best", label: "Best" },
+      { value: "random", label: "Random" },
+    ],
+    default: "best",
+    description: "Strategy used to choose the split at each node.",
   },
   {
     type: "slider",
-    label: "K (Neighbors)",
-    key: "n_neighbors",
-    min: 1,
+    label: "Max Depth (0 = None)",
+    key: "max_depth",
+    min: 0,
     max: 50,
     step: 1,
-    default: 5,
-    description: "Number of neighbors to use for classification.",
-  },
-  {
-    type: "select",
-    label: "Weights",
-    key: "weights",
-    options: [
-      { value: "uniform", label: "Uniform" },
-      { value: "distance", label: "Distance" },
-    ],
-    default: "uniform",
-    description: "Weight function used in prediction.",
-  },
-  {
-    type: "select",
-    label: "Distance Metric (p)",
-    key: "p",
-    options: [
-      { value: "1", label: "Manhattan (p=1)" },
-      { value: "2", label: "Euclidean (p=2)" },
-    ],
-    default: "2",
-    description: "Power parameter for the Minkowski metric.",
+    default: 0,
+    description: "Maximum depth of the tree. 0 means nodes are expanded until all leaves are pure.",
   },
   {
     type: "slider",
-    label: "Random Seed",
-    key: "random_state",
-    min: 0,
+    label: "Min Samples Split",
+    key: "min_samples_split",
+    min: 2,
     max: 100,
     step: 1,
-    default: 42,
-    description: "Seed for data generation.",
+    default: 2,
+    description: "Minimum number of samples required to split an internal node.",
+  },
+  {
+    type: "slider",
+    label: "Min Samples Leaf",
+    key: "min_samples_leaf",
+    min: 1,
+    max: 100,
+    step: 1,
+    default: 1,
+    description: "Minimum number of samples required to be at a leaf node.",
+  },
+  {
+    type: "select",
+    label: "Max Features",
+    key: "max_features",
+    options: [
+      { value: "none", label: "None (All)" },
+      { value: "sqrt", label: "Square Root" },
+      { value: "log2", label: "Log2" },
+    ],
+    default: "none",
+    description: "Number of features to consider when looking for the best split.",
+  },
+  {
+    type: "slider",
+    label: "Max Leaf Nodes (0 = None)",
+    key: "max_leaf_nodes",
+    min: 0,
+    max: 200,
+    step: 5,
+    default: 0,
+    description: "Grow a tree with Max Leaf Nodes in best-first fashion.",
+  },
+  {
+    type: "slider",
+    label: "Min Impurity Decrease",
+    key: "min_impurity_decrease",
+    min: 0.0,
+    max: 0.5,
+    step: 0.01,
+    default: 0.0,
+    description: "A node will be split if this split induces a decrease of the impurity greater than or equal to this value.",
   },
 ];
 
@@ -117,28 +179,22 @@ const hyperParams: HyperParam[] = [
 
 const theoryContent = [
   {
-    heading: "What is K-Nearest Neighbors?",
-    emoji: "👥",
+    heading: "What is a Decision Tree?",
+    emoji: "🌳",
     content:
-      "K-Nearest Neighbors (KNN) is a simple, instance-based learning algorithm. To classify a new data point, it looks at the 'K' closest data points in the training set and assigns the class that is most common among them.",
+      "A decision tree asks a sequence of true/false questions about the features to partition the data. Because it splits axes perpendicularly (e.g. 'is Feature 1 > 0.5?'), the decision boundaries always look like a series of rectangles or step functions.",
   },
   {
-    heading: "Choosing K",
-    emoji: "🎯",
-    content:
-      "The value of K controls the smoothness of the decision boundary. A small K (like 1) creates a highly complex, jagged boundary that fits the training data perfectly but might overfit (capturing noise). A large K creates a smoother, simpler boundary that generalizes better but might underfit.",
-  },
-  {
-    heading: "Distance Metrics",
+    heading: "Gini vs Entropy",
     emoji: "📏",
     content:
-      "KNN needs a way to measure 'closeness'. Euclidean distance (straight line) is the most common. Manhattan distance (grid-like path) is another option. The choice of distance metric can affect the shape of the decision boundary.",
+      "When a node evaluates a split, it wants to produce the most 'pure' child nodes (nodes containing mostly one class). Gini Impurity and Entropy are mathematical ways to score how mixed a node is. The Splitter tries to minimize this impurity.",
   },
   {
-    heading: "Weighting Neighbors",
-    emoji: "⚖️",
+    heading: "Overfitting & Pruning",
+    emoji: "✂️",
     content:
-      "By default, all K neighbors have an equal vote ('Uniform'). Alternatively, closer neighbors can be given more influence than further ones ('Distance'). This is especially useful when K is large or classes overlap heavily.",
+      "A fully grown Decision Tree with no depth limits will keep making splits until every leaf is 100% pure, perfectly memorizing the training data (including the noise). This causes severe overfitting. We control this via hyperparameters like Max Depth, Min Samples Leaf, and Min Impurity Decrease.",
   },
 ];
 
@@ -146,22 +202,22 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
-    name: "K (Neighbors)",
-    description: "The number of closest points considered for voting.",
-    impact: "Low K → Overfitting, noisy decision boundaries (island-like regions). High K → Smoother boundaries, but too high can lead to underfitting.",
-    emoji: "🔢",
+    name: "Max Depth",
+    description: "Limits how many layers of questions the tree can ask.",
+    impact: "Small Max Depth → Underfitting, simple boundaries. Large Max Depth → Overfitting, highly complex blocky boundaries around individual noise points.",
+    emoji: "⬇️",
   },
   {
-    name: "Weights",
-    description: "How much each neighbor's vote counts.",
-    impact: "Uniform treats all neighbors equally. Distance gives closer neighbors a stronger vote, often creating tighter boundaries around dense regions.",
-    emoji: "🎚️",
+    name: "Min Samples Leaf",
+    description: "Requires a leaf to have at least this many data points.",
+    impact: "High values force the tree to create broader, smoother regions rather than making a tiny rectangular box for a single anomalous point.",
+    emoji: "🍂",
   },
   {
-    name: "Distance Metric",
-    description: "How distance between points is calculated.",
-    impact: "Euclidean measures straight-line distance (circular boundaries). Manhattan measures block-wise distance (diamond-like boundaries).",
-    emoji: "🗺️",
+    name: "Splitter",
+    description: "How to choose the split threshold.",
+    impact: "'Best' looks at all possible thresholds to maximize purity. 'Random' picks random thresholds, creating ensembles later (like Random Forest).",
+    emoji: "🔀",
   },
 ];
 
@@ -193,20 +249,26 @@ const plotLayout = {
   },
 };
 
-export default function KnnPage() {
+export default function DecisionTreePage() {
   const { params, setParam, result, loading, error, train } = useAlgorithm<
-    KnnRequest,
-    KnnResponse
+    DecisionTreeRequest,
+    DecisionTreeResponse
   >({
-    endpoint: "/classification/knn",
+    endpoint: "/classification/decision-tree",
     defaultParams: {
       n_samples: 200,
       noise: 1.5,
       test_size: 0.2,
       random_state: 42,
-      n_neighbors: 5,
-      weights: "uniform",
-      p: 2,
+      dataset_type: "moons",
+      criterion: "gini",
+      splitter: "best",
+      max_depth: 0,
+      min_samples_split: 2,
+      min_samples_leaf: 1,
+      max_features: "none",
+      max_leaf_nodes: 0,
+      min_impurity_decrease: 0.0,
     },
   });
 
@@ -252,24 +314,25 @@ export default function KnnPage() {
           )}
 
           {result && (
-            <div className="clay p-4">
-              <Plot
-                data={[
-                  // Decision Boundary (Contour)
+            <>
+              <div className="clay p-4">
+                <Plot
+                  data={[
+                    // Decision Boundary (Contour)
                   {
                     z: result.plot_data.z,
                     x: result.plot_data.xx[0], // 1D array of x coordinates
                     y: result.plot_data.yy.map(row => row[0]), // 1D array of y coordinates
                     type: "contour",
                     colorscale: [
-                      [0, "rgba(59, 130, 246, 0.2)"], // Class 0 region (Blue)
-                      [1, "rgba(239, 68, 68, 0.2)"]   // Class 1 region (Red)
+                      [0, "rgba(59, 130, 246, 0.3)"], // Class 0 region (Blue)
+                      [1, "rgba(239, 68, 68, 0.3)"]   // Class 1 region (Red)
                     ],
                     showscale: false,
                     hoverinfo: "skip",
                     line: {
-                      width: 2,
-                      color: "rgba(255,255,255,0.5)" // The actual decision boundary line
+                      width: 1.5,
+                      color: "rgba(255,255,255,0.7)" // The actual decision boundary line
                     },
                     contours: {
                       start: 0.5,
@@ -284,7 +347,7 @@ export default function KnnPage() {
                     mode: "markers",
                     type: "scatter",
                     name: "Train (Class 0)",
-                    marker: { color: "#3B82F6", size: 8, opacity: 0.8, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
+                    marker: { color: "#3B82F6", size: 8, opacity: 0.9, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
                   },
                   // Train Data Class 1
                   {
@@ -293,7 +356,7 @@ export default function KnnPage() {
                     mode: "markers",
                     type: "scatter",
                     name: "Train (Class 1)",
-                    marker: { color: "#EF4444", size: 8, opacity: 0.8, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
+                    marker: { color: "#EF4444", size: 8, opacity: 0.9, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
                   },
                   // Test Data Class 0
                   {
@@ -302,7 +365,7 @@ export default function KnnPage() {
                     mode: "markers",
                     type: "scatter",
                     name: "Test (Class 0)",
-                    marker: { color: "#60A5FA", size: 9, symbol: "diamond", opacity: 0.9, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
+                    marker: { color: "#60A5FA", size: 9, symbol: "diamond", opacity: 1, line: { width: 1, color: "rgba(0,0,0,0.7)" } },
                   },
                   // Test Data Class 1
                   {
@@ -311,13 +374,13 @@ export default function KnnPage() {
                     mode: "markers",
                     type: "scatter",
                     name: "Test (Class 1)",
-                    marker: { color: "#F87171", size: 9, symbol: "diamond", opacity: 0.9, line: { width: 1, color: "rgba(0,0,0,0.5)" } },
+                    marker: { color: "#F87171", size: 9, symbol: "diamond", opacity: 1, line: { width: 1, color: "rgba(0,0,0,0.7)" } },
                   }
                 ]}
                 layout={{
                   ...plotLayout,
                   title: {
-                    text: "KNN Decision Boundary",
+                    text: "Decision Tree Boundary",
                     font: { size: 16, color: "#F8FAFC", family: "Cinzel, serif" },
                   },
                   autosize: true,
@@ -327,6 +390,18 @@ export default function KnnPage() {
                 style={{ width: "100%", height: "420px" }}
               />
             </div>
+            
+            {/* Tree Visualization */}
+            <div className="clay p-4">
+              <h3 className="text-lg font-extrabold text-text-primary mb-2 px-2">
+                🌳 Learned Tree Structure
+              </h3>
+              <DecisionTreeGraph 
+                tree={result.tree_structure} 
+                criterion={params.criterion as string} 
+              />
+            </div>
+          </>
           )}
 
           {!result && !loading && (

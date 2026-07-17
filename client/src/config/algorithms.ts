@@ -57,6 +57,16 @@ export const algorithms: AlgorithmConfig[] = [
     endpoint: "/regression/elastic-net",
   },
   {
+    id: "knn-regression",
+    name: "KNN Regression",
+    slug: "knn-regression",
+    category: "regression",
+    description: "Predict continuous values based on the average of the nearest neighbors.",
+    icon: "Users",
+    color: "#E11D48",
+    endpoint: "/regression/knn",
+  },
+  {
     id: "logistic-regression",
     name: "Logistic Regression",
     slug: "logistic-regression",

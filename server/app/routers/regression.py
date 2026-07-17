@@ -9,6 +9,7 @@ from app.services.regression import (
     train_ridge_regression,
     train_lasso_regression,
     train_elasticnet_regression,
+    train_knn_regression,
     compute_regularization_path,
     compute_bias_variance_curve,
     compute_learning_curve,
@@ -153,6 +154,16 @@ async def lasso_regression(request: LassoRegressionRequest):
     return result
 
 
+class KnnRegressionRequest(BaseModel):
+    """Request body for KNN regression training."""
+    n_samples: int = 100
+    noise: float = 10.0
+    test_size: float = 0.2
+    random_state: int = 42
+    n_neighbors: int = 5
+    weights: str = "uniform"
+    p: int = 2
+
 @router.post("/elastic-net")
 async def elasticnet_regression(request: ElasticNetRegressionRequest):
     """Train an elastic net regression model and return results."""
@@ -165,6 +176,20 @@ async def elasticnet_regression(request: ElasticNetRegressionRequest):
         alpha=request.alpha,
         l1_ratio=request.l1_ratio,
         fit_intercept=request.fit_intercept,
+    )
+    return result
+
+@router.post("/knn")
+async def knn_regression(request: KnnRegressionRequest):
+    """Train a KNN regression model and return results."""
+    result = train_knn_regression(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        n_neighbors=request.n_neighbors,
+        weights=request.weights,
+        p=request.p,
     )
     return result
 
@@ -245,4 +270,4 @@ async def learning_curve(request: LearningCurveRequest):
 
 @router.get("/")
 async def regression_root():
-    return {"message": "Regression endpoints", "algorithms": ["linear", "linear-gd", "polynomial", "ridge", "lasso", "elastic-net"]}
+    return {"message": "Regression endpoints", "algorithms": ["linear", "linear-gd", "polynomial", "ridge", "lasso", "elastic-net", "knn"]}

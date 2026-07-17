@@ -59,6 +59,7 @@ def generate_classification_data(
     n_classes: int = 2,
     random_state: int = 42,
     cluster_std: float = 1.5,
+    dataset_type: str = "blobs",
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data for classification tasks.
 
@@ -67,20 +68,27 @@ def generate_classification_data(
         n_features: Number of features (dimensions).
         n_classes: Number of classes.
         random_state: Seed for reproducibility.
-        cluster_std: Standard deviation of clusters.
+        cluster_std: Standard deviation of clusters / noise for moons.
+        dataset_type: 'blobs' or 'moons'
 
     Returns:
         Tuple of (X, y) numpy arrays.
     """
-    from sklearn.datasets import make_blobs
-
-    X, y = make_blobs(
-        n_samples=n_samples,
-        n_features=n_features,
-        centers=n_classes,
-        cluster_std=cluster_std,
-        random_state=random_state,
-    )
+    if dataset_type == "moons":
+        from sklearn.datasets import make_moons
+        # For moons, cluster_std represents the noise level (usually 0.1 to 0.5 is good, but we can scale it)
+        # cluster_std from our slider goes from 0.1 to 5.0. We can scale it down for moons.
+        noise = cluster_std * 0.1 
+        X, y = make_moons(n_samples=n_samples, noise=noise, random_state=random_state)
+    else:
+        from sklearn.datasets import make_blobs
+        X, y = make_blobs(
+            n_samples=n_samples,
+            n_features=n_features,
+            centers=n_classes,
+            cluster_std=cluster_std,
+            random_state=random_state,
+        )
     return X, y
 
 

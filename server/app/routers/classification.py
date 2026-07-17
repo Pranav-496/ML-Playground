@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.services.classification import train_logistic_regression, train_knn
+from app.services.classification import train_logistic_regression, train_knn, train_decision_tree
 
 router = APIRouter()
 
@@ -60,6 +60,44 @@ async def knn(request: KnnRequest):
     return result
 
 
+class DecisionTreeRequest(BaseModel):
+    """Request body for Decision Tree training."""
+    n_samples: int = 200
+    noise: float = 1.5
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "moons"
+    criterion: str = "gini"
+    splitter: str = "best"
+    max_depth: int | None = None
+    min_samples_split: int = 2
+    min_samples_leaf: int = 1
+    max_features: str | None = None
+    max_leaf_nodes: int | None = None
+    min_impurity_decrease: float = 0.0
+
+
+@router.post("/decision-tree")
+async def decision_tree(request: DecisionTreeRequest):
+    """Train a Decision Tree model and return results."""
+    result = train_decision_tree(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        criterion=request.criterion,
+        splitter=request.splitter,
+        max_depth=request.max_depth,
+        min_samples_split=request.min_samples_split,
+        min_samples_leaf=request.min_samples_leaf,
+        max_features=request.max_features,
+        max_leaf_nodes=request.max_leaf_nodes,
+        min_impurity_decrease=request.min_impurity_decrease,
+    )
+    return result
+
+
 @router.get("/")
 async def classification_root():
-    return {"message": "Classification endpoints", "algorithms": ["logistic", "knn"]}
+    return {"message": "Classification endpoints", "algorithms": ["logistic", "knn", "decision-tree"]}

@@ -2,6 +2,7 @@
 
 import numpy as np
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
@@ -875,4 +876,70 @@ def compute_learning_curve(
         "test_mse": test_errors,
         "model_type": model_type,
         "degree": degree,
+    }
+
+
+def train_knn_regression(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    n_neighbors: int = 5,
+    weights: str = "uniform",
+    p: int = 2,
+) -> dict:
+    """Train a KNN Regression model and return results and plot data."""
+    X, y = generate_regression_data(
+        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(0, 10)
+    )
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+
+    model = KNeighborsRegressor(
+        n_neighbors=n_neighbors,
+        weights=weights,
+        p=p,
+    )
+    model.fit(X_train, y_train)
+
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Sort data for smooth line plotting
+    sort_idx = np.argsort(X_train.ravel())
+    x_train_sorted = X_train[sort_idx]
+    
+    # We want a high-res line for the prediction boundary
+    x_line = np.linspace(X.min() - 1, X.max() + 1, 300).reshape(-1, 1)
+    y_line = model.predict(x_line)
+
+    metrics = {
+        "r2_score": float(r2_score(y_test, y_test_pred)),
+        "mse": float(mean_squared_error(y_test, y_test_pred)),
+        "rmse": float(np.sqrt(mean_squared_error(y_test, y_test_pred))),
+        "mae": float(mean_absolute_error(y_test, y_test_pred)),
+    }
+
+    plot_data = {
+        "x_train": X_train.ravel().tolist(),
+        "y_train": y_train.tolist(),
+        "x_test": X_test.ravel().tolist(),
+        "y_test": y_test.tolist(),
+        "x_line": x_line.ravel().tolist(),
+        "y_line": y_line.tolist(),
+        "y_train_pred": y_train_pred.tolist(),
+        "y_test_pred": y_test_pred.tolist(),
+        "residuals_train": (y_train - y_train_pred).tolist(),
+        "residuals_test": (y_test - y_test_pred).tolist(),
+    }
+
+    return {
+        "metrics": metrics,
+        "plot_data": plot_data,
+        "equation": f"KNN(k={n_neighbors}, weights={weights})",
+        "coefficients": [],
+        "intercept": 0,
+        "model_params": model.get_params(),
     }
