@@ -10,6 +10,8 @@ import PolynomialRegressionPage from "@/components/algorithms/PolynomialRegressi
 import RidgeRegressionPage from "@/components/algorithms/RidgeRegression/RidgeRegressionPage";
 import LassoRegressionPage from "@/components/algorithms/LassoRegression/LassoRegressionPage";
 import ElasticNetRegressionPage from "@/components/algorithms/ElasticNetRegression/ElasticNetRegressionPage";
+import LogisticRegressionPage from "@/components/algorithms/LogisticRegression/LogisticRegressionPage";
+import KnnPage from "@/components/algorithms/Knn/KnnPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -18,6 +20,8 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "ridge-regression": RidgeRegressionPage,
   "lasso-regression": LassoRegressionPage,
   "elastic-net": ElasticNetRegressionPage,
+  "logistic-regression": LogisticRegressionPage,
+  "knn": KnnPage,
 };
 
 export default function AlgorithmPage() {

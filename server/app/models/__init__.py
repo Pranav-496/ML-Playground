@@ -38,3 +38,35 @@ class RegressionResponse(BaseModel):
     coefficients: Optional[list] = None
     intercept: Optional[float] = None
     model_params: Optional[dict] = None
+
+
+class ClassificationMetrics(BaseModel):
+    """Response metrics for classification algorithms."""
+    accuracy: float
+    precision: float
+    recall: float
+    f1_score: float
+
+
+class ClassificationPlotData(BaseModel):
+    """Data points and decision boundary for visualization."""
+    x_train: list
+    y_train: list
+    x_test: list
+    y_test: list
+    x_min: float
+    x_max: float
+    y_min: float
+    y_max: float
+    xx: list
+    yy: list
+    z: list
+
+
+class ClassificationResponse(BaseModel):
+    """Standard response for classification endpoints."""
+    metrics: ClassificationMetrics
+    plot_data: ClassificationPlotData
+    coefficients: Optional[list] = None
+    intercept: Optional[list] = None
+    model_params: Optional[dict] = None
