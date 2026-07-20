@@ -14,6 +14,11 @@ import LogisticRegressionPage from "@/components/algorithms/LogisticRegression/L
 import KnnPage from "@/components/algorithms/Knn/KnnPage";
 import DecisionTreePage from "@/components/algorithms/DecisionTree/DecisionTreePage";
 import KnnRegressionPage from "@/components/algorithms/KnnRegression/KnnRegressionPage";
+import SvmPage from "@/components/algorithms/Svm/SvmPage";
+import SvrPage from "@/components/algorithms/Svr/SvrPage";
+import GaussianNBPage from "@/components/algorithms/GaussianNB/GaussianNBPage";
+import BernoulliNBPage from "@/components/algorithms/BernoulliNB/BernoulliNBPage";
+import MultinomialNBPage from "@/components/algorithms/MultinomialNB/MultinomialNBPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -26,6 +31,11 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "knn": KnnPage,
   "decision-tree": DecisionTreePage,
   "knn-regression": KnnRegressionPage,
+  "svm": SvmPage,
+  "svr": SvrPage,
+  "gaussian-nb": GaussianNBPage,
+  "bernoulli-nb": BernoulliNBPage,
+  "multinomial-nb": MultinomialNBPage,
 };
 
 export default function AlgorithmPage() {

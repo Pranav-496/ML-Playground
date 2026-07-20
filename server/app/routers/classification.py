@@ -1,7 +1,10 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.services.classification import train_logistic_regression, train_knn, train_decision_tree
+from app.services.classification import (
+    train_logistic_regression, train_knn, train_decision_tree, train_svm,
+    train_gaussian_nb, train_bernoulli_nb, train_multinomial_nb
+)
 
 router = APIRouter()
 
@@ -98,6 +101,99 @@ async def decision_tree(request: DecisionTreeRequest):
     return result
 
 
+class SvmRequest(BaseModel):
+    """Request body for SVM training."""
+    n_samples: int = 200
+    noise: float = 1.5
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "moons"
+    C: float = 1.0
+    kernel: str = "rbf"
+    gamma: str = "scale"
+    degree: int = 3
+
+
+@router.post("/svm")
+async def svm(request: SvmRequest):
+    """Train an SVM model and return results."""
+    result = train_svm(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        C=request.C,
+        kernel=request.kernel,
+        gamma=request.gamma,
+        degree=request.degree,
+    )
+    return result
+
+
+class GaussianNBRequest(BaseModel):
+    n_samples: int = 200
+    noise: float = 1.5
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "blobs"
+    var_smoothing: float = 1e-9
+
+@router.post("/gaussian-nb")
+async def gaussian_nb(request: GaussianNBRequest):
+    result = train_gaussian_nb(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        var_smoothing=request.var_smoothing,
+    )
+    return result
+
+class BernoulliNBRequest(BaseModel):
+    n_samples: int = 200
+    noise: float = 1.5
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "blobs"
+    alpha: float = 1.0
+    binarize: float = 0.0
+
+@router.post("/bernoulli-nb")
+async def bernoulli_nb(request: BernoulliNBRequest):
+    result = train_bernoulli_nb(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        alpha=request.alpha,
+        binarize=request.binarize,
+    )
+    return result
+
+class MultinomialNBRequest(BaseModel):
+    n_samples: int = 200
+    noise: float = 1.5
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "blobs"
+    alpha: float = 1.0
+
+@router.post("/multinomial-nb")
+async def multinomial_nb(request: MultinomialNBRequest):
+    result = train_multinomial_nb(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        alpha=request.alpha,
+    )
+    return result
+
+
 @router.get("/")
 async def classification_root():
-    return {"message": "Classification endpoints", "algorithms": ["logistic", "knn", "decision-tree"]}
+    return {"message": "Classification endpoints", "algorithms": ["logistic", "knn", "decision-tree", "svm", "gaussian-nb", "bernoulli-nb", "multinomial-nb"]}

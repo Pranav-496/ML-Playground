@@ -3,6 +3,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
@@ -941,5 +942,89 @@ def train_knn_regression(
         "equation": f"KNN(k={n_neighbors}, weights={weights})",
         "coefficients": [],
         "intercept": 0,
+        "model_params": model.get_params(),
+    }
+
+
+def train_svr(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    C: float = 1.0,
+    kernel: str = "rbf",
+    gamma: str = "scale",
+    epsilon: float = 0.1,
+    degree: int = 3,
+) -> dict:
+    """Train a Support Vector Regressor and return results.
+
+    SVR fits data within an epsilon-tube. Points inside the tube
+    incur no penalty; only those outside contribute to the loss.
+    """
+    X, y = generate_polynomial_data(
+        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(-5, 5)
+    )
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+
+    model = SVR(
+        C=C,
+        kernel=kernel,
+        gamma=gamma,
+        epsilon=epsilon,
+        degree=degree,
+    )
+    model.fit(X_train, y_train)
+
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Smooth prediction line
+    x_line = np.linspace(X.min(), X.max(), 300).reshape(-1, 1)
+    y_line = model.predict(x_line)
+
+    # Epsilon tube boundaries
+    y_line_upper = y_line + epsilon
+    y_line_lower = y_line - epsilon
+
+    # Support vectors
+    sv_indices = model.support_
+    sv_x = X_train[sv_indices].ravel().tolist()
+    sv_y = y_train[sv_indices].tolist()
+
+    metrics = {
+        "r2_score": float(r2_score(y_test, y_test_pred)),
+        "mse": float(mean_squared_error(y_test, y_test_pred)),
+        "rmse": float(np.sqrt(mean_squared_error(y_test, y_test_pred))),
+        "mae": float(mean_absolute_error(y_test, y_test_pred)),
+    }
+
+    plot_data = {
+        "x_train": X_train.ravel().tolist(),
+        "y_train": y_train.tolist(),
+        "x_test": X_test.ravel().tolist(),
+        "y_test": y_test.tolist(),
+        "x_line": x_line.ravel().tolist(),
+        "y_line": y_line.tolist(),
+        "y_line_upper": y_line_upper.tolist(),
+        "y_line_lower": y_line_lower.tolist(),
+        "y_train_pred": y_train_pred.tolist(),
+        "y_test_pred": y_test_pred.tolist(),
+        "residuals_train": (y_train - y_train_pred).tolist(),
+        "residuals_test": (y_test - y_test_pred).tolist(),
+        "support_vectors_x": sv_x,
+        "support_vectors_y": sv_y,
+    }
+
+    return {
+        "metrics": metrics,
+        "plot_data": plot_data,
+        "equation": f"SVR(C={C}, kernel={kernel}, ε={epsilon})",
+        "n_support_vectors": len(sv_indices),
+        "coefficients": [],
+        "intercept": float(model.intercept_[0]) if hasattr(model.intercept_, '__len__') else float(model.intercept_),
         "model_params": model.get_params(),
     }

@@ -67,6 +67,17 @@ export const algorithms: AlgorithmConfig[] = [
     endpoint: "/regression/knn",
   },
   {
+    id: "svr",
+    name: "Support Vector Regressor",
+    slug: "svr",
+    category: "regression",
+    description:
+      "Fit data within an ε-insensitive tube using the kernel trick for non-linear regression.",
+    icon: "Minimize2",
+    color: "#A21CAF",
+    endpoint: "/regression/svr",
+  },
+  {
     id: "logistic-regression",
     name: "Logistic Regression",
     slug: "logistic-regression",
@@ -98,6 +109,50 @@ export const algorithms: AlgorithmConfig[] = [
     icon: "GitFork",
     color: "#E06020",
     endpoint: "/classification/decision-tree",
+  },
+  {
+    id: "svm",
+    name: "Support Vector Machine",
+    slug: "svm",
+    category: "classification",
+    description:
+      "Find the optimal hyperplane that maximizes the margin between classes.",
+    icon: "Swords",
+    color: "#7C3AED",
+    endpoint: "/classification/svm",
+  },
+  {
+    id: "gaussian-nb",
+    name: "Gaussian Naive Bayes",
+    slug: "gaussian-nb",
+    category: "classification",
+    description:
+      "A probabilistic classifier that assumes continuous features follow a normal distribution.",
+    icon: "Bell",
+    color: "#F59E0B",
+    endpoint: "/classification/gaussian-nb",
+  },
+  {
+    id: "bernoulli-nb",
+    name: "Bernoulli Naive Bayes",
+    slug: "bernoulli-nb",
+    category: "classification",
+    description:
+      "A probabilistic classifier designed for binary/boolean features. Creates blocky boundaries.",
+    icon: "Grid",
+    color: "#3B82F6",
+    endpoint: "/classification/bernoulli-nb",
+  },
+  {
+    id: "multinomial-nb",
+    name: "Multinomial Naive Bayes",
+    slug: "multinomial-nb",
+    category: "classification",
+    description:
+      "A probabilistic classifier for discrete counts (e.g. word frequencies in text).",
+    icon: "BarChart",
+    color: "#10B981",
+    endpoint: "/classification/multinomial-nb",
   },
   {
     id: "kmeans",

@@ -12,7 +12,7 @@ interface UseAlgorithmReturn<TRequest, TResponse> {
   result: TResponse | null;
   loading: boolean;
   error: string | null;
-  train: () => Promise<void>;
+  train: (overrideParams?: Partial<TRequest>) => Promise<void>;
 }
 
 export function useAlgorithm<
@@ -34,11 +34,12 @@ export function useAlgorithm<
     []
   );
 
-  const train = useCallback(async () => {
+  const train = useCallback(async (overrideParams?: Partial<TRequest>) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.post<TResponse>(endpoint, params);
+      const payload = overrideParams ? { ...params, ...overrideParams } : params;
+      const response = await api.post<TResponse>(endpoint, payload);
       setResult(response.data);
     } catch (err: unknown) {
       const message =
