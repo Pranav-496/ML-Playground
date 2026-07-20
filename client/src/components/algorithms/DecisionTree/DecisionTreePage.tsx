@@ -314,7 +314,6 @@ export default function DecisionTreePage() {
           )}
 
           {result && (
-            <>
               <div className="clay p-4">
                 <Plot
                   data={[
@@ -390,18 +389,6 @@ export default function DecisionTreePage() {
                 style={{ width: "100%", height: "420px" }}
               />
             </div>
-            
-            {/* Tree Visualization */}
-            <div className="clay p-4">
-              <h3 className="text-lg font-extrabold text-text-primary mb-2 px-2">
-                🌳 Learned Tree Structure
-              </h3>
-              <DecisionTreeGraph 
-                tree={result.tree_structure} 
-                criterion={params.criterion as string} 
-              />
-            </div>
-          </>
           )}
 
           {!result && !loading && (
@@ -422,6 +409,21 @@ export default function DecisionTreePage() {
           )}
         </div>
       </div>
+
+      {/* Tree Visualization (Full Width) */}
+      {result && (
+        <div className="animate-slide-up mt-8">
+          <div className="clay p-4">
+            <h3 className="text-lg font-extrabold text-text-primary mb-2 px-2">
+              🌳 Learned Tree Structure
+            </h3>
+            <DecisionTreeGraph 
+              tree={result.tree_structure} 
+              criterion={params.criterion as string} 
+            />
+          </div>
+        </div>
+      )}
 
       {/* Metrics */}
       {result && (
