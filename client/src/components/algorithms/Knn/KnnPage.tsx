@@ -17,9 +17,13 @@ interface KnnRequest {
   noise: number;
   test_size: number;
   random_state: number;
+  dataset_type: string;
   n_neighbors: number;
   weights: string;
   p: number;
+  algorithm: string;
+  leaf_size: number;
+  metric: string;
   [key: string]: unknown;
 }
 
@@ -70,6 +74,21 @@ const hyperParams: HyperParam[] = [
     description: "Standard deviation of clusters. Higher noise = classes overlap more.",
   },
   {
+    type: "select",
+    label: "Dataset",
+    key: "dataset_type",
+    options: [
+      { value: "blobs", label: "Gaussian Blobs" },
+      { value: "moons", label: "Half Moons" },
+      { value: "circles", label: "Concentric Circles" },
+      { value: "xor", label: "XOR Pattern" },
+      { value: "spirals", label: "Spirals" },
+      { value: "anisotropic", label: "Anisotropic" },
+    ],
+    default: "blobs",
+    description: "Shape of the synthetic classification dataset.",
+  },
+  {
     type: "slider",
     label: "K (Neighbors)",
     key: "n_neighbors",
@@ -97,9 +116,33 @@ const hyperParams: HyperParam[] = [
     options: [
       { value: "1", label: "Manhattan (p=1)" },
       { value: "2", label: "Euclidean (p=2)" },
+      { value: "3", label: "Minkowski (p=3)" },
     ],
     default: "2",
     description: "Power parameter for the Minkowski metric.",
+  },
+  {
+    type: "select",
+    label: "Algorithm",
+    key: "algorithm",
+    options: [
+      { value: "auto", label: "Auto" },
+      { value: "ball_tree", label: "Ball Tree" },
+      { value: "kd_tree", label: "KD Tree" },
+      { value: "brute", label: "Brute Force" },
+    ],
+    default: "auto",
+    description: "Algorithm used to compute nearest neighbors. 'Auto' picks the best one.",
+  },
+  {
+    type: "slider",
+    label: "Leaf Size",
+    key: "leaf_size",
+    min: 5,
+    max: 100,
+    step: 5,
+    default: 30,
+    description: "Leaf size for Ball Tree / KD Tree. Affects speed and memory.",
   },
   {
     type: "slider",
@@ -148,20 +191,38 @@ const paramExplainerData = [
   {
     name: "K (Neighbors)",
     description: "The number of closest points considered for voting.",
-    impact: "Low K → Overfitting, noisy decision boundaries (island-like regions). High K → Smoother boundaries, but too high can lead to underfitting.",
+    impact: "K=1 → Extreme overfitting, boundaries follow every single point. K=3-10 → Good balance. K=N → Underfitting, always predicts majority class.",
     emoji: "🔢",
   },
   {
     name: "Weights",
     description: "How much each neighbor's vote counts.",
-    impact: "Uniform treats all neighbors equally. Distance gives closer neighbors a stronger vote, often creating tighter boundaries around dense regions.",
+    impact: "Uniform treats all neighbors equally → smoother boundaries. Distance gives closer neighbors stronger votes → tighter, more adaptive boundaries that hug clusters. Use 'Distance' when classes are unevenly distributed.",
     emoji: "🎚️",
   },
   {
-    name: "Distance Metric",
-    description: "How distance between points is calculated.",
-    impact: "Euclidean measures straight-line distance (circular boundaries). Manhattan measures block-wise distance (diamond-like boundaries).",
+    name: "Distance Metric (p)",
+    description: "How distance between points is calculated (Minkowski p-norm).",
+    impact: "p=1 (Manhattan) creates diamond-shaped boundaries, robust to outliers. p=2 (Euclidean) creates circular boundaries, most natural. Higher p → boundaries approach square/max-norm shapes.",
     emoji: "🗺️",
+  },
+  {
+    name: "Algorithm",
+    description: "The data structure used to find nearest neighbors.",
+    impact: "Ball Tree and KD Tree are fast for low-dimensional data. Brute Force checks every point — slow but guaranteed correct. 'Auto' picks the best based on data size and dimensionality.",
+    emoji: "🏗️",
+  },
+  {
+    name: "Leaf Size",
+    description: "Number of points at which the tree algorithm switches to brute force.",
+    impact: "Smaller leaf size → deeper trees, more memory, faster queries. Larger leaf size → shallower trees, less memory, slower queries. Only affects Ball Tree/KD Tree.",
+    emoji: "🍃",
+  },
+  {
+    name: "Dataset Type",
+    description: "The shape of the generated data to test model behavior.",
+    impact: "Blobs → easy linear separation. Moons/Circles → tests non-linear ability. XOR → impossible for linear models. Spirals → extreme non-linearity test.",
+    emoji: "📊",
   },
 ];
 
@@ -204,9 +265,13 @@ export default function KnnPage() {
       noise: 1.5,
       test_size: 0.2,
       random_state: 42,
+      dataset_type: "blobs",
       n_neighbors: 5,
       weights: "uniform",
       p: 2,
+      algorithm: "auto",
+      leaf_size: 30,
+      metric: "minkowski",
     },
   });
 

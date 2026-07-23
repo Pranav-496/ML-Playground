@@ -17,9 +17,13 @@ interface LogisticRequest {
   noise: number;
   test_size: number;
   random_state: number;
+  dataset_type: string;
   C: number;
   penalty: string;
+  solver: string;
   max_iter: number;
+  multi_class: string;
+  l1_ratio: number | null;
   [key: string]: unknown;
 }
 
@@ -72,6 +76,21 @@ const hyperParams: HyperParam[] = [
     description: "Standard deviation of clusters. Higher noise = classes overlap more.",
   },
   {
+    type: "select",
+    label: "Dataset",
+    key: "dataset_type",
+    options: [
+      { value: "blobs", label: "Gaussian Blobs" },
+      { value: "moons", label: "Half Moons" },
+      { value: "circles", label: "Concentric Circles" },
+      { value: "xor", label: "XOR Pattern" },
+      { value: "spirals", label: "Spirals" },
+      { value: "anisotropic", label: "Anisotropic" },
+    ],
+    default: "blobs",
+    description: "Shape of the synthetic classification dataset.",
+  },
+  {
     type: "slider",
     label: "Inverse Regularization (C)",
     key: "C",
@@ -87,10 +106,25 @@ const hyperParams: HyperParam[] = [
     key: "penalty",
     options: [
       { value: "l2", label: "L2 (Ridge)" },
+      { value: "l1", label: "L1 (Lasso)" },
+      { value: "elasticnet", label: "Elastic Net" },
       { value: "none", label: "None" },
     ],
     default: "l2",
-    description: "Norm used in the penalization.",
+    description: "Norm used in the penalization. L1 requires 'saga' solver. Elastic Net requires 'saga' solver.",
+  },
+  {
+    type: "select",
+    label: "Solver",
+    key: "solver",
+    options: [
+      { value: "lbfgs", label: "LBFGS" },
+      { value: "liblinear", label: "Liblinear" },
+      { value: "saga", label: "SAGA" },
+      { value: "newton-cg", label: "Newton-CG" },
+    ],
+    default: "lbfgs",
+    description: "Algorithm to use in the optimization problem.",
   },
   {
     type: "slider",
@@ -147,22 +181,34 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
-    name: "Noise",
-    description: "Controls how overlapping the two classes are.",
-    impact: "Low noise → clearly separated classes. High noise → classes mix, making it harder for a linear model to draw a perfect boundary.",
-    emoji: "🌫️",
-  },
-  {
     name: "Inverse Regularization (C)",
-    description: "How much to penalize large coefficients.",
-    impact: "Small C → coefficients are pushed toward zero. Large C → model trusts the training data more, potentially overfitting if data is noisy.",
+    description: "Controls the trade-off between fitting the training data and keeping the model simple.",
+    impact: "Small C (0.01) → Strong regularization, underfitting: boundary won't curve to fit noisy data. Large C (10+) → Weak regularization, overfitting: boundary tries to classify every training point correctly.",
     emoji: "🛡️",
   },
   {
     name: "Penalty",
-    description: "Type of regularization to apply.",
-    impact: "L2 shrinks coefficients evenly. 'None' applies no regularization.",
+    description: "Type of regularization to apply to the model coefficients.",
+    impact: "L2 (Ridge) shrinks all coefficients evenly → keeps all features. L1 (Lasso) drives some coefficients to zero → automatic feature selection. Elastic Net combines both. None → no regularization, risk of overfitting.",
     emoji: "📏",
+  },
+  {
+    name: "Solver",
+    description: "Optimization algorithm used to find the best coefficients.",
+    impact: "LBFGS → fast, good default for small datasets. Liblinear → good for small datasets with L1. SAGA → required for L1/ElasticNet on large datasets. Newton-CG → good for multinomial with L2.",
+    emoji: "⚙️",
+  },
+  {
+    name: "Max Iterations",
+    description: "Maximum number of iterations for the solver to converge.",
+    impact: "Too few → solver may not converge (warning). Too many → unnecessary computation. Increase if you get convergence warnings.",
+    emoji: "🔄",
+  },
+  {
+    name: "Dataset Type",
+    description: "The shape of the generated data to test model behavior.",
+    impact: "Logistic Regression is a LINEAR classifier. Blobs → works well. Moons/Circles/XOR → will fail because the true boundary is non-linear. This teaches why kernel methods or non-linear models are needed.",
+    emoji: "📊",
   },
 ];
 
@@ -205,9 +251,13 @@ export default function LogisticRegressionPage() {
       noise: 1.5,
       test_size: 0.2,
       random_state: 42,
+      dataset_type: "blobs",
       C: 1.0,
       penalty: "l2",
+      solver: "lbfgs",
       max_iter: 100,
+      multi_class: "auto",
+      l1_ratio: null,
     },
   });
 

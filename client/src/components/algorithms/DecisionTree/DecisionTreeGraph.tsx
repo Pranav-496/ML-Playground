@@ -92,7 +92,7 @@ export default function DecisionTreeGraph({
         minScale={0.1}
         maxScale={4}
         centerOnInit={true}
-        wheel={{ step: 0.015, smoothStep: 0.005 }}
+        wheel={{ step: 0.015 }}
       >
         <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
           <div className="py-12 px-12 min-w-max min-h-max">

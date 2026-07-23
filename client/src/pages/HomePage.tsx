@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   Sword,
-  Sparkles,
   TrendingUp,
   GitBranch,
   Layers,

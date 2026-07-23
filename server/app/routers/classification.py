@@ -15,10 +15,12 @@ class LogisticRegressionRequest(BaseModel):
     noise: float = 1.5
     test_size: float = 0.2
     random_state: int = 42
+    dataset_type: str = "blobs"
     C: float = 1.0
     penalty: str = "l2"
     solver: str = "lbfgs"
     max_iter: int = 100
+    l1_ratio: float | None = None
 
 
 @router.post("/logistic")
@@ -29,10 +31,12 @@ async def logistic_regression(request: LogisticRegressionRequest):
         noise=request.noise,
         test_size=request.test_size,
         random_state=request.random_state,
+        dataset_type=request.dataset_type,
         C=request.C,
         penalty=request.penalty,
         solver=request.solver,
         max_iter=request.max_iter,
+        l1_ratio=request.l1_ratio,
     )
     return result
 
@@ -43,9 +47,13 @@ class KnnRequest(BaseModel):
     noise: float = 1.5
     test_size: float = 0.2
     random_state: int = 42
+    dataset_type: str = "blobs"
     n_neighbors: int = 5
     weights: str = "uniform"
     p: int = 2
+    algorithm: str = "auto"
+    leaf_size: int = 30
+    metric: str = "minkowski"
 
 
 @router.post("/knn")
@@ -56,9 +64,13 @@ async def knn(request: KnnRequest):
         noise=request.noise,
         test_size=request.test_size,
         random_state=request.random_state,
+        dataset_type=request.dataset_type,
         n_neighbors=request.n_neighbors,
         weights=request.weights,
         p=request.p,
+        algorithm=request.algorithm,
+        leaf_size=request.leaf_size,
+        metric=request.metric,
     )
     return result
 
@@ -112,6 +124,7 @@ class SvmRequest(BaseModel):
     kernel: str = "rbf"
     gamma: str = "scale"
     degree: int = 3
+    coef0: float = 0.0
 
 
 @router.post("/svm")
@@ -127,6 +140,7 @@ async def svm(request: SvmRequest):
         kernel=request.kernel,
         gamma=request.gamma,
         degree=request.degree,
+        coef0=request.coef0,
     )
     return result
 
@@ -159,6 +173,7 @@ class BernoulliNBRequest(BaseModel):
     dataset_type: str = "blobs"
     alpha: float = 1.0
     binarize: float = 0.0
+    fit_prior: bool = True
 
 @router.post("/bernoulli-nb")
 async def bernoulli_nb(request: BernoulliNBRequest):
@@ -170,6 +185,7 @@ async def bernoulli_nb(request: BernoulliNBRequest):
         dataset_type=request.dataset_type,
         alpha=request.alpha,
         binarize=request.binarize,
+        fit_prior=request.fit_prior,
     )
     return result
 
@@ -180,6 +196,7 @@ class MultinomialNBRequest(BaseModel):
     random_state: int = 42
     dataset_type: str = "blobs"
     alpha: float = 1.0
+    fit_prior: bool = True
 
 @router.post("/multinomial-nb")
 async def multinomial_nb(request: MultinomialNBRequest):
@@ -190,6 +207,7 @@ async def multinomial_nb(request: MultinomialNBRequest):
         random_state=request.random_state,
         dataset_type=request.dataset_type,
         alpha=request.alpha,
+        fit_prior=request.fit_prior,
     )
     return result
 
@@ -197,3 +215,4 @@ async def multinomial_nb(request: MultinomialNBRequest):
 @router.get("/")
 async def classification_root():
     return {"message": "Classification endpoints", "algorithms": ["logistic", "knn", "decision-tree", "svm", "gaussian-nb", "bernoulli-nb", "multinomial-nb"]}
+

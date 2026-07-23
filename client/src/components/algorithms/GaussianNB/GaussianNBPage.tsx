@@ -56,8 +56,12 @@ const hyperParams: HyperParam[] = [
     label: "Dataset",
     key: "dataset_type",
     options: [
-      { value: "blobs", label: "Blobs (Gaussian Clusters)" },
-      { value: "moons", label: "Moons (Non-linear)" },
+      { value: "blobs", label: "Gaussian Blobs" },
+      { value: "moons", label: "Half Moons" },
+      { value: "circles", label: "Concentric Circles" },
+      { value: "xor", label: "XOR Pattern" },
+      { value: "spirals", label: "Spirals" },
+      { value: "anisotropic", label: "Anisotropic" },
     ],
     default: "blobs",
     description: "Shape of generated data. Gaussian NB assumes features are normally distributed, making it perfect for Blobs.",
@@ -204,17 +208,8 @@ export default function GaussianNBPage() {
   });
 
   useEffect(() => {
-    handleTrain();
+    train();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Request requires var_smoothing to be 10^value
-  const handleTrain = () => {
-    const payload = {
-      ...params,
-      var_smoothing: Math.pow(10, params.var_smoothing as number),
-    };
-    train(payload);
-  };
 
   // Helpers to split classes for plotting
   const getClassData = (X: number[][], y: number[], targetClass: number) => {
@@ -241,7 +236,7 @@ export default function GaussianNBPage() {
             params={hyperParams}
             values={params as unknown as Record<string, number | string>}
             onChange={(key, value) => setParam(key, value)}
-            onRun={handleTrain}
+            onRun={train}
             loading={loading}
           />
         </div>

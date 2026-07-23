@@ -19,6 +19,7 @@ import SvrPage from "@/components/algorithms/Svr/SvrPage";
 import GaussianNBPage from "@/components/algorithms/GaussianNB/GaussianNBPage";
 import BernoulliNBPage from "@/components/algorithms/BernoulliNB/BernoulliNBPage";
 import MultinomialNBPage from "@/components/algorithms/MultinomialNB/MultinomialNBPage";
+import DecisionTreeRegressionPage from "@/components/algorithms/DecisionTreeRegression/DecisionTreeRegressionPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -36,6 +37,7 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "gaussian-nb": GaussianNBPage,
   "bernoulli-nb": BernoulliNBPage,
   "multinomial-nb": MultinomialNBPage,
+  "decision-tree-regression": DecisionTreeRegressionPage,
 };
 
 export default function AlgorithmPage() {

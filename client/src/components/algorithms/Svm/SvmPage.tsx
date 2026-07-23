@@ -22,6 +22,7 @@ interface SvmRequest {
   kernel: string;
   gamma: string;
   degree: number;
+  coef0: number;
   [key: string]: unknown;
 }
 
@@ -63,11 +64,15 @@ const hyperParams: HyperParam[] = [
     label: "Dataset",
     key: "dataset_type",
     options: [
-      { value: "moons", label: "Moons (Non-linear)" },
-      { value: "blobs", label: "Blobs (Clusters)" },
+      { value: "moons", label: "Half Moons" },
+      { value: "blobs", label: "Gaussian Blobs" },
+      { value: "circles", label: "Concentric Circles" },
+      { value: "xor", label: "XOR Pattern" },
+      { value: "spirals", label: "Spirals" },
+      { value: "anisotropic", label: "Anisotropic" },
     ],
     default: "moons",
-    description: "Shape of the generated data. Moons require non-linear kernels; blobs work with linear.",
+    description: "Shape of the synthetic classification dataset.",
   },
   {
     type: "select",
@@ -101,6 +106,16 @@ const hyperParams: HyperParam[] = [
     step: 1,
     default: 3,
     description: "Only used with polynomial kernel. Controls the flexibility of the decision boundary.",
+  },
+  {
+    type: "slider",
+    label: "Coef0 (Poly/Sigmoid)",
+    key: "coef0",
+    min: -5.0,
+    max: 5.0,
+    step: 0.5,
+    default: 0.0,
+    description: "Independent term in kernel function. Influences high-degree polynomial terms.",
   },
   {
     type: "slider",
@@ -179,7 +194,7 @@ const paramExplainerData = [
   {
     name: "C (Regularization)",
     description: "Controls the trade-off between a smooth decision boundary and correctly classifying training points.",
-    impact: "Low C → wide margin, accepts more misclassifications (soft margin). High C → narrow margin, aggressively fits every point (risk of overfitting).",
+    impact: "Low C → wide margin, accepts more misclassifications (soft margin, prevents overfitting). High C → narrow margin, aggressively fits every point (risk of overfitting).",
     emoji: "⚖️",
   },
   {
@@ -189,16 +204,22 @@ const paramExplainerData = [
     emoji: "🔮",
   },
   {
-    name: "Gamma (RBF/Poly/Sigmoid)",
-    description: "Defines how far the influence of a single training example reaches.",
-    impact: "Low gamma → far reach, smooth boundary. High gamma → close reach, complex boundary (may overfit). 'scale' = 1/(n_features * X.var()).",
-    emoji: "📡",
-  },
-  {
     name: "Degree",
     description: "The degree of the polynomial kernel function. Ignored by other kernels.",
     impact: "Higher degree → more flexible curve → can overfit. Degree 2 gives elliptical boundaries. Degree 3+ gives complex shapes.",
     emoji: "📐",
+  },
+  {
+    name: "Coef0",
+    description: "Independent constant term in polynomial and sigmoid kernel functions.",
+    impact: "Controls the influence of higher-degree terms vs lower-degree terms in polynomial kernels.",
+    emoji: "➕",
+  },
+  {
+    name: "Dataset Type",
+    description: "Shape of the synthetic dataset.",
+    impact: "Blobs → easily separable with Linear kernel. Circles/Moons/Spirals → impossible for Linear kernel; requires RBF or Poly kernel to achieve good classification performance.",
+    emoji: "📊",
   },
 ];
 
@@ -245,6 +266,7 @@ export default function SvmPage() {
       kernel: "rbf",
       gamma: "scale",
       degree: 3,
+      coef0: 0.0,
     },
   });
 

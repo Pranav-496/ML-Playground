@@ -78,6 +78,16 @@ export const algorithms: AlgorithmConfig[] = [
     endpoint: "/regression/svr",
   },
   {
+    id: "decision-tree-regression",
+    name: "Decision Tree Regressor",
+    slug: "decision-tree-regression",
+    category: "regression",
+    description: "Partition feature space into rectangular regions and predict mean target values.",
+    icon: "GitFork",
+    color: "#EA580C",
+    endpoint: "/regression/decision-tree",
+  },
+  {
     id: "logistic-regression",
     name: "Logistic Regression",
     slug: "logistic-regression",

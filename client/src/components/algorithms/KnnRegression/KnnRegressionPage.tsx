@@ -17,9 +17,13 @@ interface KnnRegressionRequest {
   noise: number;
   test_size: number;
   random_state: number;
+  dataset_type: string;
   n_neighbors: number;
   weights: string;
   p: number;
+  algorithm: string;
+  leaf_size: number;
+  metric: string;
   [key: string]: unknown;
 }
 
@@ -72,6 +76,20 @@ const hyperParams: HyperParam[] = [
     description: "Standard deviation of Gaussian noise added to data.",
   },
   {
+    type: "select",
+    label: "Dataset",
+    key: "dataset_type",
+    options: [
+      { value: "linear", label: "Linear Trend" },
+      { value: "sinusoidal", label: "Sinusoidal Wave" },
+      { value: "exponential", label: "Exponential Growth" },
+      { value: "step", label: "Step Function" },
+      { value: "quadratic", label: "Quadratic Curve" },
+    ],
+    default: "linear",
+    description: "Shape of the synthetic regression dataset.",
+  },
+  {
     type: "slider",
     label: "K (Neighbors)",
     key: "n_neighbors",
@@ -99,9 +117,33 @@ const hyperParams: HyperParam[] = [
     options: [
       { value: "1", label: "Manhattan (p=1)" },
       { value: "2", label: "Euclidean (p=2)" },
+      { value: "3", label: "Minkowski (p=3)" },
     ],
     default: "2",
     description: "Power parameter for the Minkowski metric.",
+  },
+  {
+    type: "select",
+    label: "Algorithm",
+    key: "algorithm",
+    options: [
+      { value: "auto", label: "Auto" },
+      { value: "ball_tree", label: "Ball Tree" },
+      { value: "kd_tree", label: "KD Tree" },
+      { value: "brute", label: "Brute Force" },
+    ],
+    default: "auto",
+    description: "Algorithm used to compute nearest neighbors.",
+  },
+  {
+    type: "slider",
+    label: "Leaf Size",
+    key: "leaf_size",
+    min: 5,
+    max: 100,
+    step: 5,
+    default: 30,
+    description: "Leaf size for Ball Tree / KD Tree.",
   },
   {
     type: "slider",
@@ -130,19 +172,19 @@ const hyperParams: HyperParam[] = [
 const theoryContent = [
   {
     heading: "What is KNN Regression?",
+    emoji: "👥",
+    content:
+      "KNN Regression predicts continuous target values by averaging the outputs of the 'K' nearest points in feature space.",
+  },
+  {
+    heading: "Stepwise Predictions",
     emoji: "📈",
     content:
-      "Unlike Linear Regression which tries to fit a global straight line, KNN Regression is a non-parametric method. To predict a new point's value, it finds the 'K' closest data points in the training set and averages their target values.",
+      "Unlike Linear Regression which produces a straight line, KNN Regression produces piece-wise constant or step-like predictions, fitting complex non-linear curves naturally.",
   },
   {
-    heading: "The Effect of K",
+    heading: "Effect of K",
     emoji: "🎯",
-    content:
-      "A small K (like 1) perfectly connects the dots of the training data but is highly sensitive to noise, causing a jagged regression line (high variance/overfitting). A large K smooths out the predictions by averaging more points, but might underfit the underlying trend (high bias).",
-  },
-  {
-    heading: "Weighting Neighbors",
-    emoji: "⚖️",
     content:
       "With 'Uniform' weights, all K neighbors contribute equally to the average. With 'Distance' weights, closer neighbors have a larger influence on the average. Distance weighting often creates smoother predictions and can mitigate the impact of outliers.",
   },
@@ -212,9 +254,13 @@ export default function KnnRegressionPage() {
       noise: 10,
       test_size: 0.2,
       random_state: 42,
+      dataset_type: "linear",
       n_neighbors: 5,
       weights: "uniform",
       p: 2,
+      algorithm: "auto",
+      leaf_size: 30,
+      metric: "minkowski",
     },
   });
 

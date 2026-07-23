@@ -95,7 +95,7 @@ export default function ControlPanel({
 
       {/* Run button */}
       <button
-        onClick={onRun}
+        onClick={() => onRun()}
         disabled={loading}
         className={cn(
           "w-full clay-btn clay-btn-primary justify-center text-base",

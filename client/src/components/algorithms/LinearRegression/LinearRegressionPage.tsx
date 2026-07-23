@@ -19,6 +19,8 @@ interface LinearRequest {
   test_size: number;
   random_state: number;
   fit_intercept: boolean;
+  dataset_type: string;
+  positive: boolean;
   [key: string]: unknown;
 }
 
@@ -71,6 +73,20 @@ const hyperParams: HyperParam[] = [
     default: 10,
     description:
       "Standard deviation of Gaussian noise added to data. Higher noise = harder for the model to fit.",
+  },
+  {
+    type: "select",
+    label: "Dataset",
+    key: "dataset_type",
+    options: [
+      { value: "linear", label: "Linear Trend" },
+      { value: "sinusoidal", label: "Sinusoidal Wave" },
+      { value: "exponential", label: "Exponential Growth" },
+      { value: "step", label: "Step Function" },
+      { value: "quadratic", label: "Quadratic Curve" },
+    ],
+    default: "linear",
+    description: "Shape of the synthetic regression dataset.",
   },
   {
     type: "slider",
@@ -129,6 +145,12 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
+    name: "Dataset Type",
+    description: "The underlying true function generating the data.",
+    impact: "Linear → high R² fit. Sinusoidal / Exponential / Step / Quadratic → Linear Regression will struggle because a straight line cannot capture curvature (underfitting). This demonstrates why polynomial or non-linear models are needed.",
+    emoji: "📊",
+  },
+  {
     name: "Samples (n_samples)",
     description:
       "The number of data points generated. More data helps the model generalize better but takes longer to process.",
@@ -151,13 +173,6 @@ const paramExplainerData = [
     impact:
       "Too small → unreliable metrics. Too large → not enough training data.",
     emoji: "✂️",
-  },
-  {
-    name: "Random Seed",
-    description:
-      "Controls the random number generator. Same seed = same data every time. Change it to see how the model performs on different data.",
-    impact: "Different seeds generate different datasets with different patterns.",
-    emoji: "🎲",
   },
 ];
 
@@ -203,6 +218,8 @@ export default function LinearRegressionPage() {
       test_size: 0.2,
       random_state: 42,
       fit_intercept: true,
+      dataset_type: "linear",
+      positive: false,
     },
   });
 

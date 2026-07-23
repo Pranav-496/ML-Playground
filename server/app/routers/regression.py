@@ -11,6 +11,7 @@ from app.services.regression import (
     train_elasticnet_regression,
     train_knn_regression,
     train_svr,
+    train_decision_tree_regression,
     compute_regularization_path,
     compute_bias_variance_curve,
     compute_learning_curve,
@@ -26,6 +27,8 @@ class LinearRegressionRequest(BaseModel):
     test_size: float = 0.2
     random_state: int = 42
     fit_intercept: bool = True
+    dataset_type: str = "linear"
+    positive: bool = False
 
 
 class PolynomialRegressionRequest(BaseModel):
@@ -92,6 +95,8 @@ async def linear_regression(request: LinearRegressionRequest):
         test_size=request.test_size,
         random_state=request.random_state,
         fit_intercept=request.fit_intercept,
+        dataset_type=request.dataset_type,
+        positive=request.positive,
     )
     return result
 
@@ -161,9 +166,13 @@ class KnnRegressionRequest(BaseModel):
     noise: float = 10.0
     test_size: float = 0.2
     random_state: int = 42
+    dataset_type: str = "linear"
     n_neighbors: int = 5
     weights: str = "uniform"
     p: int = 2
+    algorithm: str = "auto"
+    leaf_size: int = 30
+    metric: str = "minkowski"
 
 @router.post("/elastic-net")
 async def elasticnet_regression(request: ElasticNetRegressionRequest):
@@ -188,9 +197,13 @@ async def knn_regression(request: KnnRegressionRequest):
         noise=request.noise,
         test_size=request.test_size,
         random_state=request.random_state,
+        dataset_type=request.dataset_type,
         n_neighbors=request.n_neighbors,
         weights=request.weights,
         p=request.p,
+        algorithm=request.algorithm,
+        leaf_size=request.leaf_size,
+        metric=request.metric,
     )
     return result
 
@@ -301,4 +314,42 @@ async def svr(request: SvrRequest):
 
 @router.get("/")
 async def regression_root():
-    return {"message": "Regression endpoints", "algorithms": ["linear", "linear-gd", "polynomial", "ridge", "lasso", "elastic-net", "knn", "svr"]}
+    return {"message": "Regression endpoints", "algorithms": ["linear", "linear-gd", "polynomial", "ridge", "lasso", "elastic-net", "knn", "svr", "decision-tree"]}
+
+
+class DecisionTreeRegressionRequest(BaseModel):
+    """Request body for Decision Tree regression training."""
+    n_samples: int = 100
+    noise: float = 10.0
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "quadratic"
+    criterion: str = "squared_error"
+    splitter: str = "best"
+    max_depth: int | None = None
+    min_samples_split: int = 2
+    min_samples_leaf: int = 1
+    max_features: str | None = None
+    max_leaf_nodes: int | None = None
+    min_impurity_decrease: float = 0.0
+
+
+@router.post("/decision-tree")
+async def decision_tree_regression(request: DecisionTreeRegressionRequest):
+    """Train a Decision Tree regression model and return results."""
+    result = train_decision_tree_regression(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        criterion=request.criterion,
+        splitter=request.splitter,
+        max_depth=request.max_depth,
+        min_samples_split=request.min_samples_split,
+        min_samples_leaf=request.min_samples_leaf,
+        max_features=request.max_features,
+        max_leaf_nodes=request.max_leaf_nodes,
+        min_impurity_decrease=request.min_impurity_decrease,
+    )
+    return result

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import api from "@/lib/api";
 
 interface UseAlgorithmOptions<TRequest> {
@@ -26,6 +26,7 @@ export function useAlgorithm<
   const [result, setResult] = useState<TResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMounted = useRef(false);
 
   const setParam = useCallback(
     (key: string, value: number | string | boolean) => {
@@ -38,7 +39,12 @@ export function useAlgorithm<
     setLoading(true);
     setError(null);
     try {
-      const payload = overrideParams ? { ...params, ...overrideParams } : params;
+      const isPlainObject =
+        overrideParams &&
+        typeof overrideParams === "object" &&
+        !("nativeEvent" in overrideParams) &&
+        !("target" in overrideParams);
+      const payload = isPlainObject ? { ...params, ...overrideParams } : params;
       const response = await api.post<TResponse>(endpoint, payload);
       setResult(response.data);
     } catch (err: unknown) {
@@ -49,6 +55,18 @@ export function useAlgorithm<
       setLoading(false);
     }
   }, [endpoint, params]);
+
+  // Automatically re-train whenever params change (e.g. selecting from dataset/parameter menus)
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+    const timer = setTimeout(() => {
+      train();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { params, setParam, result, loading, error, train };
 }

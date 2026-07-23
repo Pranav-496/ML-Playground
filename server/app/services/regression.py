@@ -3,6 +3,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
@@ -196,6 +197,8 @@ def train_linear_regression(
     test_size: float = 0.2,
     random_state: int = 42,
     fit_intercept: bool = True,
+    dataset_type: str = "linear",
+    positive: bool = False,
 ) -> dict:
     """Train a linear regression model on synthetic data.
 
@@ -214,6 +217,7 @@ def train_linear_regression(
         n_samples=n_samples,
         noise=noise,
         random_state=random_state,
+        dataset_type=dataset_type,
     )
 
     # Split
@@ -222,7 +226,7 @@ def train_linear_regression(
     )
 
     # Train
-    model = LinearRegression(fit_intercept=fit_intercept)
+    model = LinearRegression(fit_intercept=fit_intercept, positive=positive)
     model.fit(X_train, y_train)
 
     # Predict
@@ -885,13 +889,18 @@ def train_knn_regression(
     noise: float = 10.0,
     test_size: float = 0.2,
     random_state: int = 42,
+    dataset_type: str = "linear",
     n_neighbors: int = 5,
     weights: str = "uniform",
     p: int = 2,
+    algorithm: str = "auto",
+    leaf_size: int = 30,
+    metric: str = "minkowski",
 ) -> dict:
     """Train a KNN Regression model and return results and plot data."""
     X, y = generate_regression_data(
-        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(0, 10)
+        n_samples=n_samples, noise=noise, random_state=random_state, x_range=(0, 10),
+        dataset_type=dataset_type,
     )
     
     X_train, X_test, y_train, y_test = train_test_split(
@@ -902,6 +911,9 @@ def train_knn_regression(
         n_neighbors=n_neighbors,
         weights=weights,
         p=p,
+        algorithm=algorithm,
+        leaf_size=leaf_size,
+        metric=metric,
     )
     model.fit(X_train, y_train)
 
@@ -1027,4 +1039,111 @@ def train_svr(
         "coefficients": [],
         "intercept": float(model.intercept_[0]) if hasattr(model.intercept_, '__len__') else float(model.intercept_),
         "model_params": model.get_params(),
+    }
+
+
+# ─── Decision Tree Regression ─────────────────────────────────
+
+def train_decision_tree_regression(
+    n_samples: int = 100,
+    noise: float = 10.0,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    dataset_type: str = "quadratic",
+    criterion: str = "squared_error",
+    splitter: str = "best",
+    max_depth: int | None = None,
+    min_samples_split: int = 2,
+    min_samples_leaf: int = 1,
+    max_features: str | None = None,
+    max_leaf_nodes: int | None = None,
+    min_impurity_decrease: float = 0.0,
+) -> dict:
+    """Train a Decision Tree Regressor and return results.
+
+    Decision trees for regression predict continuous values by averaging
+    the target in each leaf region. The tree partitions the feature space
+    into axis-aligned rectangular regions.
+    """
+    X, y = generate_regression_data(
+        n_samples=n_samples, noise=noise, random_state=random_state,
+        x_range=(-5, 5), dataset_type=dataset_type,
+    )
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state
+    )
+
+    model = DecisionTreeRegressor(
+        criterion=criterion,
+        splitter=splitter,
+        max_depth=max_depth if max_depth and max_depth > 0 else None,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        max_features=max_features if max_features and max_features != "none" else None,
+        max_leaf_nodes=max_leaf_nodes if max_leaf_nodes and max_leaf_nodes > 0 else None,
+        min_impurity_decrease=min_impurity_decrease,
+        random_state=random_state,
+    )
+    model.fit(X_train, y_train)
+
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
+    # Smooth prediction line
+    x_line = np.linspace(X.min(), X.max(), 500).reshape(-1, 1)
+    y_line = model.predict(x_line)
+
+    metrics = {
+        "r2_score": float(r2_score(y_test, y_test_pred)),
+        "mse": float(mean_squared_error(y_test, y_test_pred)),
+        "rmse": float(np.sqrt(mean_squared_error(y_test, y_test_pred))),
+        "mae": float(mean_absolute_error(y_test, y_test_pred)),
+    }
+
+    plot_data = {
+        "x_train": X_train.ravel().tolist(),
+        "y_train": y_train.tolist(),
+        "x_test": X_test.ravel().tolist(),
+        "y_test": y_test.tolist(),
+        "x_line": x_line.ravel().tolist(),
+        "y_line": y_line.tolist(),
+        "y_train_pred": y_train_pred.tolist(),
+        "y_test_pred": y_test_pred.tolist(),
+        "residuals_train": (y_train - y_train_pred).tolist(),
+        "residuals_test": (y_test - y_test_pred).tolist(),
+    }
+
+    # Extract tree structure for visualization
+    def build_tree_dict(node_id: int):
+        node_id = int(node_id)
+        if node_id == -1:
+            return None
+        tree = model.tree_
+        is_leaf = bool(
+            tree.children_left[node_id] == -1
+            and tree.children_right[node_id] == -1
+        )
+        node_dict = {
+            "node_id": node_id,
+            "samples": int(tree.n_node_samples[node_id]),
+            "value": round(float(tree.value[node_id][0][0]), 3),
+            "impurity": round(float(tree.impurity[node_id]), 3),
+            "is_leaf": is_leaf,
+        }
+        if not is_leaf:
+            node_dict["feature"] = f"Feature {tree.feature[node_id]}"
+            node_dict["threshold"] = round(float(tree.threshold[node_id]), 3)
+            node_dict["left"] = build_tree_dict(int(tree.children_left[node_id]))
+            node_dict["right"] = build_tree_dict(int(tree.children_right[node_id]))
+        return node_dict
+
+    return {
+        "metrics": metrics,
+        "plot_data": plot_data,
+        "equation": f"DecisionTreeRegressor(max_depth={max_depth}, criterion={criterion})",
+        "coefficients": [],
+        "intercept": 0,
+        "model_params": model.get_params(),
+        "tree_structure": build_tree_dict(0),
     }

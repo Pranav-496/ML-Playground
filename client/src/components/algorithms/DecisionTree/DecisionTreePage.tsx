@@ -62,11 +62,15 @@ const hyperParams: HyperParam[] = [
     label: "Dataset",
     key: "dataset_type",
     options: [
-      { value: "moons", label: "Moons (Non-linear)" },
-      { value: "blobs", label: "Blobs (Clusters)" },
+      { value: "moons", label: "Half Moons" },
+      { value: "blobs", label: "Gaussian Blobs" },
+      { value: "circles", label: "Concentric Circles" },
+      { value: "xor", label: "XOR Pattern" },
+      { value: "spirals", label: "Spirals" },
+      { value: "anisotropic", label: "Anisotropic" },
     ],
     default: "moons",
-    description: "Shape of the generated data.",
+    description: "Shape of the synthetic classification dataset.",
   },
   {
     type: "slider",
@@ -202,22 +206,40 @@ const theoryContent = [
 
 const paramExplainerData = [
   {
-    name: "Max Depth",
-    description: "Limits how many layers of questions the tree can ask.",
-    impact: "Small Max Depth → Underfitting, simple boundaries. Large Max Depth → Overfitting, highly complex blocky boundaries around individual noise points.",
-    emoji: "⬇️",
-  },
-  {
-    name: "Min Samples Leaf",
-    description: "Requires a leaf to have at least this many data points.",
-    impact: "High values force the tree to create broader, smoother regions rather than making a tiny rectangular box for a single anomalous point.",
-    emoji: "🍂",
+    name: "Criterion",
+    description: "Function to evaluate split quality at each node.",
+    impact: "Gini measures frequency of wrong classification (fast). Entropy measures information gain in bits. Log Loss uses cross-entropy.",
+    emoji: "📐",
   },
   {
     name: "Splitter",
-    description: "How to choose the split threshold.",
-    impact: "'Best' looks at all possible thresholds to maximize purity. 'Random' picks random thresholds, creating ensembles later (like Random Forest).",
+    description: "Strategy used to select the split threshold.",
+    impact: "'Best' evaluates all split points to find optimal division. 'Random' evaluates a random subset of thresholds (adds randomness, prevents overfitting).",
     emoji: "🔀",
+  },
+  {
+    name: "Max Depth",
+    description: "Limits how deep the decision tree can grow.",
+    impact: "Max Depth = 1-2 → Underfitting (decision stump). Max Depth = 0 (Unlimited) → Overfitting: creates tiny rectangular islands to capture every outlier point.",
+    emoji: "⬇️",
+  },
+  {
+    name: "Min Samples Split",
+    description: "Minimum samples required in a node to perform a split.",
+    impact: "Higher values stop splits early, acting as a pre-pruning mechanism. Prevents creating sub-trees for tiny noise clusters.",
+    emoji: "🌿",
+  },
+  {
+    name: "Min Samples Leaf",
+    description: "Minimum samples required to exist in a leaf node.",
+    impact: "High values force the tree to create broader, smoother rectangular decision regions rather than isolation boxes for single data points.",
+    emoji: "🍂",
+  },
+  {
+    name: "Min Impurity Decrease",
+    description: "Threshold of impurity reduction required for a split.",
+    impact: "Higher values prune unnecessary splits that yield minimal performance gain, forcing cleaner and simpler tree structures.",
+    emoji: "✂️",
   },
 ];
 

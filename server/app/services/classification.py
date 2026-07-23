@@ -103,24 +103,32 @@ def train_logistic_regression(
     noise: float = 1.5,
     test_size: float = 0.2,
     random_state: int = 42,
+    dataset_type: str = "blobs",
     C: float = 1.0,
     penalty: str = "l2",
     solver: str = "lbfgs",
     max_iter: int = 100,
+    l1_ratio: float | None = None,
 ) -> dict:
     """Train a logistic regression model and return results and plot data."""
     X, y = generate_classification_data(
         n_samples=n_samples, n_features=2, n_classes=2,
         random_state=random_state, cluster_std=noise,
+        dataset_type=dataset_type,
     )
 
-    model = LogisticRegression(
+    effective_penalty = None if penalty == "none" else penalty
+    kwargs: dict = dict(
         C=C,
-        penalty=None if penalty == "none" else penalty,
+        penalty=effective_penalty,
         solver=solver,
         max_iter=max_iter,
         random_state=random_state,
     )
+    if penalty == "elasticnet" and l1_ratio is not None:
+        kwargs["l1_ratio"] = l1_ratio
+
+    model = LogisticRegression(**kwargs)
 
     def extras(m, X_train, X_test, y_train, y_test):
         coefficients = m.coef_[0].tolist() if m.coef_.ndim > 1 else m.coef_.tolist()
@@ -144,17 +152,29 @@ def train_knn(
     noise: float = 1.5,
     test_size: float = 0.2,
     random_state: int = 42,
+    dataset_type: str = "blobs",
     n_neighbors: int = 5,
     weights: str = "uniform",
     p: int = 2,
+    algorithm: str = "auto",
+    leaf_size: int = 30,
+    metric: str = "minkowski",
 ) -> dict:
     """Train a K-Nearest Neighbors model and return results and plot data."""
     X, y = generate_classification_data(
         n_samples=n_samples, n_features=2, n_classes=2,
         random_state=random_state, cluster_std=noise,
+        dataset_type=dataset_type,
     )
 
-    model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, p=p)
+    model = KNeighborsClassifier(
+        n_neighbors=n_neighbors,
+        weights=weights,
+        p=p,
+        algorithm=algorithm,
+        leaf_size=leaf_size,
+        metric=metric,
+    )
 
     return _evaluate_classifier(
         model, X, y,
@@ -246,6 +266,7 @@ def train_svm(
     kernel: str = "rbf",
     gamma: str = "scale",
     degree: int = 3,
+    coef0: float = 0.0,
 ) -> dict:
     """Train a Support Vector Machine classifier and return results.
 
@@ -263,6 +284,7 @@ def train_svm(
         kernel=kernel,
         gamma=gamma,
         degree=degree,
+        coef0=coef0,
         random_state=random_state,
     )
 
@@ -313,6 +335,9 @@ def train_gaussian_nb(
     Assumes features follow a Gaussian (normal) distribution within each class.
     var_smoothing adds a portion of the largest variance to all features for stability.
     """
+    if var_smoothing <= 0:
+        var_smoothing = 10 ** var_smoothing
+
     X, y = generate_classification_data(
         n_samples=n_samples, n_features=2, n_classes=2,
         random_state=random_state, cluster_std=noise,
@@ -346,6 +371,7 @@ def train_bernoulli_nb(
     dataset_type: str = "blobs",
     alpha: float = 1.0,
     binarize: float = 0.0,
+    fit_prior: bool = True,
 ) -> dict:
     """Train a Bernoulli Naive Bayes classifier.
 
@@ -358,7 +384,7 @@ def train_bernoulli_nb(
         dataset_type=dataset_type,
     )
 
-    model = BernoulliNB(alpha=alpha, binarize=binarize)
+    model = BernoulliNB(alpha=alpha, binarize=binarize, fit_prior=fit_prior)
 
     def extras(m, X_train, X_test, y_train, y_test):
         return {
@@ -383,6 +409,7 @@ def train_multinomial_nb(
     random_state: int = 42,
     dataset_type: str = "blobs",
     alpha: float = 1.0,
+    fit_prior: bool = True,
 ) -> dict:
     """Train a Multinomial Naive Bayes classifier.
 
@@ -399,7 +426,7 @@ def train_multinomial_nb(
     scaler = MinMaxScaler()
     X = scaler.fit_transform(X)
 
-    model = MultinomialNB(alpha=alpha)
+    model = MultinomialNB(alpha=alpha, fit_prior=fit_prior)
 
     def extras(m, X_train, X_test, y_train, y_test):
         return {
