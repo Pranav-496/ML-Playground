@@ -11,10 +11,9 @@ export default function ParamExplainer({ params }: ParamExplainerProps) {
   return (
     <div className="clay p-6">
       <h3
-        className="text-lg font-bold text-text-primary mb-5"
-        style={{ fontFamily: '"Cinzel", serif' }}
+        className="text-lg font-bold text-gold-light font-royal mb-5 border-b border-surface-border/50 pb-3"
       >
-        Parameter Codex
+        👑 The Small Council Advises
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {params.map((param) => (

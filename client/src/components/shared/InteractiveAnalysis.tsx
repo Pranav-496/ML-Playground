@@ -190,21 +190,21 @@ export function BiasVarianceCurve({
   }, [modelType, sweepParam, noise, alpha, randomState]);
 
   return (
-    <div className="clay p-5 space-y-4">
-      <div className="flex items-center justify-between">
-        <h4 className="text-base font-extrabold text-text-primary flex items-center gap-2">
+    <div className="clay p-5 space-y-4 border-iron">
+      <div className="flex items-center justify-between border-b border-surface-border/50 pb-3">
+        <h4 className="text-base font-extrabold text-gold-light font-royal flex items-center gap-2">
           <Activity className="h-5 w-5 text-accent" />
-          Bias-Variance Trade-off
+          ⚔ War Strategy (Bias vs Variance)
         </h4>
         <button
           onClick={compute}
           disabled={loading}
-          className="clay-btn clay-btn-primary text-xs px-4 py-2"
+          className="clay-btn clay-btn-primary text-xs px-4 py-2 border-valyrian"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            "⚡ Compute Curve"
+            "🐉 Dracarys"
           )}
         </button>
       </div>

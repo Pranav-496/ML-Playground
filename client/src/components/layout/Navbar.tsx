@@ -8,8 +8,8 @@ export default function Navbar() {
   const location = useLocation();
 
   const navLinks = [
-    { to: "/", label: "Home" },
-    { to: "/algorithms", label: "Algorithms" },
+    { to: "/", label: "King's Landing" },
+    { to: "/algorithms", label: "The Great Houses" },
   ];
 
   return (

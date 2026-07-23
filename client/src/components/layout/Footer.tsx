@@ -10,14 +10,13 @@ export default function Footer() {
               <Sword className="h-4 w-4 text-white" />
             </div>
             <span
-              className="text-sm font-semibold tracking-wider"
-              style={{ fontFamily: '"Cinzel", serif' }}
+              className="text-sm font-bold tracking-widest text-gold-light font-royal"
             >
-              Valoris — Forge Intelligence
+              VALORIS — Knowledge is Power.
             </span>
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-text-muted font-medium">
-            Forged by Pranav Landge
+          <div className="flex items-center gap-1.5 text-xs text-text-muted font-medium font-royal">
+            Forged in the Kingdom of Westeros
           </div>
         </div>
       </div>

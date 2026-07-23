@@ -10,20 +10,19 @@ interface TheorySectionProps {
   }[];
 }
 
-export default function TheorySection({ title, sections }: TheorySectionProps) {
+export default function TheorySection({ title = "📜 The Grand Maester's Wisdom", sections }: TheorySectionProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="clay p-6">
+    <div className="clay p-6 border-iron">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between"
+        className="w-full flex items-center justify-between border-b border-surface-border/50 pb-3"
       >
         <h3
-          className="text-lg font-bold text-text-primary"
-          style={{ fontFamily: '"Cinzel", serif' }}
+          className="text-lg font-bold text-gold-light font-royal"
         >
-          {title}
+          {title.includes("Theory") ? "📜 The Grand Maester's Wisdom" : title}
         </h3>
         {isOpen ? (
           <ChevronUp className="h-5 w-5 text-text-muted" />

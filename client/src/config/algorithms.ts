@@ -178,9 +178,9 @@ export const algorithms: AlgorithmConfig[] = [
 ];
 
 export const categoryLabels: Record<string, string> = {
-  regression: "Regression",
-  classification: "Classification",
-  clustering: "Clustering",
+  regression: "House Stark",
+  classification: "House Lannister",
+  clustering: "House Targaryen",
 };
 
 export const categoryColors: Record<string, string> = {

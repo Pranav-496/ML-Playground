@@ -105,10 +105,75 @@
     background: #3F3F4A;
   }
 
-  /* Cinzel for headings */
-  h1, h2, h3 {
+  /* Cinzel for headings & Westeros Royal aesthetics */
+  h1, h2, h3, h4, .font-royal {
     font-family: "Cinzel", serif;
   }
+}
+
+/* =====================================================
+   WESTEROS & HOUSE OF THE DRAGON THEME UTILITIES
+   ===================================================== */
+
+/* Subtle Dragon Scale Pattern Overlay */
+.bg-dragon-scale {
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, rgba(185, 28, 28, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 25px 25px, rgba(245, 158, 11, 0.04) 2px, transparent 0),
+    radial-gradient(circle at 75px 75px, rgba(185, 28, 28, 0.04) 2px, transparent 0);
+  background-size: 100% 100%, 100px 100px, 100px 100px;
+}
+
+/* Medieval Metallic Borders */
+.border-iron {
+  border: 1px solid rgba(161, 161, 170, 0.25);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.border-valyrian {
+  border: 1px solid rgba(185, 28, 28, 0.4);
+  box-shadow: inset 0 0 12px rgba(185, 28, 28, 0.15), 0 0 20px rgba(185, 28, 28, 0.2);
+}
+
+.border-gold-royal {
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.1), 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+/* Drifting Ember Particles */
+.ember-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FF5A1F 0%, #B91C1C 70%, transparent 100%);
+  box-shadow: 0 0 8px #FF5A1F, 0 0 14px #B91C1C;
+  pointer-events: none;
+  animation: floatEmber 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes floatEmber {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-200px) translateX(30px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Gold Metallic Foil Text */
+.gold-foil-text {
+  background: linear-gradient(135deg, #F59E0B 0%, #FDE047 30%, #D97706 70%, #F59E0B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
 }
 
 /* =====================================================

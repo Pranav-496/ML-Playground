@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import {
-  Sword,
-  TrendingUp,
-  GitBranch,
-  Layers,
+  Shield,
+  Crown,
+  Flame,
   ArrowRight,
   Zap,
   BarChart3,
   BookOpen,
-  ChevronRight,
+  Landmark,
 } from "lucide-react";
 import { algorithms } from "@/config/algorithms";
 
@@ -17,55 +16,68 @@ const features = [
     icon: <Zap className="h-6 w-6" />,
     title: "Forge & Refine",
     description:
-      "Drag sliders, change hyperparameters, and watch models reshape in real time.",
-    color: "#DC2626",
+      "Drag sliders, alter parameters of the Small Council, and forge models like Valyrian steel.",
+    color: "#B91C1C",
   },
   {
     icon: <BarChart3 className="h-6 w-6" />,
-    title: "Visualise Mastery",
+    title: "Borders of the Realm",
     description:
-      "Interactive Plotly charts that make decision boundaries and regressions tangible.",
+      "Interactive Plotly visualizer mapping boundaries, residual aftermaths, and war metrics.",
     color: "#FF5A1F",
   },
   {
     icon: <BookOpen className="h-6 w-6" />,
-    title: "Ancient Knowledge",
+    title: "Grand Maester's Wisdom",
     description:
-      "Every algorithm comes with theory, math, and intuition — not just code.",
+      "Deep mathematical lore, strengths, and weaknesses for every Great House in Machine Learning.",
     color: "#F59E0B",
   },
 ];
 
 const categoryStats = [
   {
-    icon: <TrendingUp className="h-6 w-6" />,
-    label: "Regression",
+    icon: <Shield className="h-6 w-6" />,
+    label: "House Stark",
+    subtitle: "Regression",
     count: algorithms.filter((a) => a.category === "regression").length,
-    color: "#DC2626",
+    color: "#E11D48",
   },
   {
-    icon: <GitBranch className="h-6 w-6" />,
-    label: "Classification",
+    icon: <Crown className="h-6 w-6" />,
+    label: "House Lannister",
+    subtitle: "Classification",
     count: algorithms.filter((a) => a.category === "classification").length,
-    color: "#FF5A1F",
+    color: "#F59E0B",
   },
   {
-    icon: <Layers className="h-6 w-6" />,
-    label: "Clustering",
+    icon: <Flame className="h-6 w-6" />,
+    label: "House Targaryen",
+    subtitle: "Clustering & Ensembles",
     count: algorithms.filter((a) => a.category === "clustering").length,
-    color: "#F59E0B",
+    color: "#EF4444",
   },
 ];
 
 export default function HomePage() {
   return (
-    <div className="animate-fade-in">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-08 sm:py-14">
-        <div className="relative max-w-4xl mx-auto text-center px-4">
+    <div className="animate-fade-in relative bg-dragon-scale">
+      {/* Background Ash & Ember Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="ember-particle w-2 h-2 top-[20%] left-[15%] animation-delay-1000" />
+        <div className="ember-particle w-3 h-3 top-[40%] left-[80%] animation-delay-2000" />
+        <div className="ember-particle w-2.5 h-2.5 top-[70%] left-[25%] animation-delay-500" />
+        <div className="ember-particle w-3 h-3 top-[85%] left-[70%] animation-delay-3000" />
+        <div className="ember-particle w-1.5 h-1.5 top-[15%] left-[60%]" />
+      </div>
+
+      {/* Hero Section with Iron Throne Silhouette */}
+      <section className="relative overflow-hidden py-12 sm:py-20 z-10">
+        <div className="relative max-w-5xl mx-auto text-center px-4">
+          
           {/* Logo */}
           <h1
-            className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-[0.12em] mb-6 leading-[1.05]"
+            className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-[0.2em] mb-4 leading-[1.05]"
             style={{ fontFamily: '"Cinzel", serif' }}
           >
             <span className="logo-shine">VALORIS</span>
@@ -73,64 +85,63 @@ export default function HomePage() {
 
           {/* Tagline */}
           <p
-            className="text-2xl sm:text-3xl font-semibold text-text-secondary mb-4 tracking-wide"
-            style={{ fontFamily: '"Cinzel", serif' }}
+            className="text-2xl sm:text-3xl font-bold text-gold-light mb-6 tracking-widest uppercase font-royal"
           >
-            Forge Intelligence.
+            Knowledge is power.
           </p>
 
-          <p className="text-base sm:text-lg text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-            Master Machine Learning through interactive visual exploration.
-            Tune hyperparameters, watch models learn, and build real intuition
-            in an elite academy.
+          <p className="text-base sm:text-lg text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+            Step into the Seven Kingdoms of Machine Learning. Command Great Houses, 
+            forge Valyrian models, and conquer hyperparameter councils across Westeros.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Primary & Secondary Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
             <Link
               to="/algorithms"
-              className="clay-btn clay-btn-primary text-base"
+              className="clay-btn clay-btn-primary text-lg font-bold border-valyrian px-8 py-3.5"
             >
-              <Sword className="h-5 w-5" />
-              Enter Valoris
-              <ArrowRight className="h-5 w-5" />
+              🐉 Dracarys
+              <ArrowRight className="h-5 w-5 ml-1" />
             </Link>
             <Link
               to="/algorithms"
-              className="clay-btn clay-btn-secondary text-base"
+              className="clay-btn clay-btn-secondary text-lg font-bold border-gold-royal px-8 py-3.5 text-gold-light"
             >
-              Explore Algorithms
-              <ChevronRight className="h-4 w-4" />
+              <Landmark className="h-5 w-5 text-gold" />
+              Take the Iron Throne
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Category Stats */}
-      <section className="max-w-4xl mx-auto px-4 py-10">
+      {/* Category Stats - The Great Houses */}
+      <section className="max-w-5xl mx-auto px-4 py-8 z-10 relative">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {categoryStats.map((stat, i) => (
             <div
               key={stat.label}
-              className="clay p-6 clay-hover animate-slide-up"
+              className="clay p-6 clay-hover border-iron animate-slide-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
               <div className="flex items-center gap-4">
                 <div
-                  className="p-3 rounded-2xl"
+                  className="p-3 rounded-2xl border border-surface-border"
                   style={{ backgroundColor: `${stat.color}15` }}
                 >
                   <div style={{ color: stat.color }}>{stat.icon}</div>
                 </div>
                 <div>
                   <p
-                    className="text-3xl font-bold"
-                    style={{ color: stat.color, fontFamily: '"Cinzel", serif' }}
+                    className="text-2xl font-bold text-gold-light font-royal"
                   >
-                    {stat.count}
+                    {stat.count} Disciplines
                   </p>
-                  <p className="text-sm text-text-muted font-semibold">
+                  <p className="text-sm text-text-primary font-extrabold font-royal">
                     {stat.label}
+                  </p>
+                  <p className="text-xs text-text-muted font-medium">
+                    {stat.subtitle}
                   </p>
                 </div>
               </div>
@@ -139,17 +150,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
-        <div className="text-center mb-14">
+      {/* Features - The Path to Conquest */}
+      <section className="max-w-5xl mx-auto px-4 py-14 z-10 relative">
+        <div className="text-center mb-12">
           <h2
-            className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
-            style={{ fontFamily: '"Cinzel", serif' }}
+            className="text-3xl sm:text-4xl font-extrabold text-text-primary mb-3 font-royal"
           >
-            The Path to <span className="gradient-text-warm">Mastery</span>
+            The Path to <span className="gradient-text-gold">Conquest</span>
           </h2>
           <p className="text-text-muted max-w-xl mx-auto font-medium">
-            Every warrior needs weapons. Every master needs tools.
+            Machine Learning treated like warfare and ancient knowledge.
           </p>
         </div>
 
@@ -157,18 +167,17 @@ export default function HomePage() {
           {features.map((feature, i) => (
             <div
               key={feature.title}
-              className="clay p-7 clay-hover animate-slide-up"
+              className="clay p-7 clay-hover border-iron animate-slide-up"
               style={{ animationDelay: `${i * 120}ms` }}
             >
               <div
-                className="p-3.5 rounded-2xl w-fit mb-5"
-                style={{ backgroundColor: `${feature.color}12` }}
+                className="p-3.5 rounded-2xl w-fit mb-5 border border-surface-border"
+                style={{ backgroundColor: `${feature.color}15` }}
               >
                 <div style={{ color: feature.color }}>{feature.icon}</div>
               </div>
               <h3
-                className="text-xl font-bold text-text-primary mb-2"
-                style={{ fontFamily: '"Cinzel", serif' }}
+                className="text-lg font-bold text-text-primary mb-2 font-royal"
               >
                 {feature.title}
               </h3>
@@ -180,17 +189,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Algorithm Grid */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
-        <div className="text-center mb-14">
+      {/* The Great Houses Grid */}
+      <section className="max-w-5xl mx-auto px-4 py-12 z-10 relative">
+        <div className="text-center mb-12">
           <h2
-            className="text-3xl sm:text-4xl font-bold text-text-primary mb-4"
-            style={{ fontFamily: '"Cinzel", serif' }}
+            className="text-3xl sm:text-4xl font-extrabold text-text-primary mb-3 font-royal"
           >
-            {algorithms.length} <span className="gradient-text-gold">Disciplines</span>
+            {algorithms.length} <span className="gradient-text-gold">Disciplines of Westeros</span>
           </h2>
           <p className="text-text-muted max-w-xl mx-auto font-medium">
-            From regression to clustering — every weapon in your arsenal.
+            From House Stark regression lines to House Targaryen trees — master every discipline.
           </p>
         </div>
 
@@ -199,21 +207,21 @@ export default function HomePage() {
             <Link
               key={algo.id}
               to={`/algorithms/${algo.slug}`}
-              className="group clay p-5 clay-hover animate-slide-up"
+              className="group clay p-5 clay-hover border-iron animate-slide-up"
               style={{ animationDelay: `${index * 60}ms` }}
             >
               <div className="flex items-start gap-3">
                 <div
-                  className="p-2.5 rounded-2xl shrink-0"
-                  style={{ backgroundColor: `${algo.color}12` }}
+                  className="p-2.5 rounded-2xl shrink-0 border border-surface-border"
+                  style={{ backgroundColor: `${algo.color}15` }}
                 >
-                  <Sword
+                  <Crown
                     className="h-5 w-5 transition-transform duration-300 group-hover:scale-110"
                     style={{ color: algo.color }}
                   />
                 </div>
                 <div>
-                  <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-text-primary group-hover:text-gold-light transition-colors font-royal text-sm">
                     {algo.name}
                   </h3>
                   <p className="text-xs text-text-muted mt-1.5 line-clamp-2 font-medium leading-relaxed">
