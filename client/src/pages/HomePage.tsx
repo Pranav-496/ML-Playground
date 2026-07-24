@@ -211,7 +211,7 @@ function RealmNav() {
 /* ─── Main HomePage ─── */
 export default function HomePage() {
   return (
-    <div className="animate-fade-in w-full overflow-x-hidden">
+    <div className="animate-fade-in w-full">
       {/* Hero Section */}
       <section
         className="relative min-h-[85vh] flex items-center justify-center overflow-hidden"

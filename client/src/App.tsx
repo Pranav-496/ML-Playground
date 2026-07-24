@@ -10,10 +10,10 @@ function AppContent() {
   const isHomePage = location.pathname === "/";
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col bg-surface w-full">
       <ScrollToTop />
       <Navbar />
-      <main className={isHomePage ? "flex-1 overflow-x-hidden w-full" : "flex-1 px-4 sm:px-6 lg:px-8 py-8 overflow-x-hidden w-full"}>
+      <main className={isHomePage ? "flex-1 w-full" : "flex-1 px-4 sm:px-6 lg:px-8 py-8 w-full"}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/algorithms" element={<AlgorithmsPage />} />

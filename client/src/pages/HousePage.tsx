@@ -45,7 +45,7 @@ export default function HousePage() {
   );
 
   return (
-    <div className="animate-fade-in w-full overflow-x-hidden">
+    <div className="animate-fade-in w-full">
       {/* Hero Banner */}
       <div className="relative rounded-2xl -mt-2 mb-8 overflow-hidden border border-surface-border/50">
         <div className="relative min-h-[130px] sm:min-h-[160px] flex items-center p-5 sm:p-7">
