@@ -12,7 +12,7 @@ export default function Footer() {
             <span
               className="text-sm font-bold tracking-widest text-gold-light font-royal"
             >
-              VALORIS — Knowledge is Power.
+              VALORIS — Knowledge is Power
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-text-muted font-medium font-royal">

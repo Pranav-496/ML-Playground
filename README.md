@@ -204,4 +204,4 @@ ML-Playground/
 
 Created with passion by **Pranav Landge**.
 
-*Valoris — "Knowledge is power."*
+*Valoris — "Knowledge is power"*

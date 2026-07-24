@@ -74,7 +74,7 @@ export default function HomePage() {
       {/* Hero Section with Iron Throne Silhouette */}
       <section className="relative overflow-hidden py-12 sm:py-20 z-10">
         <div className="relative max-w-5xl mx-auto text-center px-4">
-          
+
           {/* Logo */}
           <h1
             className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-[0.2em] mb-4 leading-[1.05]"
@@ -87,11 +87,11 @@ export default function HomePage() {
           <p
             className="text-2xl sm:text-3xl font-bold text-gold-light mb-6 tracking-widest uppercase font-royal"
           >
-            Knowledge is power.
+            Knowledge is power
           </p>
 
           <p className="text-base sm:text-lg text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-            Step into the Seven Kingdoms of Machine Learning. Command Great Houses, 
+            Step into the Seven Kingdoms of Machine Learning. Command Great Houses,
             forge Valyrian models, and conquer hyperparameter councils across Westeros.
           </p>
 
