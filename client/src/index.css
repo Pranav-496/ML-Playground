@@ -65,6 +65,8 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
@@ -79,12 +81,16 @@
       radial-gradient(ellipse at 80% 10%, rgba(255, 90, 31, 0.04) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
     background-attachment: fixed;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   #root {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   ::-webkit-scrollbar {
@@ -502,4 +508,13 @@ select option {
 @keyframes glowPulse {
   0%, 100% { box-shadow: 0 0 8px rgba(185, 28, 28, 0.15); }
   50% { box-shadow: 0 0 20px rgba(185, 28, 28, 0.35); }
+}
+
+/* Hide scrollbar utility for horizontal scroll containers */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }

@@ -10,7 +10,7 @@ interface TheorySectionProps {
   }[];
 }
 
-export default function TheorySection({ title = "📜 The Grand Maester's Wisdom", sections }: TheorySectionProps) {
+export default function TheorySection({ title = "The Grand Maester's Wisdom", sections }: TheorySectionProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -22,7 +22,7 @@ export default function TheorySection({ title = "📜 The Grand Maester's Wisdom
         <h3
           className="text-lg font-bold text-gold-light font-royal"
         >
-          {title.includes("Theory") ? "📜 The Grand Maester's Wisdom" : title}
+          {title.includes("Theory") ? "The Grand Maester's Wisdom" : title}
         </h3>
         {isOpen ? (
           <ChevronUp className="h-5 w-5 text-text-muted" />
@@ -35,8 +35,7 @@ export default function TheorySection({ title = "📜 The Grand Maester's Wisdom
         <div className="mt-5 space-y-5 animate-fade-in">
           {sections.map((section, i) => (
             <div key={i}>
-              <h4 className="text-sm font-bold text-primary mb-2 flex items-center gap-2">
-                {section.emoji && <span>{section.emoji}</span>}
+              <h4 className="text-sm font-bold text-primary mb-2 font-royal">
                 {section.heading}
               </h4>
               <p className="text-sm text-text-secondary leading-relaxed font-medium whitespace-pre-line">

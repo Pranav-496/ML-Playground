@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { Sword, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import ValorisLogoIcon from "@/components/shared/ValorisLogoIcon";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,10 +19,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative p-2 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-[3px_3px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(50,50,60,0.1)] group-hover:shadow-[5px_5px_14px_rgba(0,0,0,0.5),0_0_20px_rgba(185,28,28,0.2)] transition-all duration-300">
-              <Sword className="h-5 w-5 text-white" />
+            <div className="relative transition-all duration-300 group-hover:scale-105">
+              <ValorisLogoIcon className="h-8 w-8" />
             </div>
-            <span className="text-xl font-bold tracking-[0.15em] gradient-text" style={{ fontFamily: '"Cinzel", serif' }}>
+            <span className="text-xl font-bold tracking-[0.15em] gradient-text font-royal">
               VALORIS
             </span>
           </Link>

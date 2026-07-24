@@ -194,7 +194,7 @@ export function BiasVarianceCurve({
       <div className="flex items-center justify-between border-b border-surface-border/50 pb-3">
         <h4 className="text-base font-extrabold text-gold-light font-royal flex items-center gap-2">
           <Activity className="h-5 w-5 text-accent" />
-          ⚔ War Strategy (Bias vs Variance)
+          War Strategy (Bias vs Variance)
         </h4>
         <button
           onClick={compute}
@@ -204,7 +204,7 @@ export function BiasVarianceCurve({
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            "🐉 Dracarys"
+            "Dracarys"
           )}
         </button>
       </div>

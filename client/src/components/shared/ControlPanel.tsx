@@ -38,7 +38,7 @@ export default function ControlPanel({
         <h3
           className="text-lg font-bold text-gold-light font-royal"
         >
-          🏰 Small Council
+          Small Council
         </h3>
         <span className="text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full bg-surface-border/60 text-gold font-mono">
           Westeros Directives
@@ -127,7 +127,7 @@ export default function ControlPanel({
             The Maesters are calculating...
           </>
         ) : (
-          <>🐉 Dracarys</>
+          <>Dracarys</>
         )}
       </button>
     </div>

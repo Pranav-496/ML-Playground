@@ -1,8 +1,7 @@
 import { useParams, Link } from "react-router-dom";
-import { Sword, Construction, ArrowLeft } from "lucide-react";
+import { Sword, Construction, ArrowLeft, Crown } from "lucide-react";
 import { algorithms } from "@/config/algorithms";
-import { cn } from "@/lib/utils";
-import { categoryBgColors, categoryColors, categoryLabels } from "@/config/algorithms";
+import { getHouseForAlgorithm } from "@/config/houses";
 
 // Algorithm page components
 import LinearRegressionPage from "@/components/algorithms/LinearRegression/LinearRegressionPage";
@@ -43,6 +42,7 @@ const algorithmPages: Record<string, React.ComponentType> = {
 export default function AlgorithmPage() {
   const { slug } = useParams<{ slug: string }>();
   const algorithm = algorithms.find((a) => a.slug === slug);
+  const house = slug ? getHouseForAlgorithm(slug) : undefined;
 
   if (!algorithm) {
     return (
@@ -50,17 +50,16 @@ export default function AlgorithmPage() {
         <div className="clay-lg p-10 text-center">
           <Sword className="h-12 w-12 text-primary mx-auto mb-4 opacity-50" />
           <h2
-            className="text-2xl font-bold text-text-primary mb-2"
-            style={{ fontFamily: '"Cinzel", serif' }}
+            className="text-2xl font-bold text-text-primary mb-2 font-royal"
           >
-            Discipline Not Found
+            Champion Not Found
           </h2>
           <p className="text-text-secondary font-medium mb-6">
-            This discipline has not yet been forged.
+            This champion has yet to be forged.
           </p>
-          <Link to="/algorithms" className="clay-btn clay-btn-primary">
+          <Link to="/" className="clay-btn clay-btn-primary">
             <ArrowLeft className="h-4 w-4" />
-            Browse Disciplines
+            Return to King's Landing
           </Link>
         </div>
       </div>
@@ -72,43 +71,59 @@ export default function AlgorithmPage() {
   return (
     <div className="max-w-7xl mx-auto animate-fade-in">
       {/* Breadcrumb */}
-      <Link
-        to="/algorithms"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-text-muted hover:text-primary transition-colors mb-6"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        All Disciplines
-      </Link>
+      <div className="flex items-center gap-2 mb-6 text-sm font-semibold">
+        <Link
+          to="/"
+          className="text-text-muted hover:text-primary transition-colors"
+        >
+          King's Landing
+        </Link>
+        <span className="text-text-muted">/</span>
+        {house && (
+          <>
+            <Link
+              to={`/house/${house.slug}`}
+              className="hover:text-primary transition-colors flex items-center gap-1 font-royal tracking-wide"
+              style={{ color: house.color }}
+            >
+              <span>{house.name}</span>
+            </Link>
+            <span className="text-text-muted">/</span>
+          </>
+        )}
+        <span className="text-text-primary">{algorithm.name}</span>
+      </div>
 
       {/* Header */}
-      <div className="clay-lg p-8 mb-8">
+      <div className="clay-lg p-8 mb-8 border-iron">
         <div className="flex items-start gap-5">
           <div
-            className="p-4 rounded-2xl shrink-0"
+            className="p-4 rounded-2xl shrink-0 border border-surface-border"
             style={{
-              backgroundColor: `${algorithm.color}12`,
-              boxShadow: `3px 3px 10px rgba(0,0,0,0.4), -2px -2px 6px rgba(50,50,60,0.1), 0 0 15px ${algorithm.color}15`,
+              backgroundColor: `${house?.color || algorithm.color}15`,
+              boxShadow: `3px 3px 10px rgba(0,0,0,0.4), -2px -2px 6px rgba(50,50,60,0.1), 0 0 15px ${house?.color || algorithm.color}20`,
             }}
           >
-            <Sword className="h-8 w-8" style={{ color: algorithm.color }} />
+            <Crown className="h-8 w-8" style={{ color: house?.color || algorithm.color }} />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1
-                className="text-3xl sm:text-4xl font-bold text-text-primary"
-                style={{ fontFamily: '"Cinzel", serif' }}
-              >
+              <h1 className="text-3xl sm:text-4xl font-bold text-text-primary font-royal">
                 {algorithm.name}
               </h1>
-              <span
-                className={cn(
-                  "pill border text-xs font-bold",
-                  categoryBgColors[algorithm.category],
-                  categoryColors[algorithm.category]
-                )}
-              >
-                {categoryLabels[algorithm.category]}
-              </span>
+              {house && (
+                <Link
+                  to={`/house/${house.slug}`}
+                  className="pill border text-xs font-bold font-royal tracking-wide transition-colors hover:opacity-80"
+                  style={{
+                    backgroundColor: `${house.color}15`,
+                    borderColor: `${house.color}30`,
+                    color: house.color,
+                  }}
+                >
+                  {house.name}
+                </Link>
+              )}
             </div>
             <p className="text-text-secondary font-medium text-lg">
               {algorithm.description}
