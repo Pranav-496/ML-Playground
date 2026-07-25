@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -533,6 +534,37 @@ export default function SvrPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+X = np.random.rand(100, 1) * 10
+y = np.sin(X.squeeze()) * 10 + np.random.randn(100) * 2
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# SVR works best with scaled features
+model = make_pipeline(
+    StandardScaler(),
+    SVR(kernel="rbf", C=100, epsilon=0.1, gamma="scale")
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("R\u00b2 Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))`,
+        },
+      ]} />
     </div>
   );
 }

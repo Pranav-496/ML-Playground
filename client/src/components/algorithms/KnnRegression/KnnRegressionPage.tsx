@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -443,6 +444,37 @@ export default function KnnRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+X = np.random.rand(100, 1) * 10
+y = np.sin(X.squeeze()) * 10 + np.random.randn(100) * 2
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and fit KNN Regressor
+model = KNeighborsRegressor(
+    n_neighbors=5,
+    weights="uniform",  # or "distance"
+    metric="minkowski",
+    p=2  # p=2 for Euclidean distance
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("R\u00b2 Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))`,
+        },
+      ]} />
     </div>
   );
 }

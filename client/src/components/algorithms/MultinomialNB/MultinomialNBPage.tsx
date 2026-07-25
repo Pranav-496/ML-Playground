@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -399,6 +400,41 @@ export default function MultinomialNBPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train (Text Classification Example)",
+          code: `from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+# Example: text classification
+texts = [
+    "free money now", "limited offer deal",
+    "meeting tomorrow", "project update report",
+    "win prize lottery", "click here free",
+    "quarterly review notes", "team lunch friday",
+]
+labels = [1, 1, 0, 0, 1, 1, 0, 0]  # 1=spam, 0=ham
+
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.25, random_state=42
+)
+
+# Pipeline: text -> word counts -> MultinomialNB
+model = make_pipeline(
+    CountVectorizer(),
+    MultinomialNB(alpha=1.0)  # Laplace smoothing
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))`,
+        },
+      ]} />
     </div>
   );
 }

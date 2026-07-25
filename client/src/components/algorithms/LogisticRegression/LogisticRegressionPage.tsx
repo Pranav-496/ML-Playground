@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -440,6 +441,41 @@ export default function LogisticRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+# Generate or load your data
+X, y = make_classification(
+    n_samples=200, n_features=2, n_redundant=0,
+    n_informative=2, random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and fit Logistic Regression model
+model = LogisticRegression(
+    C=1.0,            # inverse regularization strength
+    penalty="l2",     # regularization type
+    solver="lbfgs",
+    max_iter=200
+)
+model.fit(X_train, y_train)
+
+# Predict & evaluate
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print(classification_report(y_test, y_pred))`,
+        },
+      ]} />
     </div>
   );
 }

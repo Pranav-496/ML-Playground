@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
   RegularizationPath,
   BiasVarianceCurve,
   LearningCurve,
@@ -576,6 +577,35 @@ export default function LassoRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.linear_model import Lasso
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+# Generate or load your data
+X = np.random.rand(100, 10)
+y = X[:, :3] @ np.array([5, -3, 2]) + np.random.randn(100) * 0.5
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and fit Lasso model (L1 regularization)
+model = Lasso(alpha=0.1, max_iter=10000)
+model.fit(X_train, y_train)
+
+# Predict & evaluate
+y_pred = model.predict(X_test)
+print("R² Score:", r2_score(y_test, y_pred))
+print("Coefficients:", model.coef_)  # many will be exactly 0
+print("Non-zero features:", np.sum(model.coef_ != 0))`,
+        },
+      ]} />
 
       {/* ===== Interactive Analysis ===== */}
       <div className="flex items-center gap-4 my-4">

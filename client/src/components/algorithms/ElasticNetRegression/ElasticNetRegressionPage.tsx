@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
   RegularizationPath,
   BiasVarianceCurve,
   LearningCurve,
@@ -549,6 +550,34 @@ export default function ElasticNetRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.linear_model import ElasticNet
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+X = np.random.rand(100, 10)
+y = X[:, :3] @ np.array([5, -3, 2]) + np.random.randn(100) * 0.5
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ElasticNet combines L1 + L2 regularization
+# l1_ratio=0 is pure Ridge, l1_ratio=1 is pure Lasso
+model = ElasticNet(alpha=0.1, l1_ratio=0.5, max_iter=10000)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("R² Score:", r2_score(y_test, y_pred))
+print("Coefficients:", model.coef_)
+print("Non-zero features:", np.sum(model.coef_ != 0))`,
+        },
+      ]} />
 
       {/* ===== Interactive Analysis ===== */}
       <div className="flex items-center gap-4 my-4">

@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
@@ -436,6 +437,40 @@ export default function BernoulliNBPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.naive_bayes import BernoulliNB
+from sklearn.preprocessing import Binarizer
+from sklearn.pipeline import make_pipeline
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+X, y = make_classification(
+    n_samples=200, n_features=2, n_redundant=0,
+    n_informative=2, random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# BernoulliNB is designed for binary/boolean features
+# Binarizer converts continuous features to 0/1
+model = make_pipeline(
+    Binarizer(threshold=0.0),
+    BernoulliNB(alpha=1.0, binarize=None)
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print(classification_report(y_test, y_pred))`,
+        },
+      ]} />
     </div>
   );
 }

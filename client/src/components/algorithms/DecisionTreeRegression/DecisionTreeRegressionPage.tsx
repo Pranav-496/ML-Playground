@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import type { HyperParam } from "@/types";
 import DecisionTreeGraph, { type TreeNode } from "../DecisionTree/DecisionTreeGraph";
@@ -403,6 +404,39 @@ export default function DecisionTreeRegressionPage() {
 
       {/* Parameter Explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+X = np.random.rand(100, 1) * 10
+y = np.sin(X.squeeze()) * 10 + np.random.randn(100) * 2
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and fit Decision Tree Regressor
+model = DecisionTreeRegressor(
+    max_depth=5,
+    min_samples_split=5,
+    min_samples_leaf=2,
+    criterion="squared_error"
+)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print("R\u00b2 Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))
+print("Tree depth:", model.get_depth())
+print("Num leaves:", model.get_n_leaves())`,
+        },
+      ]} />
     </div>
   );
 }

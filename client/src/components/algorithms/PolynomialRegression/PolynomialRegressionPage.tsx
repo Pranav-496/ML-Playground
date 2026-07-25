@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
   BiasVarianceCurve,
   LearningCurve,
 } from "@/components/shared";
@@ -461,6 +462,40 @@ export default function PolynomialRegressionPage() {
 
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
+
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Import & Train",
+          code: `from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+# Generate or load your data
+X = np.random.rand(100, 1) * 10
+y = 0.5 * X.squeeze()**2 - 3 * X.squeeze() + 7 + np.random.randn(100) * 5
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create a pipeline: polynomial features + linear regression
+degree = 3
+model = make_pipeline(
+    PolynomialFeatures(degree=degree, include_bias=False),
+    LinearRegression()
+)
+model.fit(X_train, y_train)
+
+# Predict & evaluate
+y_pred = model.predict(X_test)
+print("R² Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))`,
+        },
+      ]} />
 
       {/* ===== Interactive Analysis ===== */}
       <div className="flex items-center gap-4 my-4">

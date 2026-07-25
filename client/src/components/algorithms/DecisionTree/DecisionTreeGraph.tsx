@@ -4,7 +4,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 export interface TreeNode {
   node_id: number;
   samples: number;
-  value: number[];
+  value: number | number[];
   impurity: number;
   is_leaf: boolean;
   feature?: string;
@@ -24,6 +24,15 @@ const TreeNodeComponent: React.FC<{ node: TreeNode; criterion: string }> = ({
 }) => {
   if (!node) return null;
 
+  const displayValue = Array.isArray(node.value)
+    ? `[${node.value.join(", ")}]`
+    : node.value;
+
+  const formattedCriterion = criterion
+    .replace("squared_error", "MSE")
+    .replace("absolute_error", "MAE")
+    .replace("friedman_mse", "Friedman MSE");
+
   return (
     <div className="flex flex-col items-center">
       {/* Node Box */}
@@ -34,11 +43,11 @@ const TreeNodeComponent: React.FC<{ node: TreeNode; criterion: string }> = ({
           </div>
         )}
         <div className="text-text-secondary whitespace-nowrap">
-          {criterion} = {node.impurity}
+          {formattedCriterion} = {node.impurity}
         </div>
         <div className="text-text-secondary whitespace-nowrap">samples = {node.samples}</div>
         <div className="text-primary font-mono text-xs whitespace-nowrap">
-          value = [{node.value.join(", ")}]
+          value = {displayValue}
         </div>
       </div>
 

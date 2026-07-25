@@ -7,6 +7,7 @@ import {
   MetricCard,
   TheorySection,
   ParamExplainer,
+  CodeSection,
 } from "@/components/shared";
 import GradientDescentSection from "./GradientDescentSection";
 import type { HyperParam } from "@/types";
@@ -458,6 +459,67 @@ export default function LinearRegressionPage() {
       {/* Param explainer */}
       <ParamExplainer params={paramExplainerData} />
 
+      {/* Code Reference */}
+      <CodeSection snippets={[
+        {
+          title: "Ordinary Least Squares",
+          code: `from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+# Generate or load your data
+X = np.random.rand(100, 1) * 10
+y = 3 * X.squeeze() + 7 + np.random.randn(100) * 2
+
+# Split into train / test
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Evaluate
+print("R² Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))
+print("Coefficients:", model.coef_)
+print("Intercept:", model.intercept_)`,
+        },
+        {
+          title: "Gradient Descent (SGDRegressor)",
+          code: `from sklearn.linear_model import SGDRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+# Generate or load your data
+X = np.random.rand(100, 1) * 10
+y = 3 * X.squeeze() + 7 + np.random.randn(100) * 2
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# SGD Regressor works best with scaled features
+model = make_pipeline(
+    StandardScaler(),
+    SGDRegressor(max_iter=1000, tol=1e-3, learning_rate="invscaling", eta0=0.01)
+)
+model.fit(X_train, y_train)
+
+# Predict & Evaluate
+y_pred = model.predict(X_test)
+print("R² Score:", r2_score(y_test, y_pred))
+print("MSE:", mean_squared_error(y_test, y_pred))`,
+        },
+      ]} />
       {/* ===== Divider ===== */}
       <div className="flex items-center gap-4 my-4">
         <div className="h-px flex-1 bg-surface-border" />

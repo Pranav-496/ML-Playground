@@ -253,7 +253,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gold-light mb-6 tracking-widest uppercase font-royal">
-            Knowledge is Power.
+            Knowledge is Power
           </p>
 
           <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
