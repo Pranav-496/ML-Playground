@@ -19,11 +19,17 @@ export default function SplashScreen() {
     alreadyEntered ? "hidden" : "visible"
   );
   const audioRef = useRef<HTMLAudioElement>(null);
-  const fireStarted = useRef(false);
 
-  // Stop audio if user refreshes while on splash
+  // Attempt autoplay on mount & handle cleanup on refresh
   useEffect(() => {
     if (alreadyEntered) return;
+
+    if (audioRef.current) {
+      audioRef.current.volume = 1.0;
+      audioRef.current.play().catch(() => {
+        // Browser blocked autoplay — totally fine, it will just be silent until they enter
+      });
+    }
 
     const stopOnUnload = () => {
       if (audioRef.current) {
@@ -35,19 +41,10 @@ export default function SplashScreen() {
     return () => window.removeEventListener("beforeunload", stopOnUnload);
   }, [alreadyEntered]);
 
-  // Start fire sound — called on any click/touch on the splash
-  const startFire = useCallback(() => {
-    if (fireStarted.current || !audioRef.current) return;
-    audioRef.current.volume = 1.0;
-    audioRef.current.play().then(() => {
-      fireStarted.current = true;
-    }).catch(() => {});
-  }, []);
-
   // Enter the realm — stop fire, save session, fade out
   const handleEnter = useCallback(() => {
-    // If fire hasn't started yet, briefly play it for the dramatic effect
-    if (!fireStarted.current && audioRef.current) {
+    // Play briefly for dramatic effect if it wasn't playing
+    if (audioRef.current) {
       audioRef.current.volume = 1.0;
       audioRef.current.play().catch(() => {});
     }
