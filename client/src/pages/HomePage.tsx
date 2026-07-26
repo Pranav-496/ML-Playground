@@ -247,12 +247,12 @@ export default function HomePage() {
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl">
           <h1
-            className="text-6xl sm:text-7xl lg:text-9xl font-extrabold tracking-[0.2em] mb-6 leading-[1.05] font-royal"
+            className="text-5xl sm:text-7xl lg:text-9xl font-extrabold tracking-[0.2em] mb-6 leading-[1.05] font-royal"
           >
             <span className="logo-shine">VALORIS</span>
           </h1>
 
-          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gold-light mb-6 tracking-widest uppercase font-royal">
+          <p className="text-xl sm:text-3xl lg:text-4xl font-bold text-gold-light mb-6 tracking-widest uppercase font-royal">
             Knowledge is Power
           </p>
 
