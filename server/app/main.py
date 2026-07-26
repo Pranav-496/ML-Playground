@@ -12,7 +12,9 @@ app = FastAPI(
 import os
 
 # CORS — allow the Vite dev server and production frontend
-frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+raw_frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+# Fix common user error: remove trailing slash if they added one
+frontend_url = raw_frontend_url.rstrip("/")
 
 app.add_middleware(
     CORSMiddleware,

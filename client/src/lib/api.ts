@@ -1,8 +1,14 @@
 import axios from "axios";
 
+// Auto-correct missing /api to prevent common deployment errors
+let baseUrl = import.meta.env.VITE_API_URL || "/api";
+if (baseUrl.startsWith("http") && !baseUrl.endsWith("/api")) {
+  baseUrl = baseUrl.replace(/\/$/, "") + "/api";
+}
+
 const api = axios.create({
   // Use the environment variable if available (production), otherwise fallback to proxy (local dev)
-  baseURL: import.meta.env.VITE_API_URL || "/api",
+  baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
