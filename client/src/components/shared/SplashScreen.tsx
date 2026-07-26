@@ -24,21 +24,38 @@ export default function SplashScreen() {
   useEffect(() => {
     if (alreadyEntered) return;
 
-    if (audioRef.current) {
-      audioRef.current.volume = 1.0;
-      audioRef.current.play().catch(() => {
-        // Browser blocked autoplay — totally fine, it will just be silent until they enter
-      });
-    }
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = 1.0;
+
+    // Silent audio unlock on first interaction
+    const unlockAudio = () => {
+      audio.play().catch(() => {});
+      document.removeEventListener("click", unlockAudio, true);
+      document.removeEventListener("touchstart", unlockAudio, true);
+      document.removeEventListener("keydown", unlockAudio, true);
+    };
+
+    // Try autoplay immediately
+    audio.play().catch(() => {
+      // If blocked, wait for any gesture to unlock it
+      document.addEventListener("click", unlockAudio, { capture: true, once: true });
+      document.addEventListener("touchstart", unlockAudio, { capture: true, once: true });
+      document.addEventListener("keydown", unlockAudio, { capture: true, once: true });
+    });
 
     const stopOnUnload = () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
+      audio.pause();
+      audio.currentTime = 0;
     };
     window.addEventListener("beforeunload", stopOnUnload);
-    return () => window.removeEventListener("beforeunload", stopOnUnload);
+    return () => {
+      window.removeEventListener("beforeunload", stopOnUnload);
+      document.removeEventListener("click", unlockAudio, true);
+      document.removeEventListener("touchstart", unlockAudio, true);
+      document.removeEventListener("keydown", unlockAudio, true);
+    };
   }, [alreadyEntered]);
 
   // Enter the realm — stop fire, save session, fade out
