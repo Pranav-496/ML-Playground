@@ -1,17 +1,31 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, Music, Pause } from "lucide-react";
+import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import ValorisLogoIcon from "@/components/shared/ValorisLogoIcon";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const location = useLocation();
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const navLinks = [
     { to: "/", label: "King's Landing" },
     { to: "/algorithms", label: "The Great Houses" },
   ];
+
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.volume = 1.0;
+        audioRef.current.play().catch(err => console.error("Audio playback failed:", err));
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-surface-border/50">
@@ -27,35 +41,53 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={cn(
-                  "px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300",
-                  location.pathname === link.to
-                    ? "clay-sm text-primary"
-                    : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={cn(
+                    "px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300",
+                    location.pathname === link.to
+                      ? "clay-sm text-primary"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2.5 rounded-2xl clay-sm text-text-secondary hover:text-text-primary transition-all"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </button>
+            {/* Music Toggle */}
+            <button
+              onClick={toggleMusic}
+              className={cn(
+                "p-2.5 rounded-full transition-all duration-300 border flex items-center justify-center",
+                isPlaying
+                  ? "bg-primary/10 text-primary border-primary/30 shadow-[0_0_15px_rgba(185,14,10,0.2)]"
+                  : "bg-surface-hover text-text-muted border-transparent hover:text-text-primary hover:bg-surface-border"
+              )}
+              title="Play Theme"
+            >
+              {/* Note: User must place got-theme.mp3 in the public folder */}
+              <audio ref={audioRef} src="/got-theme.mp3" loop />
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Music className="h-4 w-4" />}
+            </button>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2.5 rounded-2xl clay-sm text-text-secondary hover:text-text-primary transition-all"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
