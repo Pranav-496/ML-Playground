@@ -497,3 +497,38 @@ select option {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* ===== Typography Shine Effect ===== */
+.logo-shine {
+  display: inline-block;
+  background: linear-gradient(
+    75deg,
+    #B90E0A 0%,
+    #B90E0A 35%,
+    #ffffff 50%,
+    #B90E0A 65%,
+    #B90E0A 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateZ(0); /* Force GPU acceleration */
+  animation: shine 7s linear infinite;
+}
+
+@keyframes shine {
+  /* Medium-Fast sweep (Left to Right) */
+  0% { background-position: 120% center; }
+  25% { background-position: -20% center; }
+  
+  /* Reset instantly to left */
+  25.01% { background-position: 120% center; }
+  
+  /* Slow sweep (Left to Right) */
+  85% { background-position: -20% center; }
+  
+  /* Pause until end of cycle */
+  100% { background-position: -20% center; }
+}
