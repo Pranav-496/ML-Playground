@@ -69,8 +69,6 @@ export default function SplashScreen() {
 
   return (
     <div
-      onClick={startFire}
-      onTouchStart={startFire}
       className={cn(
         "fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#030303] overflow-hidden transition-opacity duration-[1500ms]",
         stage === "fading" ? "opacity-0 pointer-events-none" : "opacity-100"
