@@ -4,3 +4,4 @@ export { default as TheorySection } from "./TheorySection";
 export { default as ParamExplainer } from "./ParamExplainer";
 export { default as CodeSection } from "./CodeSection";
 export { RegularizationPath, BiasVarianceCurve, LearningCurve } from "./InteractiveAnalysis";
+export { default as SplashScreen } from "./SplashScreen";
