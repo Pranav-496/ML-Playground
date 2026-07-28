@@ -30,6 +30,11 @@ app.include_router(classification.router, prefix="/api/classification", tags=["C
 app.include_router(clustering.router, prefix="/api/clustering", tags=["Clustering"])
 
 
-@app.get("/api/health")
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root():
+    return {"status": "healthy", "message": "Valoris ML Backend is active"}
+
+
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 async def health_check():
     return {"status": "healthy", "message": "ML Playground API is running"}
