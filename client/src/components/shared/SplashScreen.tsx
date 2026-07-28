@@ -21,6 +21,19 @@ export default function SplashScreen() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const fireStarted = useRef(false);
 
+  // Lock body scroll while splash screen is active
+  useEffect(() => {
+    if (stage !== "hidden") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [stage]);
+
   // Stop audio if user refreshes while on splash
   useEffect(() => {
     if (alreadyEntered) return;
@@ -71,8 +84,9 @@ export default function SplashScreen() {
     <div
       onClick={startFire}
       onTouchStart={startFire}
+      onWheel={(e) => e.preventDefault()}
       className={cn(
-        "fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#030303] overflow-hidden transition-opacity duration-[1500ms]",
+        "fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#030303] overflow-hidden transition-opacity duration-[1500ms] touch-none select-none",
         stage === "fading" ? "opacity-0 pointer-events-none" : "opacity-100"
       )}
     >
