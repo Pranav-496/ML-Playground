@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { User, KeyRound, ShieldCheck, Check, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function ProfilePage() {
   const { user, updateProfile, changePassword } = useAuth();
