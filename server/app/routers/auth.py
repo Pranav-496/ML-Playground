@@ -12,6 +12,8 @@ from app.models.auth_schemas import (
     GoogleAuthRequest,
     TokenResponse,
     UserResponse,
+    UpdateProfileRequest,
+    ChangePasswordRequest,
 )
 from app.utils.auth import (
     hash_password,
@@ -169,3 +171,69 @@ async def google_auth(req: GoogleAuthRequest, db: Session = Depends(get_db)):
 async def get_profile(current_user: User = Depends(get_current_user)):
     """Get the current authenticated user's profile."""
     return UserResponse.model_validate(current_user)
+
+
+@router.put("/profile", response_model=TokenResponse)
+async def update_profile(
+    req: UpdateProfileRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update profile information (first_name, last_name, username)."""
+    new_username = req.username.lower()
+
+    # Check if username is being changed and if it's already taken by someone else
+    if new_username != current_user.username:
+        existing = db.query(User).filter(User.username == new_username).first()
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Username is already taken",
+            )
+
+    current_user.first_name = req.first_name.strip()
+    current_user.last_name = req.last_name.strip()
+    current_user.username = new_username
+
+    db.commit()
+    db.refresh(current_user)
+
+    # Issue a new JWT token with updated username
+    token = create_access_token(data={"sub": current_user.username})
+
+    return TokenResponse(
+        access_token=token,
+        user=UserResponse.model_validate(current_user),
+    )
+
+
+@router.put("/change-password")
+async def change_password(
+    req: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Change password using old password verification."""
+    if current_user.is_google_user and not current_user.hashed_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Google sign-in accounts cannot change password.",
+        )
+
+    if not verify_password(req.old_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+
+    if req.new_password != req.confirm_new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New passwords do not match",
+        )
+
+    current_user.hashed_password = hash_password(req.new_password)
+    db.commit()
+
+    return {"message": "Password changed successfully"}
+

@@ -17,6 +17,8 @@ interface AuthContextType {
   login: (identifier: string, password: string) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   googleAuth: (credential: string) => Promise<void>;
+  updateProfile: (data: { first_name: string; last_name: string; username: string }) => Promise<void>;
+  changePassword: (data: ChangePasswordData) => Promise<void>;
   logout: () => void;
 }
 
@@ -27,6 +29,12 @@ interface RegisterData {
   email: string;
   password: string;
   confirm_password: string;
+}
+
+interface ChangePasswordData {
+  old_password: string;
+  new_password: string;
+  confirm_new_password: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -100,6 +108,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     handleAuthResponse(res.data);
   }, [handleAuthResponse]);
 
+  const updateProfile = useCallback(async (data: { first_name: string; last_name: string; username: string }) => {
+    const res = await api.put("/auth/profile", data);
+    handleAuthResponse(res.data);
+  }, [handleAuthResponse]);
+
+  const changePassword = useCallback(async (data: ChangePasswordData) => {
+    await api.put("/auth/change-password", data);
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
@@ -118,6 +135,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         googleAuth,
+        updateProfile,
+        changePassword,
         logout,
       }}
     >

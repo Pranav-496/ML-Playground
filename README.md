@@ -5,8 +5,10 @@
 
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-1.4-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=black)](https://scikit-learn.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-1.5-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=black)](https://scikit-learn.org/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+[![JWT](https://img.shields.io/badge/JWT-Tokens-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io/)
 [![Plotly](https://img.shields.io/badge/Plotly-2.29-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
 [![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
@@ -56,16 +58,25 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
 
 ---
 
-## 🐉 Features & Highlights
+## ⚔️ Key Features & Highlights
 
-- **Dark Claymorphism & Game of Thrones Aesthetics**: Sculpted obsidian cards, Valyrian crimson glow, gold foil accents, and metallic iron borders.
-- **Reactive Real-Time Auto-Training**: Selecting a dataset or tweaking a parameter instantly recalculates predictions and updates visualizations on screen.
-- **Interactive Tree Visualizer**: Full zoomable/pannable decision tree graph rendering node values, sample counts, thresholds, and impurity scores.
-- **Interactive Analysis Suite**:
-  - **Valyrian Steel Regularization Path**: Visualize L1/L2 coefficient evolution as $\alpha$ scales.
-  - **War Strategy (Bias-Variance Tradeoff)**: Track train vs test MSE divergence across model complexity.
-  - **Army Growth Campaign (Learning Curves)**: Analyze model performance as training sample size expands.
-- **The Grand Maester's Wisdom & Small Council Advises**: In-depth theoretical lore, equations, hyperparameter impact guides, advantages, disadvantages, and real-world applications.
+- **🔒 Authentication & User System**:
+  - **Account Creation**: Register with First Name, Last Name, Unique Username (Primary Key), Email, and Password with strict complexity rules (8+ chars, uppercase, lowercase, digit).
+  - **Flexible Login**: Authenticate via Username OR Email with bcrypt password hashing.
+  - **Google OAuth Integration**: Native "Continue with Google" popup authentication powered by Google Identity Services.
+  - **JWT Authorization**: Secured session state with 24-hour access tokens and auto-refresh on startup.
+- **🐉 Immersive Game of Thrones Entrance**:
+  - **Cinematic Landing Gate**: Rising ember particle system, Targaryen sigil, and Cersei Lannister quote (*"When you play the game of thrones, you win or you die..."*).
+  - **Ambient Fire Sound**: Looped fire-crackling audio triggered on interaction, fading gracefully when entering the realm.
+  - **Smart Session Storage**: Remembers entrance per session—doesn't re-trigger on refresh.
+- **🎵 GoT Theme Audio Player**: Ambient Game of Thrones theme music player built directly into the navigation bar.
+- **🎨 Dark Claymorphism & Aesthetics**: Sculpted obsidian cards, Valyrian crimson glow, gold foil accents, and metallic iron borders.
+- **⚡ Reactive Real-Time Auto-Training**: Parameter tweaks recalculate predictions and re-render visualizations instantly.
+- **🌳 Interactive Tree Visualizer**: Zoomable and pannable decision tree graph displaying node impurity, sample splits, and thresholds.
+- **📊 Interactive Analysis Suite**:
+  - **Valyrian Steel Regularization Path**: Coefficient trajectories across regularization strength ($\alpha$).
+  - **War Strategy (Bias-Variance Tradeoff)**: Train vs Test loss divergence across model complexity.
+  - **Army Growth Campaign (Learning Curves)**: Model convergence across expanding training sets.
 
 ---
 
@@ -101,12 +112,15 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
 - **Framework**: React 19 + TypeScript
 - **Build Tool**: Vite 6
 - **Styling**: Tailwind CSS v4 + Dark Claymorphism Design System
+- **Authentication**: Google Identity Services + JWT Token Management
 - **Charts & Visualization**: Plotly.js + React Plotly
 - **Graph Controls**: React Zoom Pan Pinch
 - **Icons**: Lucide React
 
 ### Backend
 - **Framework**: FastAPI (Python 3.13)
+- **Database & ORM**: SQLAlchemy + SQLite (PostgreSQL compatible)
+- **Security & Auth**: Passlib (Bcrypt), Python-Jose (JWT), Google Auth
 - **Machine Learning**: Scikit-Learn, NumPy, Pandas
 - **Server**: Uvicorn
 
@@ -124,15 +138,34 @@ git clone https://github.com/Pranav-496/ML-Playground.git
 cd ML-Playground
 ```
 
-### 2. Launch the Backend Server
+### 2. Configure Environment Variables
+
+**Frontend (`client/.env`)**:
+```env
+VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+VITE_API_URL=http://localhost:8000/api
+```
+
+**Backend (`server/.env`)**:
+```env
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+JWT_SECRET_KEY=valoris-secret-key-super-secure-jwt-2026
+JWT_EXPIRE_MINUTES=1440
+FRONTEND_URL=http://localhost:5173
+```
+
+### 3. Launch the Backend Server
 ```bash
 cd server
 
-# Create virtual environment (optional but recommended)
+# Create virtual environment
 python -m venv venv
-# On Windows:
+
+# Activate virtual environment
+# Windows:
 venv\Scripts\activate
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 
 # Install dependencies
@@ -141,9 +174,9 @@ pip install -r requirements.txt
 # Start FastAPI dev server
 uvicorn app.main:app --reload --port 8000
 ```
-*The FastAPI backend will be live at `http://localhost:8000` (API Docs at `http://localhost:8000/docs`).*
+*The FastAPI backend will be live at `http://localhost:8000` (Swagger API Docs at `http://localhost:8000/docs`).*
 
-### 3. Launch the Frontend Application
+### 4. Launch the Frontend Application
 In a new terminal window:
 ```bash
 cd client
@@ -166,34 +199,30 @@ ML-Playground/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── algorithms/      # Model Discipline Pages & Visualizers
-│   │   │   │   ├── DecisionTree/
-│   │   │   │   ├── DecisionTreeRegression/
-│   │   │   │   ├── Knn/
-│   │   │   │   ├── KnnRegression/
-│   │   │   │   ├── LinearRegression/
-│   │   │   │   ├── LogisticRegression/
-│   │   │   │   ├── Svm/
-│   │   │   │   ├── Svr/
-│   │   │   │   └── ...
 │   │   │   ├── layout/          # Navbar, Sidebar, Footer
-│   │   │   └── shared/          # ControlPanel, MetricCard, TheorySection
+│   │   │   └── shared/          # SplashScreen, ValorisLogoIcon, ControlPanel, MetricCard
+│   │   ├── contexts/            # AuthContext (JWT & User state management)
 │   │   ├── config/              # Algorithms Registry & House Metadata
 │   │   ├── hooks/               # useAlgorithm Custom State Hook
-│   │   ├── pages/               # HomePage, AlgorithmsPage, AlgorithmPage
+│   │   ├── pages/               # AuthPage, HomePage, AlgorithmsPage, AlgorithmPage
+│   │   ├── lib/                 # Axios API Client with Auth Interceptors
 │   │   └── index.css            # Dark Claymorphism Design System & Ember Animations
 │   ├── package.json
+│   ├── vercel.json              # SPA Client-Side Routing Rewrites
 │   └── tsconfig.app.json
 │
 └── server/                      # FastAPI Python Backend
     ├── app/
-    │   ├── routers/             # API Router Endpoints
+    │   ├── models/              # SQLAlchemy & Pydantic Models (User, Auth, ML Request/Response)
+    │   │   ├── user.py
+    │   │   └── auth_schemas.py
+    │   ├── routers/             # API Endpoints (Auth, Regression, Classification, Clustering)
+    │   │   ├── auth.py
     │   │   ├── classification.py
     │   │   └── regression.py
     │   ├── services/            # Machine Learning Service Functions
-    │   │   ├── classification.py
-    │   │   └── regression.py
-    │   └── utils/               # Synthetic Data Generators (Blobs, Moons, Circles, XOR, Spirals, etc.)
-    │       └── data_generation.py
+    │   ├── utils/               # Auth Utilities (Bcrypt, JWT, Google OAuth Token Verification)
+    │   └── database.py          # SQLAlchemy Session & Engine Setup
     ├── requirements.txt
     └── main.py
 ```
@@ -202,6 +231,6 @@ ML-Playground/
 
 ## 📜 License & Acknowledgments
 
-Created with passion by **Pranav Landge**.
+Created with passion by **Pranav Landge** ([pranavlandge.in](https://pranavlandge.in)).
 
-*Valoris — "Knowledge is power"*
+*Valoris — "Knowledge is Power"*

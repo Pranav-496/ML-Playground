@@ -7,6 +7,7 @@ import HomePage from "@/pages/HomePage";
 import AlgorithmsPage from "@/pages/AlgorithmsPage";
 import AlgorithmPage from "@/pages/AlgorithmPage";
 import HousePage from "@/pages/HousePage";
+import ProfilePage from "@/pages/ProfilePage";
 
 function AppContent() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function AppContent() {
               <Route path="/algorithms" element={<AlgorithmsPage />} />
               <Route path="/algorithms/:slug" element={<AlgorithmPage />} />
               <Route path="/house/:houseSlug" element={<HousePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </main>
           <Footer />

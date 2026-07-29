@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Music, Pause, LogOut } from "lucide-react";
+import { Menu, X, Music, Pause, LogOut, User as UserIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import ValorisLogoIcon from "@/components/shared/ValorisLogoIcon";
@@ -78,12 +78,22 @@ export default function Navbar() {
               {isPlaying ? <Pause className="h-4 w-4" /> : <Music className="h-4 w-4" />}
             </button>
 
-            {/* User Greeting & Logout */}
+            {/* User Profile & Logout */}
             {user && (
               <div className="hidden md:flex items-center gap-2">
-                <span className="text-xs text-text-muted font-royal tracking-wider">
-                  {user.first_name}
-                </span>
+                <Link
+                  to="/profile"
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold font-royal tracking-wider transition-all duration-300 border",
+                    location.pathname === "/profile"
+                      ? "bg-[#B90E0A]/15 text-[#B90E0A] border-[#B90E0A]/40"
+                      : "bg-surface-hover/80 text-text-secondary border-surface-border/30 hover:text-text-primary hover:bg-surface-border"
+                  )}
+                  title="Lord's Chambers (Profile & Settings)"
+                >
+                  <UserIcon className="h-3.5 w-3.5 text-[#B90E0A]" />
+                  <span>{user.first_name}</span>
+                </Link>
                 <button
                   onClick={logout}
                   className="p-2 rounded-full bg-surface-hover text-text-muted border-transparent hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
@@ -128,15 +138,30 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* Mobile logout */}
+            {/* Mobile Profile & Logout */}
             {user && (
-              <button
-                onClick={() => { logout(); setMobileMenuOpen(false); }}
-                className="w-full text-left px-5 py-2.5 rounded-2xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-all flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout ({user.first_name})
-              </button>
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all",
+                    location.pathname === "/profile"
+                      ? "clay-sm text-primary"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                  )}
+                >
+                  <UserIcon className="h-4 w-4 text-[#B90E0A]" />
+                  Profile & Settings ({user.first_name})
+                </Link>
+                <button
+                  onClick={() => { logout(); setMobileMenuOpen(false); }}
+                  className="w-full text-left px-5 py-2.5 rounded-2xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-all flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </>
             )}
           </div>
         </div>
