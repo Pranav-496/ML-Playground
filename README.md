@@ -60,11 +60,13 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
 
 ## ⚔️ Key Features & Highlights
 
-- **🔒 Authentication & User System**:
-  - **Account Creation**: Register with First Name, Last Name, Unique Username (Primary Key), Email, and Password with strict complexity rules (8+ chars, uppercase, lowercase, digit).
-  - **Flexible Login**: Authenticate via Username OR Email with bcrypt password hashing.
-  - **Google OAuth Integration**: Native "Continue with Google" popup authentication powered by Google Identity Services.
-  - **JWT Authorization**: Secured session state with 24-hour access tokens and auto-refresh on startup.
+- **🔒 Authentication & Authorization System**:
+  - **User Registration**: Register with First Name, Last Name, Unique Username (Primary Key), Email, and Password with strict complexity rules (8+ chars, uppercase, lowercase, digit).
+  - **Flexible Sign In**: Authenticate via Username OR Email with bcrypt password hashing.
+  - **Google OAuth 2.0**: Native "Continue with Google" popup authentication powered by Google Identity Services.
+  - **Strict JWT Authorization**: Secured session state via signed JWT bearer tokens (`HTTPBearer`), request header interceptors, and automatic 401 token invalidation.
+  - **👑 Lord's Chambers (User Profile & Settings)**: Dedicated profile management page (`/profile`) allowing users to view details, update personal info (First Name, Last Name, Username), and securely update passwords using current password verification.
+  - **🗄️ Supabase PostgreSQL Integration**: Persistent cloud database storage using SQLAlchemy ORM with automatic schema initialization on startup.
 - **🐉 Immersive Game of Thrones Entrance**:
   - **Cinematic Landing Gate**: Rising ember particle system, Targaryen sigil, and Cersei Lannister quote (*"When you play the game of thrones, you win or you die..."*).
   - **Ambient Fire Sound**: Looped fire-crackling audio triggered on interaction, fading gracefully when entering the realm.
