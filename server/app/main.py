@@ -1,15 +1,22 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import regression, classification, clustering
+from app.routers import regression, classification, clustering, auth
+from app.database import engine, Base
+
+# Create all database tables on startup
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="ML Playground API",
     description="Interactive Machine Learning Playground Backend",
     version="1.0.0",
 )
-
-import os
 
 # CORS — allow the Vite dev server and production frontend
 raw_frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
@@ -25,6 +32,7 @@ app.add_middleware(
 )
 
 # Register routers
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(regression.router, prefix="/api/regression", tags=["Regression"])
 app.include_router(classification.router, prefix="/api/classification", tags=["Classification"])
 app.include_router(clustering.router, prefix="/api/clustering", tags=["Clustering"])

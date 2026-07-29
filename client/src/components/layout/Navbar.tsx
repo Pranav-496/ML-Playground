@@ -1,14 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Music, Pause } from "lucide-react";
+import { Menu, X, Music, Pause, LogOut } from "lucide-react";
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import ValorisLogoIcon from "@/components/shared/ValorisLogoIcon";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const location = useLocation();
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { user, logout } = useAuth();
 
   const navLinks = [
     { to: "/", label: "King's Landing" },
@@ -76,6 +78,22 @@ export default function Navbar() {
               {isPlaying ? <Pause className="h-4 w-4" /> : <Music className="h-4 w-4" />}
             </button>
 
+            {/* User Greeting & Logout */}
+            {user && (
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-xs text-text-muted font-royal tracking-wider">
+                  {user.first_name}
+                </span>
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-full bg-surface-hover text-text-muted border-transparent hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -110,6 +128,16 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {/* Mobile logout */}
+            {user && (
+              <button
+                onClick={() => { logout(); setMobileMenuOpen(false); }}
+                className="w-full text-left px-5 py-2.5 rounded-2xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition-all flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout ({user.first_name})
+              </button>
+            )}
           </div>
         </div>
       )}

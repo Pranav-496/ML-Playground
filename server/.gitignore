@@ -1,0 +1,13 @@
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# SQLite database
+*.db
+
+# Environment variables
+.env
