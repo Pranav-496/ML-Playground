@@ -4,7 +4,7 @@ interface MetricCardProps {
   icon: React.ReactNode;
   color: string;
   description?: string;
-  format?: "decimal" | "percentage";
+  format?: "decimal" | "percentage" | "integer";
 }
 
 const westerosMetricLabels: Record<string, string> = {
@@ -31,7 +31,9 @@ export default function MetricCard({
     typeof value === "number"
       ? format === "percentage"
         ? `${(value * 100).toFixed(2)}%`
-        : value.toFixed(4)
+        : format === "integer"
+          ? Math.round(value).toString()
+          : value.toFixed(4)
       : value;
 
   return (

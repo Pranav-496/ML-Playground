@@ -173,7 +173,62 @@ export const algorithms: AlgorithmConfig[] = [
       "Partition data into k clusters by minimizing within-cluster variance.",
     icon: "Layers",
     color: "#F59E0B",
-    endpoint: "/clustering/kmeans",
+    endpoint: "/unsupervised/kmeans",
+  },
+  {
+    id: "random-forest",
+    name: "Random Forest Classifier",
+    slug: "random-forest",
+    category: "classification",
+    description:
+      "An ensemble of decorrelated decision trees that vote together for unbeatable robustness.",
+    icon: "Trees",
+    color: "#059669",
+    endpoint: "/ensemble/random-forest/classify",
+  },
+  {
+    id: "random-forest-regression",
+    name: "Random Forest Regressor",
+    slug: "random-forest-regression",
+    category: "regression",
+    description:
+      "Average predictions from many decision trees for smooth, robust regression.",
+    icon: "Trees",
+    color: "#047857",
+    endpoint: "/ensemble/random-forest/regress",
+  },
+  {
+    id: "gradient-boosting",
+    name: "Gradient Boosting",
+    slug: "gradient-boosting",
+    category: "classification",
+    description:
+      "Sequential ensemble that builds trees to correct the errors of previous trees — fire and blood.",
+    icon: "Flame",
+    color: "#EA580C",
+    endpoint: "/ensemble/gradient-boosting/classify",
+  },
+  {
+    id: "pca",
+    name: "Principal Component Analysis",
+    slug: "pca",
+    category: "clustering",
+    description:
+      "Reduce high-dimensional data to its most informative axes — the ultimate compression.",
+    icon: "Shrink",
+    color: "#7C3AED",
+    endpoint: "/unsupervised/pca",
+  },
+  {
+    id: "dbscan",
+    name: "DBSCAN",
+    slug: "dbscan",
+    category: "clustering",
+    description:
+      "Density-based clustering that discovers arbitrary-shaped clusters and detects outliers.",
+    icon: "Radar",
+    color: "#F97316",
+    endpoint: "/unsupervised/dbscan",
   },
 ];
 

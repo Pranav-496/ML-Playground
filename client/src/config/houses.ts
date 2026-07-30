@@ -92,7 +92,7 @@ export const houses: HouseConfig[] = [
       "Powerful, dominant, overwhelming. Ensemble methods that combine many weak learners into an unstoppable force — dragons forged from fire itself.",
     color: "#B91C1C",
     colorDark: "#991B1B",
-    algorithms: ["kmeans"],
+    algorithms: ["kmeans", "random-forest", "random-forest-regression", "gradient-boosting"],
     implemented: true,
   },
   {
@@ -104,8 +104,8 @@ export const houses: HouseConfig[] = [
       "Flexible, adaptive, handles difficult boundaries. Kernel methods that bend without breaking, transforming impossible problems into solvable ones.",
     color: "#FF6F00",
     colorDark: "#E65100",
-    algorithms: [],
-    implemented: false,
+    algorithms: ["pca", "dbscan"],
+    implemented: true,
   },
   {
     id: "velaryon",

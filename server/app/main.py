@@ -6,7 +6,7 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import regression, classification, clustering, auth
+from app.routers import regression, classification, clustering, ensemble, battle, unsupervised, auth
 from app.database import engine, Base
 
 # Create all database tables on startup
@@ -36,6 +36,9 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(regression.router, prefix="/api/regression", tags=["Regression"])
 app.include_router(classification.router, prefix="/api/classification", tags=["Classification"])
 app.include_router(clustering.router, prefix="/api/clustering", tags=["Clustering"])
+app.include_router(ensemble.router, prefix="/api/ensemble", tags=["Ensemble"])
+app.include_router(battle.router, prefix="/api/battle", tags=["Battle Arena"])
+app.include_router(unsupervised.router, prefix="/api/unsupervised", tags=["Unsupervised"])
 
 
 @app.api_route("/", methods=["GET", "HEAD"])

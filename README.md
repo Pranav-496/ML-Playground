@@ -47,14 +47,24 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
 - **Bernoulli Naive Bayes**: Binary feature classification using discrete probability thresholds.
 - **Multinomial Naive Bayes**: Count-based probabilistic classification with Laplace smoothing.
 
-### 🐉 House Targaryen & Beyond — Advanced Realms
-- **Clustering & Ensembles**: K-Means, Random Forest, Gradient Boosting, XGBoost.
-- **House Velaryon**: Deep Learning (Neural Networks, Loss Surfaces).
+### 🐉 House Targaryen — Ensemble Methods & The Battle Arena
+- **Random Forest Classifier & Regressor**: An ensemble of decorrelated decision trees that vote together for unbeatable robustness.
+- **Gradient Boosting**: Sequential ensemble that builds trees to correct the errors of previous trees — fire and blood.
+- **⚔️ The Great Battle Arena**: A multi-model colosseum. Pit up to 3 classifiers against each other on identical data splits. Compare side-by-side decision boundaries and exact metrics (Accuracy, Precision, Recall, F1) to crown the ultimate champion.
+
+### ☀️ House Martell — Unsupervised Learning
+- **Principal Component Analysis (PCA)**: Reduce high-dimensional data (up to 10D) to its most informative axes. Features 2D/3D projections and explained variance scree plots.
+- **DBSCAN**: Density-based clustering that discovers arbitrary-shaped clusters (like moons and circles) and automatically isolates noise and outliers.
+- **K-Means Clustering**: Partition data into k clusters using centroid optimization, complete with an interactive Elbow Method plot.
+
+### 🌊 House Velaryon — Deep Learning (In Progress)
+- **MLP Classifier & Regressor**: Multi-Layer Perceptrons for complex non-linear representations.
+- Interactive network architecture building and real-time Loss Curve visualizations across training epochs.
+
+### 🔮 Beyond the Narrow Sea — Future Realms
 - **Dragonpit**: Computer Vision (Convolutional Networks, Object Detection).
 - **The Citadel**: Natural Language Processing (Embeddings, Tokenization).
 - **The Red Keep**: Generative AI (LLMs, Diffusion Models).
-- **Three-Eyed Raven**: Retrieval-Augmented Generation (RAG).
-- **Master of Whisperers**: Autonomous AI Agents.
 
 ---
 

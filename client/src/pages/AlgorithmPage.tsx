@@ -19,6 +19,12 @@ import GaussianNBPage from "@/components/algorithms/GaussianNB/GaussianNBPage";
 import BernoulliNBPage from "@/components/algorithms/BernoulliNB/BernoulliNBPage";
 import MultinomialNBPage from "@/components/algorithms/MultinomialNB/MultinomialNBPage";
 import DecisionTreeRegressionPage from "@/components/algorithms/DecisionTreeRegression/DecisionTreeRegressionPage";
+import RandomForestPage from "@/components/algorithms/RandomForest/RandomForestPage";
+import RandomForestRegressionPage from "@/components/algorithms/RandomForestRegression/RandomForestRegressionPage";
+import GradientBoostingPage from "@/components/algorithms/GradientBoosting/GradientBoostingPage";
+import KmeansPage from "@/components/algorithms/Kmeans/KmeansPage";
+import PcaPage from "@/components/algorithms/Pca/PcaPage";
+import DbscanPage from "@/components/algorithms/Dbscan/DbscanPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -37,6 +43,12 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "bernoulli-nb": BernoulliNBPage,
   "multinomial-nb": MultinomialNBPage,
   "decision-tree-regression": DecisionTreeRegressionPage,
+  "random-forest": RandomForestPage,
+  "random-forest-regression": RandomForestRegressionPage,
+  "gradient-boosting": GradientBoostingPage,
+  "kmeans": KmeansPage,
+  "pca": PcaPage,
+  "dbscan": DbscanPage,
 };
 
 export default function AlgorithmPage() {

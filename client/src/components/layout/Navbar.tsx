@@ -15,6 +15,7 @@ export default function Navbar() {
   const navLinks = [
     { to: "/", label: "King's Landing" },
     { to: "/algorithms", label: "The Great Houses" },
+    { to: "/battle-arena", label: "⚔️ Battle Arena" },
   ];
 
   const toggleMusic = () => {
