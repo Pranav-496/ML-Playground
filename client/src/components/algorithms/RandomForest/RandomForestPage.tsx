@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import { TrendingUp, Target, BarChart3, Percent, Trees, Shuffle } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
@@ -8,7 +8,9 @@ import {
   TheorySection,
   ParamExplainer,
   CodeSection,
+  ModeToggle,
 } from "@/components/shared";
+import RandomForestRegressionContent from "@/components/algorithms/RandomForestRegression/RandomForestRegressionPage";
 import type { HyperParam } from "@/types";
 
 /* ----- Request / Response types ----- */
@@ -300,6 +302,21 @@ const plotLayout = {
 /* ----- Component ----- */
 
 export default function RandomForestPage() {
+  const [mode, setMode] = useState<"classification" | "regression">("classification");
+
+  if (mode === "regression") {
+    return (
+      <div className="max-w-7xl mx-auto animate-fade-in">
+        <ModeToggle mode={mode} onModeChange={setMode} />
+        <RandomForestRegressionContent />
+      </div>
+    );
+  }
+
+  return <RandomForestClassificationContent mode={mode} onModeChange={setMode} />;
+}
+
+function RandomForestClassificationContent({ mode, onModeChange }: { mode: "classification" | "regression"; onModeChange: (m: "classification" | "regression") => void }) {
   const { params, setParam, result, loading, error, train } = useAlgorithm<
     RandomForestRequest,
     RandomForestResponse
@@ -340,6 +357,7 @@ export default function RandomForestPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
+      <ModeToggle mode={mode} onModeChange={onModeChange} />
       {/* Theory */}
       <TheorySection title="📚 Theory & Intuition" sections={theoryContent} />
 

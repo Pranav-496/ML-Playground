@@ -7,6 +7,7 @@ from app.services.ensemble import (
     train_random_forest_classifier,
     train_random_forest_regressor,
     train_gradient_boosting_classifier,
+    train_gradient_boosting_regressor,
 )
 
 router = APIRouter()
@@ -122,5 +123,45 @@ async def gradient_boosting_classifier(request: GradientBoostingRequest):
         min_samples_leaf=request.min_samples_leaf,
         subsample=request.subsample,
         max_features=request.max_features,
+    )
+    return result
+
+
+# ─── Gradient Boosting Regressor ─────────────────────────────────
+
+class GradientBoostingRegressorRequest(BaseModel):
+    """Request body for Gradient Boosting Regressor training."""
+    n_samples: int = 100
+    noise: float = 0.1
+    test_size: float = 0.2
+    random_state: int = 42
+    dataset_type: str = "sine"
+    n_estimators: int = 100
+    learning_rate: float = 0.1
+    max_depth: int = 3
+    min_samples_split: int = 2
+    min_samples_leaf: int = 1
+    subsample: float = 1.0
+    max_features: str | None = None
+    loss: str = "squared_error"
+
+
+@router.post("/gradient-boosting/regress")
+async def gradient_boosting_regressor(request: GradientBoostingRegressorRequest):
+    """Train a Gradient Boosting Regressor and return results."""
+    result = train_gradient_boosting_regressor(
+        n_samples=request.n_samples,
+        noise=request.noise,
+        test_size=request.test_size,
+        random_state=request.random_state,
+        dataset_type=request.dataset_type,
+        n_estimators=request.n_estimators,
+        learning_rate=request.learning_rate,
+        max_depth=request.max_depth,
+        min_samples_split=request.min_samples_split,
+        min_samples_leaf=request.min_samples_leaf,
+        subsample=request.subsample,
+        max_features=request.max_features,
+        loss=request.loss,
     )
     return result

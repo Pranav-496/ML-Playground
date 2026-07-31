@@ -56,37 +56,9 @@ export const algorithms: AlgorithmConfig[] = [
     color: "#CC3333",
     endpoint: "/regression/elastic-net",
   },
-  {
-    id: "knn-regression",
-    name: "KNN Regression",
-    slug: "knn-regression",
-    category: "regression",
-    description: "Predict continuous values based on the average of the nearest neighbors.",
-    icon: "Users",
-    color: "#E11D48",
-    endpoint: "/regression/knn",
-  },
-  {
-    id: "svr",
-    name: "Support Vector Regressor",
-    slug: "svr",
-    category: "regression",
-    description:
-      "Fit data within an ε-insensitive tube using the kernel trick for non-linear regression.",
-    icon: "Minimize2",
-    color: "#A21CAF",
-    endpoint: "/regression/svr",
-  },
-  {
-    id: "decision-tree-regression",
-    name: "Decision Tree Regressor",
-    slug: "decision-tree-regression",
-    category: "regression",
-    description: "Partition feature space into rectangular regions and predict mean target values.",
-    icon: "GitFork",
-    color: "#EA580C",
-    endpoint: "/regression/decision-tree",
-  },
+
+
+
   {
     id: "logistic-regression",
     name: "Logistic Regression",
@@ -177,7 +149,7 @@ export const algorithms: AlgorithmConfig[] = [
   },
   {
     id: "random-forest",
-    name: "Random Forest Classifier",
+    name: "Random Forest",
     slug: "random-forest",
     category: "classification",
     description:
@@ -186,17 +158,7 @@ export const algorithms: AlgorithmConfig[] = [
     color: "#059669",
     endpoint: "/ensemble/random-forest/classify",
   },
-  {
-    id: "random-forest-regression",
-    name: "Random Forest Regressor",
-    slug: "random-forest-regression",
-    category: "regression",
-    description:
-      "Average predictions from many decision trees for smooth, robust regression.",
-    icon: "Trees",
-    color: "#047857",
-    endpoint: "/ensemble/random-forest/regress",
-  },
+
   {
     id: "gradient-boosting",
     name: "Gradient Boosting",

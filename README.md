@@ -89,6 +89,7 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
   - **Valyrian Steel Regularization Path**: Coefficient trajectories across regularization strength ($\alpha$).
   - **War Strategy (Bias-Variance Tradeoff)**: Train vs Test loss divergence across model complexity.
   - **Army Growth Campaign (Learning Curves)**: Model convergence across expanding training sets.
+- **🔄 Dual-Mode Architecture**: Seamlessly toggle between Classification and Regression modes (House Lannister ↔ House Stark) directly within dual-capable algorithm interfaces (KNN, SVM, Decision Trees, Random Forests, Gradient Boosting) via a dynamic animated controller.
 
 ---
 

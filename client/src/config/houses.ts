@@ -44,7 +44,7 @@ export const houses: HouseConfig[] = [
       "Aggressive splitting and brute-force decisions. Decision trees that cleave through data with raw power, partitioning the realm into clear dominions.",
     color: "#D4A017",
     colorDark: "#B08A10",
-    algorithms: ["decision-tree", "decision-tree-regression"],
+    algorithms: ["decision-tree"],
     implemented: true,
   },
   {
@@ -56,7 +56,7 @@ export const houses: HouseConfig[] = [
       "Growth through local neighborhoods and gradual learning. KNN algorithms that build strength from the bonds of their closest allies.",
     color: "#4CAF50",
     colorDark: "#388E3C",
-    algorithms: ["knn", "knn-regression"],
+    algorithms: ["knn"],
     implemented: true,
   },
   {
@@ -80,7 +80,7 @@ export const houses: HouseConfig[] = [
       "Elegant, mathematical, maximal margin. Support Vector Machines that soar above the noise, finding hyperplanes of perfect separation.",
     color: "#7986CB",
     colorDark: "#5C6BC0",
-    algorithms: ["svm", "svr"],
+    algorithms: ["svm"],
     implemented: true,
   },
   {
@@ -92,7 +92,7 @@ export const houses: HouseConfig[] = [
       "Powerful, dominant, overwhelming. Ensemble methods that combine many weak learners into an unstoppable force — dragons forged from fire itself.",
     color: "#B91C1C",
     colorDark: "#991B1B",
-    algorithms: ["kmeans", "random-forest", "random-forest-regression", "gradient-boosting"],
+    algorithms: ["kmeans", "random-forest", "gradient-boosting"],
     implemented: true,
   },
   {

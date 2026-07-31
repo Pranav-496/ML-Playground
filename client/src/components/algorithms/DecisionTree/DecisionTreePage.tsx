@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import { TrendingUp, Target, BarChart3, Percent } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
@@ -8,7 +8,9 @@ import {
   TheorySection,
   ParamExplainer,
   CodeSection,
+  ModeToggle,
 } from "@/components/shared";
+import DecisionTreeRegressionContent from "@/components/algorithms/DecisionTreeRegression/DecisionTreeRegressionPage";
 import type { HyperParam } from "@/types";
 import DecisionTreeGraph, { type TreeNode } from "./DecisionTreeGraph";
 
@@ -273,6 +275,21 @@ const plotLayout = {
 };
 
 export default function DecisionTreePage() {
+  const [mode, setMode] = useState<"classification" | "regression">("classification");
+
+  if (mode === "regression") {
+    return (
+      <div className="max-w-7xl mx-auto animate-fade-in">
+        <ModeToggle mode={mode} onModeChange={setMode} />
+        <DecisionTreeRegressionContent />
+      </div>
+    );
+  }
+
+  return <DecisionTreeClassificationContent mode={mode} onModeChange={setMode} />;
+}
+
+function DecisionTreeClassificationContent({ mode, onModeChange }: { mode: "classification" | "regression"; onModeChange: (m: "classification" | "regression") => void }) {
   const { params, setParam, result, loading, error, train } = useAlgorithm<
     DecisionTreeRequest,
     DecisionTreeResponse
@@ -314,6 +331,7 @@ export default function DecisionTreePage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
+      <ModeToggle mode={mode} onModeChange={onModeChange} />
       {/* Theory */}
       <TheorySection title="📚 Theory & Intuition" sections={theoryContent} />
 

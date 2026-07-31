@@ -12,15 +12,11 @@ import ElasticNetRegressionPage from "@/components/algorithms/ElasticNetRegressi
 import LogisticRegressionPage from "@/components/algorithms/LogisticRegression/LogisticRegressionPage";
 import KnnPage from "@/components/algorithms/Knn/KnnPage";
 import DecisionTreePage from "@/components/algorithms/DecisionTree/DecisionTreePage";
-import KnnRegressionPage from "@/components/algorithms/KnnRegression/KnnRegressionPage";
 import SvmPage from "@/components/algorithms/Svm/SvmPage";
-import SvrPage from "@/components/algorithms/Svr/SvrPage";
 import GaussianNBPage from "@/components/algorithms/GaussianNB/GaussianNBPage";
 import BernoulliNBPage from "@/components/algorithms/BernoulliNB/BernoulliNBPage";
 import MultinomialNBPage from "@/components/algorithms/MultinomialNB/MultinomialNBPage";
-import DecisionTreeRegressionPage from "@/components/algorithms/DecisionTreeRegression/DecisionTreeRegressionPage";
 import RandomForestPage from "@/components/algorithms/RandomForest/RandomForestPage";
-import RandomForestRegressionPage from "@/components/algorithms/RandomForestRegression/RandomForestRegressionPage";
 import GradientBoostingPage from "@/components/algorithms/GradientBoosting/GradientBoostingPage";
 import KmeansPage from "@/components/algorithms/Kmeans/KmeansPage";
 import PcaPage from "@/components/algorithms/Pca/PcaPage";
@@ -36,15 +32,11 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "logistic-regression": LogisticRegressionPage,
   "knn": KnnPage,
   "decision-tree": DecisionTreePage,
-  "knn-regression": KnnRegressionPage,
   "svm": SvmPage,
-  "svr": SvrPage,
   "gaussian-nb": GaussianNBPage,
   "bernoulli-nb": BernoulliNBPage,
   "multinomial-nb": MultinomialNBPage,
-  "decision-tree-regression": DecisionTreeRegressionPage,
   "random-forest": RandomForestPage,
-  "random-forest-regression": RandomForestRegressionPage,
   "gradient-boosting": GradientBoostingPage,
   "kmeans": KmeansPage,
   "pca": PcaPage,

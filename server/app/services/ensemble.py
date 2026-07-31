@@ -357,3 +357,56 @@ def train_gradient_boosting_classifier(
         random_state=random_state,
         extras_fn=extras,
     )
+
+
+# ─── Gradient Boosting Regressor ─────────────────────────────────
+
+def train_gradient_boosting_regressor(
+    n_samples: int = 100,
+    noise: float = 0.1,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    dataset_type: str = "sine",
+    n_estimators: int = 100,
+    learning_rate: float = 0.1,
+    max_depth: int = 3,
+    min_samples_split: int = 2,
+    min_samples_leaf: int = 1,
+    subsample: float = 1.0,
+    max_features: str | None = None,
+    loss: str = "squared_error",
+) -> dict:
+    """Train a Gradient Boosting Regressor and return results and plot data."""
+    from sklearn.ensemble import GradientBoostingRegressor as GBR
+
+    X, y = generate_regression_data(dataset_type, n_samples, noise, random_state)
+
+    model = GBR(
+        n_estimators=n_estimators,
+        learning_rate=learning_rate,
+        max_depth=max_depth if max_depth and max_depth > 0 else 3,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        subsample=subsample,
+        max_features=max_features if max_features and max_features != "none" else None,
+        loss=loss,
+        random_state=random_state,
+    )
+
+    def extras(m, X_train, X_test, y_train, y_test):
+        """Extract feature importances and staged train loss."""
+        feature_importances = m.feature_importances_.tolist()
+        train_loss_curve = m.train_score_.tolist() if hasattr(m, "train_score_") else []
+
+        return {
+            "feature_importances": feature_importances,
+            "n_estimators_actual": m.n_estimators_,
+            "train_loss_curve": train_loss_curve,
+        }
+
+    return _evaluate_regressor(
+        model, X, y,
+        test_size=test_size,
+        random_state=random_state,
+        extras_fn=extras,
+    )
