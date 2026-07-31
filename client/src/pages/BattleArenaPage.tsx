@@ -364,7 +364,7 @@ export default function BattleArenaPage() {
         </div>
 
         {/* Right — Results */}
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           {error && (
             <div className="clay-pressed p-4 text-error font-bold text-sm animate-fade-in">
               ❌ Error: {error}
@@ -436,7 +436,7 @@ export default function BattleArenaPage() {
                 return (
                   <div
                     key={idx}
-                    className="clay-sm p-3 relative"
+                    className="clay-sm p-3 relative min-w-0"
                     style={{
                       borderColor: isWinner
                         ? `${COMPETITOR_COLORS[idx]}50`
@@ -559,7 +559,7 @@ export default function BattleArenaPage() {
 
           {/* Metrics Comparison Table */}
           {result && (
-            <div className="clay-sm p-5 animate-slide-up">
+            <div className="clay-sm p-5 animate-slide-up min-w-0">
               <h3 className="text-sm font-extrabold text-text-muted mb-4 flex items-center gap-2">
                 📊 Metrics Comparison
               </h3>
@@ -680,7 +680,7 @@ export default function BattleArenaPage() {
 
           {/* Accuracy Bar Chart */}
           {result && (
-            <div className="clay-sm p-4 animate-slide-up">
+            <div className="clay-sm p-4 animate-slide-up min-w-0">
               <Plot
                 data={result.competitors.map((comp, idx) => ({
                   x: [comp.name],
