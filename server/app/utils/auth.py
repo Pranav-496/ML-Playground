@@ -71,9 +71,9 @@ def verify_google_token(id_token: str) -> Optional[dict]:
             "first_name": idinfo.get("given_name", ""),
             "last_name": idinfo.get("family_name", ""),
         }
-    except Exception:
+    except Exception as e:
+        print(f"Google token verification failed: {e}")
         return None
-
 
 # --- FastAPI Dependency: Get Current User ---
 security = HTTPBearer(auto_error=False)

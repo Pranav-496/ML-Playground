@@ -30,29 +30,36 @@ export default function Navbar() {
     }
   };
 
+  const isHome = location.pathname === "/";
+
   return (
-    <nav className="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-surface-border/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className={cn(
+      "z-50 transition-all duration-300",
+      isHome
+        ? "fixed top-0 left-0 w-full bg-transparent border-b-transparent"
+        : "sticky top-0 bg-surface/80 backdrop-blur-xl border-b border-surface-border/50",
+    )}>
+      <div className="w-full px-4 sm:px-8 lg:px-12">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="relative transition-all duration-300 group-hover:scale-105">
-              <ValorisLogoIcon className="h-8 w-8" />
+              <ValorisLogoIcon className="h-6 w-6" />
             </div>
-            <span className="text-xl font-bold tracking-[0.15em] gradient-text font-royal">
+            <span className="text-sm font-bold tracking-[0.2em] gradient-text font-royal">
               VALORIS
             </span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1.5">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
                   className={cn(
-                    "px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300",
+                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
                     location.pathname === link.to
                       ? "clay-sm text-primary"
                       : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
@@ -67,7 +74,7 @@ export default function Navbar() {
             <button
               onClick={toggleMusic}
               className={cn(
-                "p-2.5 rounded-full transition-all duration-300 border flex items-center justify-center",
+                "p-2 rounded-full transition-all duration-300 border flex items-center justify-center",
                 isPlaying
                   ? "bg-primary/10 text-primary border-primary/30 shadow-[0_0_15px_rgba(185,14,10,0.2)]"
                   : "bg-surface-hover text-text-muted border-transparent hover:text-text-primary hover:bg-surface-border"
@@ -76,7 +83,7 @@ export default function Navbar() {
             >
               {/* Note: User must place got-theme.mp3 in the public folder */}
               <audio ref={audioRef} src="/got-theme.mp3" loop />
-              {isPlaying ? <Pause className="h-4 w-4" /> : <Music className="h-4 w-4" />}
+              {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Music className="h-3.5 w-3.5" />}
             </button>
 
             {/* User Profile & Logout */}
@@ -85,22 +92,22 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   className={cn(
-                    "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold font-royal tracking-wider transition-all duration-300 border",
+                    "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase font-bold font-royal tracking-wider transition-all duration-300 border",
                     location.pathname === "/profile"
                       ? "bg-[#B90E0A]/15 text-[#B90E0A] border-[#B90E0A]/40"
                       : "bg-surface-hover/80 text-text-secondary border-surface-border/30 hover:text-text-primary hover:bg-surface-border"
                   )}
                   title="Lord's Chambers (Profile & Settings)"
                 >
-                  <UserIcon className="h-3.5 w-3.5 text-[#B90E0A]" />
+                  <UserIcon className="h-3 w-3 text-[#B90E0A]" />
                   <span>{user.first_name}</span>
                 </Link>
                 <button
                   onClick={logout}
-                  className="p-2 rounded-full bg-surface-hover text-text-muted border-transparent hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                  className="p-1.5 rounded-full bg-surface-hover text-text-muted border-transparent hover:text-red-400 hover:bg-red-500/10 transition-all duration-300"
                   title="Logout"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-3.5 w-3.5" />
                 </button>
               </div>
             )}
