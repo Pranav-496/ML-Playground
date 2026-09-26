@@ -4,6 +4,7 @@ import api from "@/lib/api";
 interface UseAlgorithmOptions<TRequest> {
   endpoint: string;
   defaultParams: TRequest;
+  transformParams?: (params: TRequest) => any;
 }
 
 interface UseAlgorithmReturn<TRequest, TResponse> {
@@ -21,6 +22,7 @@ export function useAlgorithm<
 >({
   endpoint,
   defaultParams,
+  transformParams,
 }: UseAlgorithmOptions<TRequest>): UseAlgorithmReturn<TRequest, TResponse> {
   const [params, setParams] = useState<TRequest>(defaultParams);
   const [result, setResult] = useState<TResponse | null>(null);
@@ -44,7 +46,12 @@ export function useAlgorithm<
         typeof overrideParams === "object" &&
         !("nativeEvent" in overrideParams) &&
         !("target" in overrideParams);
-      const payload = isPlainObject ? { ...params, ...overrideParams } : params;
+      let payload = isPlainObject ? { ...params, ...overrideParams } : params;
+      
+      if (transformParams) {
+        payload = transformParams(payload as TRequest);
+      }
+      
       const response = await api.post<TResponse>(endpoint, payload);
       setResult(response.data);
     } catch (err: unknown) {

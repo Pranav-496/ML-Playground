@@ -57,14 +57,15 @@ Valoris categorizes algorithms into the Great Houses of Westeros, offering inter
 - **DBSCAN**: Density-based clustering that discovers arbitrary-shaped clusters (like moons and circles) and automatically isolates noise and outliers.
 - **K-Means Clustering**: Partition data into k clusters using centroid optimization, complete with an interactive Elbow Method plot.
 
-### 🌊 House Velaryon — Deep Learning (In Progress)
+### 🌊 House Velaryon — Deep Learning
 - **MLP Classifier & Regressor**: Multi-Layer Perceptrons for complex non-linear representations.
-- Interactive network architecture building and real-time Loss Curve visualizations across training epochs.
+- Interactive network architecture building (adjustable hidden layers/neurons) and real-time Loss Curve visualizations across training epochs.
 
-### 🔮 Beyond the Narrow Sea — Future Realms
-- **Dragonpit**: Computer Vision (Convolutional Networks, Object Detection).
-- **The Citadel**: Natural Language Processing (Embeddings, Tokenization).
-- **The Red Keep**: Generative AI (LLMs, Diffusion Models).
+### 🔮 Beyond the Great Houses — Expanded Realms
+- **The Citadel**: Lore-driven Machine Learning competitions (e.g., Titanic Survival as "The Long Night"). Download generated datasets, train locally, and submit predictions for scoring.
+- **The Iron Throne**: Global Leaderboards tracking the most powerful ML engineers based on campaigns conquered and total submissions.
+- **Royal Archives**: A dedicated dataset explorer to preview, filter, and download datasets curated by the Maesters.
+- **AutoML Vision (The All-Seeing Eye)**: Upload your own custom `.csv` dataset, select a target variable, and let Valoris automatically clean, impute, and run a full tournament across multiple algorithms to forge a Champion model.
 
 ---
 
@@ -217,7 +218,7 @@ ML-Playground/
 │   │   ├── contexts/            # AuthContext (JWT & User state management)
 │   │   ├── config/              # Algorithms Registry & House Metadata
 │   │   ├── hooks/               # useAlgorithm Custom State Hook
-│   │   ├── pages/               # AuthPage, HomePage, AlgorithmsPage, AlgorithmPage
+│   │   ├── pages/               # AuthPage, HomePage, AlgorithmsPage, AlgorithmPage, AutoMlPage, IronThronePage, RoyalArchivesPage
 │   │   ├── lib/                 # Axios API Client with Auth Interceptors
 │   │   └── index.css            # Dark Claymorphism Design System & Ember Animations
 │   ├── package.json
@@ -229,10 +230,12 @@ ML-Playground/
     │   ├── models/              # SQLAlchemy & Pydantic Models (User, Auth, ML Request/Response)
     │   │   ├── user.py
     │   │   └── auth_schemas.py
-    │   ├── routers/             # API Endpoints (Auth, Regression, Classification, Clustering)
+    │   ├── routers/             # API Endpoints (Auth, Regression, Classification, Clustering, Deep Learning, AutoML, Citadel)
     │   │   ├── auth.py
     │   │   ├── classification.py
-    │   │   └── regression.py
+    │   │   ├── regression.py
+    │   │   ├── automl.py
+    │   │   └── citadel.py
     │   ├── services/            # Machine Learning Service Functions
     │   ├── utils/               # Auth Utilities (Bcrypt, JWT, Google OAuth Token Verification)
     │   └── database.py          # SQLAlchemy Session & Engine Setup

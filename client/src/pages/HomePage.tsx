@@ -351,25 +351,28 @@ export default function HomePage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
               {[
-                { name: "Dragonpit", desc: "Model Training", color: "#B91C1C" },
-                { name: "Iron Throne", desc: "Leaderboards", color: "#F59E0B" },
-                { name: "Great Council", desc: "Model Comparison", color: "#DC2626" },
-                { name: "Royal Archives", desc: "Datasets", color: "#FF5A1F" },
-                { name: "The Citadel", desc: "Theory & Docs", color: "#22C55E" },
-                { name: "The Red Keep", desc: "Dashboard", color: "#7C3AED" },
+                { name: "Dragonpit", desc: "Model Training", link: "/algorithms", ready: true },
+                { name: "Iron Throne", desc: "Leaderboards", link: "/iron-throne", ready: true },
+                { name: "Great Council", desc: "Model Comparison", link: "/battle-arena", ready: true },
+                { name: "Royal Archives", desc: "Datasets", link: "/royal-archives", ready: true },
+                { name: "The Citadel", desc: "Theory & Docs", link: "/citadel", ready: true },
+                { name: "The Red Keep", desc: "Dashboard", link: "/profile", ready: true },
               ].map((loc) => (
-                <div
+                <Link
+                  to={loc.link}
                   key={loc.name}
-                  className="clay-sm p-6 border-iron text-center hover:scale-[1.02] transition-transform cursor-pointer"
+                  className="clay-sm p-6 border-iron text-center hover:scale-[1.02] transition-transform cursor-pointer block"
                 >
                   <h4 className="text-base font-extrabold text-text-primary font-royal mb-1">
                     {loc.name}
                   </h4>
                   <p className="text-xs text-text-muted font-medium">{loc.desc}</p>
-                  <span className="inline-block mt-3 text-[9px] uppercase font-extrabold px-2.5 py-0.5 rounded bg-surface-border/50 text-text-muted tracking-wider">
-                    Coming Soon
-                  </span>
-                </div>
+                  {!loc.ready && (
+                    <span className="inline-block mt-3 text-[9px] uppercase font-extrabold px-2.5 py-0.5 rounded bg-surface-border/50 text-text-muted tracking-wider">
+                      Coming Soon
+                    </span>
+                  )}
+                </Link>
               ))}
             </div>
           </div>

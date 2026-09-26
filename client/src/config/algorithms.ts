@@ -192,6 +192,28 @@ export const algorithms: AlgorithmConfig[] = [
     color: "#F97316",
     endpoint: "/unsupervised/dbscan",
   },
+  {
+    id: "mlp-classifier",
+    name: "MLP Classifier",
+    slug: "mlp-classifier",
+    category: "classification",
+    description:
+      "A Multi-Layer Perceptron neural network capable of learning complex non-linear decision boundaries.",
+    icon: "Network",
+    color: "#00897B",
+    endpoint: "/deep-learning/mlp-classifier",
+  },
+  {
+    id: "mlp-regressor",
+    name: "MLP Regressor",
+    slug: "mlp-regressor",
+    category: "regression",
+    description:
+      "A Multi-Layer Perceptron neural network that approximates complex non-linear continuous functions.",
+    icon: "Activity",
+    color: "#00695C",
+    endpoint: "/deep-learning/mlp-regressor",
+  }
 ];
 
 export const categoryLabels: Record<string, string> = {

@@ -21,6 +21,8 @@ import GradientBoostingPage from "@/components/algorithms/GradientBoosting/Gradi
 import KmeansPage from "@/components/algorithms/Kmeans/KmeansPage";
 import PcaPage from "@/components/algorithms/Pca/PcaPage";
 import DbscanPage from "@/components/algorithms/Dbscan/DbscanPage";
+import MlpClassifierPage from "@/components/algorithms/MlpClassifier/MlpClassifierPage";
+import MlpRegressorPage from "@/components/algorithms/MlpRegressor/MlpRegressorPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -41,6 +43,8 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "kmeans": KmeansPage,
   "pca": PcaPage,
   "dbscan": DbscanPage,
+  "mlp-classifier": MlpClassifierPage,
+  "mlp-regressor": MlpRegressorPage,
 };
 
 export default function AlgorithmPage() {

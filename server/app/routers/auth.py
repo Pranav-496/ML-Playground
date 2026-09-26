@@ -116,10 +116,11 @@ async def google_auth(req: GoogleAuthRequest, db: Session = Depends(get_db)):
 
     # Verify the Google token
     google_info = verify_google_token(req.credential)
-    if not google_info:
+    if not google_info or "error" in google_info:
+        error_msg = google_info.get("error") if google_info else "Invalid Google token"
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Google token",
+            detail=error_msg,
         )
 
     # Check if user already exists by google_id or email

@@ -6,8 +6,9 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import regression, classification, clustering, ensemble, battle, unsupervised, auth
+from app.routers import regression, classification, clustering, ensemble, battle, unsupervised, auth, citadel, deep_learning, automl
 from app.database import engine, Base
+from app.models.citadel import CitadelSubmission # Import to register the model with Base
 
 # Create all database tables on startup
 Base.metadata.create_all(bind=engine)
@@ -25,7 +26,7 @@ frontend_url = raw_frontend_url.rstrip("/")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url, "http://localhost:5173"],
+    allow_origins=[frontend_url, "http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,6 +40,9 @@ app.include_router(clustering.router, prefix="/api/clustering", tags=["Clusterin
 app.include_router(ensemble.router, prefix="/api/ensemble", tags=["Ensemble"])
 app.include_router(battle.router, prefix="/api/battle", tags=["Battle Arena"])
 app.include_router(unsupervised.router, prefix="/api/unsupervised", tags=["Unsupervised"])
+app.include_router(citadel.router, prefix="/api/citadel", tags=["Citadel"])
+app.include_router(deep_learning.router, prefix="/api/deep-learning", tags=["Deep Learning"])
+app.include_router(automl.router, prefix="/api/automl", tags=["AutoML"])
 
 
 @app.api_route("/", methods=["GET", "HEAD"])

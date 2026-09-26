@@ -116,8 +116,8 @@ export const houses: HouseConfig[] = [
       "Naval mastery — navigating complex feature spaces. Neural networks that chart courses through deep, uncharted waters of high-dimensional data.",
     color: "#00897B",
     colorDark: "#00695C",
-    algorithms: [],
-    implemented: false,
+    algorithms: ["mlp-classifier", "mlp-regressor"],
+    implemented: true,
   },
   {
     id: "blackfyre",

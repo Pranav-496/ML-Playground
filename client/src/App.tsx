@@ -6,9 +6,14 @@ import AuthPage from "@/pages/AuthPage";
 import HomePage from "@/pages/HomePage";
 import AlgorithmsPage from "@/pages/AlgorithmsPage";
 import AlgorithmPage from "@/pages/AlgorithmPage";
+import CitadelPage from "@/pages/CitadelPage";
+import CampaignPage from "@/pages/CampaignPage";
 import HousePage from "@/pages/HousePage";
 import ProfilePage from "@/pages/ProfilePage";
 import BattleArenaPage from "@/pages/BattleArenaPage";
+import IronThronePage from "@/pages/IronThronePage";
+import RoyalArchivesPage from "@/pages/RoyalArchivesPage";
+import AutoMlPage from "@/pages/AutoMlPage";
 
 function AppContent() {
   const location = useLocation();
@@ -39,8 +44,13 @@ function AppContent() {
               <Route path="/" element={<HomePage />} />
               <Route path="/algorithms" element={<AlgorithmsPage />} />
               <Route path="/algorithms/:slug" element={<AlgorithmPage />} />
+              <Route path="/citadel" element={<CitadelPage />} />
+              <Route path="/citadel/:id" element={<CampaignPage />} />
               <Route path="/house/:houseSlug" element={<HousePage />} />
               <Route path="/battle-arena" element={<BattleArenaPage />} />
+              <Route path="/iron-throne" element={<IronThronePage />} />
+              <Route path="/royal-archives" element={<RoyalArchivesPage />} />
+              <Route path="/automl" element={<AutoMlPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </main>

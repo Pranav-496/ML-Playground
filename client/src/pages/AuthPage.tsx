@@ -51,7 +51,7 @@ export default function AuthPage() {
               try {
                 await googleAuth(response.credential);
               } catch (err: any) {
-                setError(err?.response?.data?.detail || "Google sign-in failed");
+                setError(err?.response?.data?.detail || err?.message || "Google sign-in failed");
               } finally {
                 setIsLoading(false);
               }
@@ -173,7 +173,7 @@ export default function AuthPage() {
           try {
             await googleAuth(response.credential);
           } catch (err: any) {
-            setError(err?.response?.data?.detail || "Google sign-in failed");
+            setError(err?.response?.data?.detail || err?.message || "Google sign-in failed");
           } finally {
             setIsLoading(false);
           }
