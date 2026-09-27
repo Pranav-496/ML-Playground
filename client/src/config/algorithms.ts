@@ -82,6 +82,17 @@ export const algorithms: AlgorithmConfig[] = [
     endpoint: "/classification/knn",
   },
   {
+    id: "knn-regression",
+    name: "KNN Regression",
+    slug: "knn-regression",
+    category: "regression",
+    description:
+      "Predict continuous values by averaging the targets of the nearest neighbors.",
+    icon: "Users",
+    color: "#4CAF50",
+    endpoint: "/regression/knn",
+  },
+  {
     id: "decision-tree",
     name: "Decision Tree",
     slug: "decision-tree",
@@ -93,6 +104,17 @@ export const algorithms: AlgorithmConfig[] = [
     endpoint: "/classification/decision-tree",
   },
   {
+    id: "decision-tree-regression",
+    name: "Decision Tree Regression",
+    slug: "decision-tree-regression",
+    category: "regression",
+    description:
+      "Build a tree of decisions to predict continuous outcomes.",
+    icon: "GitFork",
+    color: "#E06020",
+    endpoint: "/regression/decision-tree",
+  },
+  {
     id: "svm",
     name: "Support Vector Machine",
     slug: "svm",
@@ -102,6 +124,17 @@ export const algorithms: AlgorithmConfig[] = [
     icon: "Swords",
     color: "#7C3AED",
     endpoint: "/classification/svm",
+  },
+  {
+    id: "svr",
+    name: "Support Vector Regressor",
+    slug: "svr",
+    category: "regression",
+    description:
+      "Find the optimal hyperplane that maximizes the margin while predicting continuous outcomes.",
+    icon: "Swords",
+    color: "#7C3AED",
+    endpoint: "/regression/svr",
   },
   {
     id: "gaussian-nb",
@@ -158,6 +191,17 @@ export const algorithms: AlgorithmConfig[] = [
     color: "#059669",
     endpoint: "/ensemble/random-forest/classify",
   },
+  {
+    id: "random-forest-regression",
+    name: "Random Forest Regression",
+    slug: "random-forest-regression",
+    category: "regression",
+    description:
+      "An ensemble of decorrelated decision trees that vote together for unbeatable robustness in regression.",
+    icon: "Trees",
+    color: "#059669",
+    endpoint: "/ensemble/random-forest/regress",
+  },
 
   {
     id: "gradient-boosting",
@@ -169,6 +213,17 @@ export const algorithms: AlgorithmConfig[] = [
     icon: "Flame",
     color: "#EA580C",
     endpoint: "/ensemble/gradient-boosting/classify",
+  },
+  {
+    id: "gradient-boosting-regression",
+    name: "Gradient Boosting Regression",
+    slug: "gradient-boosting-regression",
+    category: "regression",
+    description:
+      "Sequential ensemble that builds trees to correct the errors of previous trees for continuous predictions.",
+    icon: "Flame",
+    color: "#EA580C",
+    endpoint: "/ensemble/gradient-boosting/regress",
   },
   {
     id: "pca",
@@ -220,16 +275,19 @@ export const categoryLabels: Record<string, string> = {
   regression: "House Stark",
   classification: "House Lannister",
   clustering: "House Targaryen",
+  "deep-learning": "House Velaryon",
 };
 
 export const categoryColors: Record<string, string> = {
   regression: "text-[#DC2626]",
   classification: "text-[#FF5A1F]",
   clustering: "text-[#F59E0B]",
+  "deep-learning": "text-[#00897B]",
 };
 
 export const categoryBgColors: Record<string, string> = {
   regression: "bg-[#DC2626]/10 border-[#DC2626]/20",
   classification: "bg-[#FF5A1F]/10 border-[#FF5A1F]/20",
   clustering: "bg-[#F59E0B]/10 border-[#F59E0B]/20",
+  "deep-learning": "bg-[#00897B]/10 border-[#00897B]/20",
 };

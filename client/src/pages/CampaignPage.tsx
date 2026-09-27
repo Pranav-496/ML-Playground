@@ -12,6 +12,8 @@ interface LeaderboardEntry {
   submitted_at: string;
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || "/api";
+
 export default function CampaignPage() {
   const { id } = useParams();
   const campaign = campaigns.find(c => c.id === id);
@@ -33,7 +35,7 @@ export default function CampaignPage() {
   const fetchLeaderboard = async () => {
     try {
       setIsLoadingLeaderboard(true);
-      const res = await fetch(`http://localhost:8000/api/citadel/projects/${campaign?.id}/leaderboard?campaign_type=${campaign?.type}`);
+      const res = await fetch(`${API_BASE}/citadel/projects/${campaign?.id}/leaderboard?campaign_type=${campaign?.type}`);
       if (res.ok) {
         const data = await res.json();
         setLeaderboard(data);
@@ -57,7 +59,7 @@ export default function CampaignPage() {
 
     try {
       // Need to include auth token in real app, Assuming cookie/credentials are sent or user is mocked
-      const res = await fetch(`http://localhost:8000/api/citadel/projects/${campaign?.id}/evaluate?campaign_type=${campaign?.type}`, {
+      const res = await fetch(`${API_BASE}/citadel/projects/${campaign?.id}/evaluate?campaign_type=${campaign?.type}`, {
         method: "POST",
         body: formData,
         // credentials: "include" - required if using cookies
@@ -81,7 +83,7 @@ export default function CampaignPage() {
 
   const downloadKit = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/citadel/projects/${campaign?.id}/kit`);
+      const res = await fetch(`${API_BASE}/citadel/projects/${campaign?.id}/kit`);
       if (res.ok) {
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);

@@ -14,11 +14,41 @@ import BattleArenaPage from "@/pages/BattleArenaPage";
 import IronThronePage from "@/pages/IronThronePage";
 import RoyalArchivesPage from "@/pages/RoyalArchivesPage";
 import AutoMlPage from "@/pages/AutoMlPage";
+import NotFoundPage from "@/pages/NotFoundPage";
+import { useEffect } from "react";
 
 function AppContent() {
   const location = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
   const isHomePage = location.pathname === "/";
+
+  // Dynamic document title based on route
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      "/": "Valoris — King's Landing",
+      "/algorithms": "Valoris — The Great Houses",
+      "/citadel": "Valoris — The Citadel",
+      "/battle-arena": "Valoris — Battle Arena",
+      "/iron-throne": "Valoris — Iron Throne",
+      "/royal-archives": "Valoris — Royal Archives",
+      "/automl": "Valoris — AutoML Vision",
+      "/profile": "Valoris — Lord's Chambers",
+    };
+    
+    // For dynamic routes, we do a basic prefix match or fallback
+    let newTitle = "Valoris — Forge Intelligence";
+    if (titles[location.pathname]) {
+      newTitle = titles[location.pathname];
+    } else if (location.pathname.startsWith("/house/")) {
+      newTitle = `Valoris — House Details`;
+    } else if (location.pathname.startsWith("/algorithms/")) {
+      newTitle = `Valoris — Algorithm Champion`;
+    } else if (location.pathname.startsWith("/citadel/")) {
+      newTitle = `Valoris — Citadel Campaign`;
+    }
+    
+    document.title = newTitle;
+  }, [location.pathname]);
 
   // Show a blank screen while auth state is being validated
   if (isLoading) {
@@ -52,6 +82,7 @@ function AppContent() {
               <Route path="/royal-archives" element={<RoyalArchivesPage />} />
               <Route path="/automl" element={<AutoMlPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
           {!isHomePage && <Footer />}

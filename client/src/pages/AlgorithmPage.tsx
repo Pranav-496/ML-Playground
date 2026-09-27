@@ -23,6 +23,11 @@ import PcaPage from "@/components/algorithms/Pca/PcaPage";
 import DbscanPage from "@/components/algorithms/Dbscan/DbscanPage";
 import MlpClassifierPage from "@/components/algorithms/MlpClassifier/MlpClassifierPage";
 import MlpRegressorPage from "@/components/algorithms/MlpRegressor/MlpRegressorPage";
+import KnnRegressionPage from "@/components/algorithms/KnnRegression/KnnRegressionPage";
+import DecisionTreeRegressionPage from "@/components/algorithms/DecisionTreeRegression/DecisionTreeRegressionPage";
+import SvrPage from "@/components/algorithms/Svr/SvrPage";
+import RandomForestRegressionPage from "@/components/algorithms/RandomForestRegression/RandomForestRegressionPage";
+import GradientBoostingRegressionPage from "@/components/algorithms/GradientBoostingRegression/GradientBoostingRegressionPage";
 
 /* Map slug → component */
 const algorithmPages: Record<string, React.ComponentType> = {
@@ -45,6 +50,11 @@ const algorithmPages: Record<string, React.ComponentType> = {
   "dbscan": DbscanPage,
   "mlp-classifier": MlpClassifierPage,
   "mlp-regressor": MlpRegressorPage,
+  "knn-regression": KnnRegressionPage,
+  "decision-tree-regression": DecisionTreeRegressionPage,
+  "svr": SvrPage,
+  "random-forest-regression": RandomForestRegressionPage,
+  "gradient-boosting-regression": GradientBoostingRegressionPage,
 };
 
 export default function AlgorithmPage() {

@@ -19,7 +19,8 @@ export default function IronThronePage() {
       try {
         // We do not need auth token since this is public, but we might if we restrict it.
         // Assuming public for now.
-        const res = await fetch("http://localhost:8000/api/citadel/leaderboard/global");
+        const baseUrl = import.meta.env.VITE_API_URL || "/api";
+        const res = await fetch(`${baseUrl}/citadel/leaderboard/global`);
         if (res.ok) {
           const data = await res.json();
           setLeaders(data);

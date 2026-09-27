@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Plot from "react-plotly.js";
 import { Network, Activity, BarChart3, Percent } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
-import { ControlPanel, MetricCard, TheorySection, ParamExplainer, CodeSection } from "@/components/shared";
+import { ControlPanel, MetricCard, TheorySection } from "@/components/shared";
 import type { HyperParam } from "@/types";
 
 interface MlpClassRequest {

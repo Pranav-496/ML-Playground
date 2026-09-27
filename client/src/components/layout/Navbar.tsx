@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Music, Pause, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, X, Music, Pause, LogOut, User as UserIcon, ChevronDown } from "lucide-react";
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import ValorisLogoIcon from "@/components/shared/ValorisLogoIcon";
@@ -12,15 +12,20 @@ export default function Navbar() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { user, logout } = useAuth();
 
-  const navLinks = [
+  const mainLinks = [
     { to: "/", label: "King's Landing" },
     { to: "/algorithms", label: "The Great Houses" },
     { to: "/citadel", label: "🏰 The Citadel" },
     { to: "/battle-arena", label: "⚔️ Battle Arena" },
+  ];
+
+  const moreLinks = [
     { to: "/iron-throne", label: "🏆 Iron Throne" },
     { to: "/royal-archives", label: "📚 Archives" },
     { to: "/automl", label: "👁️ AutoML Vision" },
   ];
+
+  const navLinks = [...mainLinks, ...moreLinks];
 
   const toggleMusic = () => {
     if (audioRef.current) {
@@ -58,7 +63,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1.5">
-              {navLinks.map((link) => (
+              {mainLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
@@ -72,6 +77,36 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {/* More Dropdown */}
+              <div className="relative group">
+                <button
+                  className={cn(
+                    "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-1",
+                    moreLinks.some((l) => location.pathname === l.to)
+                      ? "clay-sm text-primary"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                  )}
+                >
+                  More <ChevronDown className="h-3 w-3" />
+                </button>
+                <div className="absolute top-full right-0 mt-2 w-48 py-2 bg-surface-secondary border border-surface-border rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 z-50">
+                  {moreLinks.map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      className={cn(
+                        "block px-4 py-2 text-xs font-semibold transition-colors",
+                        location.pathname === link.to
+                          ? "text-primary bg-primary/5"
+                          : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Music Toggle */}

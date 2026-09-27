@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Eye, UploadCloud, Cpu, Trophy, ArrowLeft, Target, Activity, FileSpreadsheet, CheckCircle2 } from "lucide-react";
+import { Eye, UploadCloud, Cpu, Trophy, ArrowLeft, Target, Activity, FileSpreadsheet, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ModelResult {
@@ -67,7 +67,8 @@ export default function AutoMlPage() {
     formData.append("target_column", targetCol);
 
     try {
-      const res = await fetch("http://localhost:8000/api/automl/train", {
+      const baseUrl = import.meta.env.VITE_API_URL || "/api";
+      const res = await fetch(`${baseUrl}/automl/train`, {
         method: "POST",
         body: formData,
       });

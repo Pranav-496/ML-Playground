@@ -85,7 +85,8 @@ export default function RoyalArchivesPage() {
               <button 
                 onClick={async () => {
                   try {
-                    const res = await fetch(`http://localhost:8000/api/citadel/projects/${campaign.id}/kit`);
+                    const baseUrl = import.meta.env.VITE_API_URL || "/api";
+                    const res = await fetch(`${baseUrl}/citadel/projects/${campaign.id}/kit`);
                     if (res.ok) {
                       const blob = await res.blob();
                       const url = window.URL.createObjectURL(blob);

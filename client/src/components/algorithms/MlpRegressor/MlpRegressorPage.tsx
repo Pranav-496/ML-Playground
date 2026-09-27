@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Plot from "react-plotly.js";
-import { Network, Activity, Hash, Layers } from "lucide-react";
+import { Activity, Hash, Layers, Percent } from "lucide-react";
 import { useAlgorithm } from "@/hooks/useAlgorithm";
 import { ControlPanel, MetricCard, TheorySection } from "@/components/shared";
 import type { HyperParam } from "@/types";

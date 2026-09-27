@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Scroll, Shield, Target, ArrowRight } from "lucide-react";
 import { campaigns } from "@/config/campaigns";
-import { cn } from "@/lib/utils";
 
 export default function CitadelPage() {
   return (
